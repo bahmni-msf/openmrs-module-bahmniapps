@@ -581,20 +581,16 @@ module.exports = function (grunt) {
         'dist'
     ]);
 
-    grunt.registerTask('tests', function (app) {
-        grunt.task.run((app || '') + 'test');
-    });
-
     grunt.registerTask('uglify-and-rename', [
         'uglify',
         'rename:minified'
     ]);
 
-    grunt.registerTask('default', ['build', 'tests', 'uglify-and-rename', 'preprocess:web']);
-    grunt.registerTask('dev', ['build', 'tests', 'rename', 'preprocess:web']);
-    grunt.registerTask('chrome', ['bundle', 'tests:chrome', 'uglify-and-rename', 'preprocess:chrome']);
+    grunt.registerTask('default', ['build', 'test', 'uglify-and-rename', 'preprocess:web']);
+    grunt.registerTask('dev', ['build', 'test', 'rename', 'preprocess:web']);
+    grunt.registerTask('chrome', ['bundle', 'chrometest', 'uglify-and-rename', 'preprocess:chrome']);
     grunt.registerTask('devchrome', ['devbundle', 'preprocess:chrome', 'toggleComments', 'clean:chromeApp', 'copy:chromeApp']);
-    grunt.registerTask('android', ['bundle', 'tests:android', 'uglify-and-rename', 'preprocess:android']);
+    grunt.registerTask('android', ['bundle', 'androidtest', 'uglify-and-rename', 'preprocess:android']);
     grunt.registerTask('devandroid', ['devbundle', 'preprocess:android', 'toggleComments', 'clean:androidApp', 'copy:androidApp']);
 
     grunt.registerTask('bower-install', 'install dependencies using bower', function () {
