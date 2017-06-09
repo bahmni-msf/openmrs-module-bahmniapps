@@ -288,14 +288,13 @@
   padding: 0;
   .ngdialog-content {
     width: 70%;
-    padding: 0;
     background: #fff;
     .template-header {
       h5 {
         font-weight: normal;
       }
       .dialog-close-btn, .toggle-patient {
-        background: transparent;
+        background: #527A7A;
         border: none;
         outline: none;
         color: #fff;
@@ -304,11 +303,15 @@
         line-height: 50px;
         padding: 0;
         margin: 0;
-        margin-right: 5px;
+        margin-right: 20px;
         &:hover, &:focus {
           outline: none;
           border: none;
-          background: transparent;
+          background: #527A7A;
+          opacity: 1;
+          i {
+            opacity: 0.8;
+          }
         }
       }
     }
@@ -358,6 +361,23 @@
           font-size: 12px;
         }
       }
+      .null-data-message {
+        padding: 10px 10px 0;
+      }
     }
   }
+}
+.gallery-open .ngdialog.ngdialog-theme-default .ngdialog-content {
+  padding: 0;
+}
+.dialog-close-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-right: 5px !important;
+}
+.ngdialog .toggle-patient {
+  position: absolute;
+  top: 0;
+  right: 10px;
 }

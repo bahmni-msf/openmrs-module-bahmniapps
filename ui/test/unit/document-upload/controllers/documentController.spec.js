@@ -543,6 +543,7 @@ describe("DocumentController", function () {
         it("should save the image file", function () {
             setUp();
             visitDocumentService.saveFile.and.returnValue(specUtil.simplePromise({data: { url : "tes-file.jpeg" }}));
+
             visitDocumentService.getFileType.and.returnValue("image");
             var newVisit = new Bahmni.DocumentUpload.Visit();
             appConfig.encounterType.and.returnValue("Radiology");
@@ -559,6 +560,7 @@ describe("DocumentController", function () {
 
         it("should save the pdf file", function () {
             setUp();
+
             visitDocumentService.saveFile.and.returnValue(specUtil.simplePromise({data: { url : "tes-file.pdf" }}));
             visitDocumentService.getFileType.and.returnValue("pdf");
             var newVisit = new Bahmni.DocumentUpload.Visit();
@@ -577,6 +579,7 @@ describe("DocumentController", function () {
         it("should show error message dialog box when user uploads a video", function () {
             setUp();
             messagingService.showMessage.and.returnValue(specUtil.simplePromise("something"));
+
             visitDocumentService.getFileType.and.returnValue("not_supported");
             var newVisit = new Bahmni.DocumentUpload.Visit();
             appConfig.encounterType.and.returnValue("Radiology");
