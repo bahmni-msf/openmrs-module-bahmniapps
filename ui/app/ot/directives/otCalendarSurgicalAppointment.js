@@ -1,27 +1,40 @@
 'use strict';
 
 angular.module('bahmni.ot')
-    .directive('otCalendarSurgicalAppointment', [function () {
+    .directive('otCalendarSurgicalAppointment', ['surgicalAppointmentHelper', function (surgicalAppointmentHelper) {
         var link = function ($scope) {
             $scope.attributes = _.reduce($scope.surgicalAppointment.surgicalAppointmentAttributes, function (attributes, attribute) {
                 attributes[attribute.surgicalAppointmentAttributeType.name] = attribute.value;
                 return attributes;
             }, {});
 
+            var hasAppointmentStatusInFilteredStatusList = function () {
+                if (_.isEmpty($scope.filterParams.statusList)) {
+                    return true;
+                }
+                return _.find($scope.filterParams.statusList, function (selectedStatus) {
+                    return selectedStatus.name === $scope.surgicalAppointment.status;
+                });
+            };
+
+            var hasAppointmentIsOfTheFilteredPatient = function () {
+                if (_.isEmpty($scope.filterParams.patient)) {
+                    return true;
+                }
+                return $scope.surgicalAppointment.patient.uuid === $scope.filterParams.patient.uuid;
+            };
+
+            $scope.canTheSurgicalAppointmentBeShown = function () {
+                return hasAppointmentIsOfTheFilteredPatient() && hasAppointmentStatusInFilteredStatusList();
+            };
+
             var getDataForSurgicalAppointment = function () {
                 $scope.height = getHeightForSurgicalAppointment();
-                $scope.patient = $scope.surgicalAppointment.patient.display.split('-')[1] + " ( " + $scope.surgicalAppointment.patient.display.split('-')[0] + " )";
+                $scope.patient = surgicalAppointmentHelper.getPatientDisplayLabel($scope.surgicalAppointment.patient.display);
             };
 
             var getHeightForSurgicalAppointment = function () {
-                var estTimeHours = $scope.attributes["estTimeHours"] || 0;
-                var estTimeMinutes = $scope.attributes["estTimeMinutes"] || 0;
-                var cleaningTime = $scope.attributes["cleaningTime"] || 0;
-                return (
-                    estTimeHours * 60 +
-                    parseInt(estTimeMinutes) +
-                    parseInt(cleaningTime))
-                    * $scope.heightPerMin;
+                return $scope.surgicalAppointment.derivedAttributes.duration * $scope.heightPerMin;
             };
 
             $scope.selectSurgicalAppointment = function ($event) {
@@ -29,6 +42,11 @@ angular.module('bahmni.ot')
                 $event.stopPropagation();
             };
             getDataForSurgicalAppointment();
+
+            $scope.deselectSurgicalAppointment = function ($event) {
+                $scope.$emit("event:surgicalBlockDeselect");
+                $event.stopPropagation();
+            };
         };
         return {
             restrict: 'E',
@@ -36,7 +54,8 @@ angular.module('bahmni.ot')
             scope: {
                 surgicalAppointment: "=",
                 heightPerMin: "=",
-                backgroundColor: "="
+                backgroundColor: "=",
+                filterParams: "="
 
             },
             templateUrl: "../ot/views/calendarSurgicalAppointment.html"

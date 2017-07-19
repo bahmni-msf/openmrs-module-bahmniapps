@@ -14,6 +14,7 @@ Bahmni.OT.SurgicalBlockMapper = function () {
             var attributeName = attribute.surgicalAppointmentAttributeType.name;
             mappedAttributes[attributeName] = {
                 id: attribute.id,
+                uuid: attribute.uuid,
                 value: attribute.value,
                 surgicalAppointmentAttributeType: {
                     uuid: attribute.surgicalAppointmentAttributeType.uuid,
@@ -35,8 +36,11 @@ Bahmni.OT.SurgicalBlockMapper = function () {
             uuid: openMrsSurgicalAppointment.uuid,
             voided: openMrsSurgicalAppointment.voided || false,
             patient: openMrsSurgicalAppointment.patient,
-            notes: openMrsSurgicalAppointment.notes,
             sortWeight: openMrsSurgicalAppointment.sortWeight,
+            actualStartDatetime: Bahmni.Common.Util.DateUtil.parseServerDateToDate(openMrsSurgicalAppointment.actualStartDatetime),
+            actualEndDatetime: Bahmni.Common.Util.DateUtil.parseServerDateToDate(openMrsSurgicalAppointment.actualEndDatetime),
+            notes: openMrsSurgicalAppointment.notes,
+            status: openMrsSurgicalAppointment.status,
             surgicalAppointmentAttributes: new Bahmni.OT.SurgicalBlockMapper().mapAttributes(surgicalAppointmentAttributes, attributeTypes)
         };
     };
@@ -64,7 +68,7 @@ Bahmni.OT.SurgicalBlockMapper = function () {
         return _.values(attributes).filter(function (attribute) {
             return !_.isUndefined(attribute.value);
         }).map(function (attribute) {
-            attribute.value = attribute.value.toString();
+            attribute.value = !_.isNull(attribute.value) && attribute.value.toString() || "";
             return attribute;
         });
     };
@@ -75,8 +79,11 @@ Bahmni.OT.SurgicalBlockMapper = function () {
             uuid: surgicalAppointmentUI.uuid,
             voided: surgicalAppointmentUI.voided || false,
             patient: {uuid: surgicalAppointmentUI.patient.uuid},
-            notes: surgicalAppointmentUI.notes,
+            actualStartDatetime: surgicalAppointmentUI.actualStartDatetime,
+            actualEndDatetime: surgicalAppointmentUI.actualEndDatetime,
             sortWeight: surgicalAppointmentUI.sortWeight,
+            notes: surgicalAppointmentUI.notes,
+            status: surgicalAppointmentUI.status,
             surgicalAppointmentAttributes: mapSurgicalAppointmentAttributesUIToDomain(surgicalAppointmentUI.surgicalAppointmentAttributes)
         };
     };

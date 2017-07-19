@@ -3,27 +3,30 @@
     <h4 class="appointment-title" ng-show="ngDialogData.sortWeight >= 0 ">{{'EDIT_SURGICAL_APPOINTMENT' | translate}}</h4>
     <div class="appointment-block">
         <p class="surgeon-block">
-            <label class="surgeon-block surgeon-text">{{'OT_PATIENT' | translate}}<sup>*</sup></label>
-
-            <input type="text"
-                   id="patientID"
-                   min-length=2
-                   bahmni-autocomplete
-                   ng-model="patient"
-                   source="search"
-                   response-map="responseMap"
-                   on-select="onSelectPatient"
-                   strict-select="true"
-                   ng-class="{'illegalValue': isInvalid}"
-                   placeholder="{{'OT_ENTER_PATIENT_KEY' | translate }}"
-                   non-blank
-                   ng-disabled="shouldBeDisabled()"
-            />
-            <i class="fa fa-search" aria-hidden="true"></i>
+            <label class="surgeon-block surgeon-text">{{'OT_PATIENT' | translate}} <span class="asterick">*</span></label>
+            <span ng-hide="isEditMode()">
+                <input type="text"
+                       id="patientID"
+                       min-length=2
+                       bahmni-autocomplete
+                       ng-model="patient"
+                       source="search"
+                       response-map="responseMap"
+                       on-select="onSelectPatient"
+                       strict-select="true"
+                       ng-class="{'illegalValue': isInvalid}"
+                       placeholder="{{'OT_ENTER_PATIENT_KEY' | translate }}"
+                       non-blank
+                />
+                <i class="fa fa-search" aria-hidden="true"></i>
+            </span>
+            <span style="max-width: 300px" ng-hide="!isEditMode()" class="patient_name">
+                <a ng-click="goToForwardUrl()">{{::patient}}</a>
+            </span>
         </p>
         <p>
             <label class="surgeon-block surgeon-text">{{'OT_SURGICAL_APPOINTMENT_PROCEDURE' | translate}}</label>
-            <input type="text" id="procedureID" ng-model="attributes.procedure.value">
+            <textarea class="text-section" id="procedureID" ng-model="attributes.procedure.value" msd-elastic> </textarea>
         </p>
 
         <p>
@@ -66,7 +69,7 @@
         </p>
         <p>
             <label class="surgeon-block surgeon-text">{{'OT_SURGICAL_APPOINTMENT_NOTES' | translate}}</label>
-            <textarea placeholder="enter your notes" id="notesID" ng-model="notes" msd-elastic></textarea>
+            <textarea class="text-section" placeholder="enter your notes" id="notesID" ng-model="attributes.notes.value" msd-elastic></textarea>
         </p>
         <p style="text-align:right; overflow: visible;">
             <input type="submit" class="add" value="Add"/>

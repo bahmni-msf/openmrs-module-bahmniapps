@@ -3,9 +3,9 @@
 describe("otCalendarController", function () {
     var scope, controller, q, spinner, state;
     var locationService = jasmine.createSpyObj('locationService', ['getAllByTag']);
-    var spinner = jasmine.createSpyObj('spinner', ['forPromise', 'then', 'catch']);
+    spinner = jasmine.createSpyObj('spinner', ['forPromise', 'then', 'catch']);
     var surgicalAppointmentService = jasmine.createSpyObj('surgicalAppointmentService', ['getSurgicalBlocksInDateRange']);
-    var state = jasmine.createSpyObj('state', ['go']);
+    var ngDialog = jasmine.createSpyObj('ngDialog', ['open']);
 
     var surgicalBlocks = [
         {
@@ -55,8 +55,8 @@ describe("otCalendarController", function () {
             locationService: locationService,
             $q: q,
             spinner: spinner,
-            surgicalAppointmentService: surgicalAppointmentService,
-            $state: state
+            surgicalAppointmentService: surgicalAppointmentService
+
         });
         scope.$apply();
     };
@@ -91,7 +91,7 @@ describe("otCalendarController", function () {
 
     it('should group the surgical blocks by the location', function () {
         createController();
-        expect(surgicalAppointmentService.getSurgicalBlocksInDateRange).toHaveBeenCalled();
+        expect(surgicalAppointmentService.getSurgicalBlocksInDateRange).toHaveBeenCalledWith(scope.viewDate, moment(scope.viewDate).endOf('day'));
         expect(scope.surgicalBlocksByLocation.length).toEqual(2);
         expect(scope.surgicalBlocksByLocation[0][0]).toEqual(surgicalBlocks[0]);
         expect(scope.surgicalBlocksByLocation[1][0]).toEqual(surgicalBlocks[1]);
@@ -100,48 +100,13 @@ describe("otCalendarController", function () {
     it('should set the day view split as integer', function () {
         createController();
         expect(scope.dayViewSplit).toEqual(60);
+        expect(scope.editDisabled).toBeTruthy();
+        expect(scope.cancelDisabled).toBeTruthy();
     });
 
-    it('should set the calendarStartDatetime and calendarEndDattime', function () {
+    it('should set the calendarStartDatetime and calendarEndDatetime', function () {
         createController();
         expect(scope.calendarStartDatetime).toEqual(moment('2017-02-19 09:00:00').toDate());
         expect(scope.calendarEndDatetime).toEqual(moment('2017-02-19 16:30:00').toDate());
     });
-
-    it('should disable the edit, delete and actual time buttons when clicked on calendar div', function () {
-        createController();
-        scope.editandDeleteDisabled = false;
-        scope.addActualTimeDisabled = false;
-
-        scope.remove();
-
-        expect(scope.editandDeleteDisabled).toBeTruthy();
-        expect(scope.addActualTimeDisabled).toBeTruthy();
-    });
-
-    it('should navigate to edit surgical block page with surgicalBlock details clicking edit button', function () {
-        var event = {
-            stopPropagation: function () {
-            }
-        };
-        createController();
-        scope.surgicalBlockSelected = surgicalBlocks[0];
-        scope.goToEdit(event);
-        expect(state.go).toHaveBeenCalledWith("editSurgicalAppointment",
-            jasmine.objectContaining({surgicalBlockUuid : "surgical-block1-uuid"}));
-    });
-
-    it('should navigate to edit surgical block page  with surgical block and appointment details on clicking edit button', function () {
-        var event = {
-            stopPropagation: function () {
-            }
-        };
-        createController();
-        scope.surgicalBlockSelected = surgicalBlocks[0];
-        scope.surgicalAppointmentSelected = surgicalBlocks[0].surgicalAppointments[0];
-        scope.goToEdit(event);
-        expect(state.go).toHaveBeenCalledWith("editSurgicalAppointment",
-            jasmine.objectContaining({surgicalBlockUuid : "surgical-block1-uuid", surgicalAppointmentId : 48}));
-    });
-
 });

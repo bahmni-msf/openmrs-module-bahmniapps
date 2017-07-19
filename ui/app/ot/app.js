@@ -3,15 +3,16 @@
 angular.module('ot', ['bahmni.common.patient', 'bahmni.common.patientSearch', 'bahmni.common.uiHelper', 'bahmni.common.conceptSet', 'authentication', 'bahmni.common.appFramework',
     'httpErrorInterceptor', 'bahmni.common.domain', 'bahmni.ot', 'bahmni.common.config', 'ui.router', 'bahmni.common.util', 'bahmni.common.routeErrorHandler', 'bahmni.common.i18n',
     'bahmni.common.displaycontrol.dashboard', 'bahmni.common.displaycontrol.observation', 'bahmni.common.displaycontrol.disposition', 'bahmni.common.displaycontrol.admissiondetails', 'bahmni.common.displaycontrol.custom',
-    'bahmni.common.obs', 'bahmni.common.displaycontrol.patientprofile', 'bahmni.common.displaycontrol.diagnosis', 'RecursionHelper', 'ngSanitize', 'bahmni.common.uiHelper', 'bahmni.common.displaycontrol.navigationlinks', 'pascalprecht.translate',
-    'bahmni.common.displaycontrol.dashboard', 'ngCookies', 'ngDialog', 'angularFileUpload', 'bahmni.common.offline', 'monospaced.elastic', 'dndLists']);
+    'bahmni.common.obs', 'bahmni.common.displaycontrol.patientprofile', 'bahmni.common.displaycontrol.diagnosis', 'RecursionHelper', 'ngSanitize', 'bahmni.common.uiHelper', 'bahmni.common.uicontrols.programmanagment', 'bahmni.common.displaycontrol.navigationlinks', 'pascalprecht.translate',
+    'bahmni.common.displaycontrol.dashboard', 'ngCookies', 'ngDialog', 'angularFileUpload', 'bahmni.common.offline', 'monospaced.elastic', 'dndLists', 'bahmni.common.services']);
 angular.module('ot').config(['$stateProvider', '$httpProvider', '$urlRouterProvider', '$bahmniTranslateProvider', '$compileProvider',
     function ($stateProvider, $httpProvider, $urlRouterProvider, $bahmniTranslateProvider, $compileProvider) {
         $urlRouterProvider.otherwise('/home');
 
         var homeBackLink = {type: "link", name: "Home", value: "../home/", accessKey: "h", icon: "fa-home"};
-        var otSchedulingLink = {type: "state", name: "OT Scheduling", value: "home", accessKey: "b"};
-        var navigationLinks = [otSchedulingLink];
+        var otSchedulingLink = {type: "state", name: "OT Scheduling", value: "otScheduling", accessKey: "b"};
+        var queuesLink = {type: "state", name: "Surgical Queues", value: "home", accessKey: "b"};
+        var navigationLinks = [queuesLink, otSchedulingLink];
 
         // @if DEBUG='production'
         $compileProvider.debugInfoEnabled(false);
@@ -29,13 +30,31 @@ angular.module('ot').config(['$stateProvider', '$httpProvider', '$urlRouterProvi
                     navigationLinks: navigationLinks
                 },
                 views: {
+                    'additional-header': {
+                        templateUrl: 'views/header.html'
+                    },
+                    'content': {
+                        templateUrl: '../common/patient-search/views/patientsList.html',
+                        controller: 'PatientsListController'
+                    }
+                },
+                resolve: {
+                    initialization: 'initialization'
+                }
+            })
+            .state('otScheduling', {
+                url: '/otScheduling',
+                data: {
+                    homeBackLink: homeBackLink,
+                    navigationLinks: navigationLinks
+                },
+                views: {
                     'content': {
                         templateUrl: 'views/home.html',
                         controller: 'calendarViewController'
                     },
                     'additional-header': {
-                        templateUrl: 'views/header.html',
-                        controller: 'OTHeaderController'
+                        templateUrl: 'views/header.html'
                     }
                 },
                 resolve: {
@@ -43,7 +62,7 @@ angular.module('ot').config(['$stateProvider', '$httpProvider', '$urlRouterProvi
                 }
             })
             .state('newSurgicalAppointment', {
-                url: '/appointment/new',
+                url: '/surgicalblock/new',
                 data: {
                     homeBackLink: homeBackLink,
                     navigationLinks: navigationLinks
@@ -58,8 +77,7 @@ angular.module('ot').config(['$stateProvider', '$httpProvider', '$urlRouterProvi
                         controller: 'surgicalBlockController'
                     },
                     'additional-header': {
-                        templateUrl: 'views/header.html',
-                        controller: 'OTHeaderController'
+                        templateUrl: 'views/header.html'
                     }
                 },
                 resolve: {
@@ -67,7 +85,7 @@ angular.module('ot').config(['$stateProvider', '$httpProvider', '$urlRouterProvi
                 }
             })
             .state('editSurgicalAppointment', {
-                url: '/appointment/:surgicalBlockUuid/edit',
+                url: '/surgicalblock/:surgicalBlockUuid/edit',
                 data: {
                     homeBackLink: homeBackLink,
                     navigationLinks: navigationLinks
@@ -82,8 +100,7 @@ angular.module('ot').config(['$stateProvider', '$httpProvider', '$urlRouterProvi
                         controller: 'surgicalBlockController'
                     },
                     'additional-header': {
-                        templateUrl: 'views/header.html',
-                        controller: 'OTHeaderController'
+                        templateUrl: 'views/header.html'
                     }
                 },
                 resolve: {
