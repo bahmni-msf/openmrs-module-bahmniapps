@@ -48,7 +48,7 @@ angular.module('bahmni.ot')
                     return newVar;
                 });
                 $scope.filters.statusList = [];
-                $scope.appointmentStatusList = [{name: Bahmni.OT.Constants.scheduled}, {name: Bahmni.OT.Constants.completed}];
+                setAppointmentStatusList($scope.view);
                 return locationService.getAllByTag('Operation Theater').then(function (response) {
                     $scope.locations = response.data.results;
                     addLocationsForFilters();
@@ -57,6 +57,15 @@ angular.module('bahmni.ot')
                     $scope.applyFilters();
                     return $scope.locations;
                 });
+            };
+
+            var setAppointmentStatusList = function (view) {
+                if (view === 'Calendar') {
+                    $scope.appointmentStatusList = [{name: Bahmni.OT.Constants.scheduled}, {name: Bahmni.OT.Constants.completed}];
+                } else {
+                    $scope.appointmentStatusList = [{name: Bahmni.OT.Constants.scheduled}, {name: Bahmni.OT.Constants.completed},
+                        {name: Bahmni.OT.Constants.postponed}, {name: Bahmni.OT.Constants.cancelled}];
+                }
             };
 
             $scope.calendarView = function () {
@@ -287,14 +296,13 @@ angular.module('bahmni.ot')
             $scope.$watch('view', function (newValue, oldValue) {
                 if (oldValue !== newValue) {
                     if (newValue === 'Calendar') {
-                        $scope.appointmentStatusList = [{name: Bahmni.OT.Constants.scheduled}, {name: Bahmni.OT.Constants.completed}];
+                        setAppointmentStatusList(newValue);
                         $scope.filters.statusList = _.filter($scope.filters.statusList, function (status) {
                             return status.name === Bahmni.OT.Constants.scheduled || status.name === Bahmni.OT.Constants.completed;
                         });
                     }
                     if (newValue === 'List View') {
-                        $scope.appointmentStatusList = [{name: Bahmni.OT.Constants.scheduled}, {name: Bahmni.OT.Constants.completed},
-                            {name: Bahmni.OT.Constants.postponed}, {name: Bahmni.OT.Constants.cancelled}];
+                        setAppointmentStatusList(newValue);
                     }
                     $scope.applyFilters();
                 }

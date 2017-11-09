@@ -2,7 +2,7 @@
 
 describe("PatientsListController", function () {
         var _spinner, _patientService, _appService, $bahmniCookieStore, _window, _printer;
-        var controller, scope, findPatientsPromise, searchPatientsPromise, retrospectiveEntryService, offlineService, getRecentPatientsPromise,configurationService, getAppDescriptor;
+        var controller, scope, findPatientsPromise, searchPatientsPromise, retrospectiveEntryService, getRecentPatientsPromise,configurationService, getAppDescriptor;
         var stateParams = { location: "Ganiyari"};
 
         beforeEach(module('bahmni.common.patientSearch'));
@@ -64,7 +64,6 @@ describe("PatientsListController", function () {
                     return {uuid: 1, display: "Location" };
                 }
             });
-            offlineService = jasmine.createSpyObj('offlineService', ['isOfflineApp']);
             configurationService = jasmine.createSpyObj('configurationService', ['getConfigurations']);
             _spinner = jasmine.createSpyObj('spinner', ['forPromise']);
             _spinner.forPromise.and.callFake(function (promiseParam) {
@@ -87,7 +86,6 @@ describe("PatientsListController", function () {
             _patientService.search.and.returnValue(searchPatientsPromise);
             _patientService.getRecentPatients.and.returnValue(getRecentPatientsPromise);
             _printer.printFromScope.and.returnValue(true);
-            offlineService.isOfflineApp.and.returnValue(true);
             configurationService.getConfigurations.and.returnValue(specUtil.simplePromise({identifierTypesConfig:[{primary:true,name:"Bahmni Id"}]}));
         });
 
@@ -112,7 +110,6 @@ describe("PatientsListController", function () {
                     $stateParams: stateParams,
                     retrospectiveEntryService: retrospectiveEntryService,
                     $bahmniCookieStore: $bahmniCookieStore,
-                    offlineService: offlineService,
                     printer: _printer,
                     configurationService:configurationService
                 });
@@ -225,42 +222,6 @@ describe("PatientsListController", function () {
                 expect(_printer.printFromScope).toHaveBeenCalled();
             });
         });
-
-    describe("Offline",function(){
-        beforeEach(function(){
-            scope.$apply(setUp);
-        });
-
-        it('should show recent patients in all tab for offline app', function () {
-            scope.$apply(setUp);
-            expect(_patientService.findPatients).toHaveBeenCalled();
-
-            scope.search.searchType = {
-                "id": "bahmni.clinical.patients.all",
-                "extensionPointId": "org.bahmni.patient.search",
-                "type": "config",
-                "extensionParams": {
-                    "display": "All patients",
-                    "refreshTime": "10"
-                },
-                "label": "All patients",
-                "order": 1,
-                "requiredPrivilege": "app:clinical"
-            };
-
-
-            scope.$apply();
-
-            expect(offlineService.isOfflineApp).toHaveBeenCalled();
-            expect(_patientService.getRecentPatients).toHaveBeenCalled();
-        });
-
-        it('should not display tab in offline app if offline is set to false in tab config', function(){
-            expect(scope.search.searchTypes.length).toBe(2);
-        });
-
-    });
-
 
     describe("isHeadingOfLinkColumn", function () {
         beforeEach(function () {
