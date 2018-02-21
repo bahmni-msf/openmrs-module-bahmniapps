@@ -164,12 +164,12 @@ angular.module('bahmni.clinical').controller('ConsultationController',
 
             var cleanUpListenerStateChangeStart = $scope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
                 if ($scope.showSaveConfirmDialogConfig) {
+                    $scope.toStateConfig = {toState: toState, toParams: toParams};
                     if ($rootScope.hasVisitedConsultation && $scope.shouldDisplaySaveConfirmDialogForStateChange(toState, toParams, fromState, fromParams)) {
                         if ($scope.showConfirmationPopUp) {
                             event.preventDefault();
                             spinner.hide(toState.spinnerToken);
                             ngDialog.close();
-                            $scope.toStateConfig = {toState: toState, toParams: toParams};
                             $scope.displayConfirmationDialog();
                         }
                     }

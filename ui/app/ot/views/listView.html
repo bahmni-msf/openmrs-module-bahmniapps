@@ -20,6 +20,9 @@
                 {{appointment.status}}
             </td>
             <td>
+                {{appointment.derivedAttributes.expectedStartDate | date : 'EEEE'}}
+            </td>
+            <td>
                 {{appointment.derivedAttributes.expectedStartDate | bahmniDate}}
             </td>
             <td>
@@ -27,6 +30,9 @@
             </td>
             <td>
                 {{appointment.derivedAttributes.patientName}}
+            </td>
+            <td>
+                {{appointment.derivedAttributes.patientAge}}
             </td>
             <td>
                 {{appointment.derivedAttributes.expectedStartTime | bahmniTime}}
@@ -70,6 +76,12 @@
             </td>
             <td class="list-view-notes">
                 {{appointment.notes}}
+            </td>
+            <td>
+                {{appointment.bedLocation}}
+            </td>
+            <td>
+                {{appointment.bedId}}
             </td>
         </tr>
         </tbody>

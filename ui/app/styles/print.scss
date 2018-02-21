@@ -22,23 +22,12 @@ body pre {
     white-space: pre-wrap;
 }
 
-p,
-h1,
-h2,
-h3,
-table,
-tr,
-td,
-div,
-span,
-li {
-    margin: 0px;
-    padding: 0px;
+p, h1, h2, h3, table, tr, td, div, span, li {
+    margin: 0;
+    padding: 0;
 }
 
-h1,
-h2,
-h3 {
+h1, h2, h3 {
     text-align: center;
 }
 
@@ -70,14 +59,14 @@ h3 {
 
 .print-table-left-body {
     font-size: 4mm;
-    margin-bottom: 0px;
-    padding-bottom: 0px;
+    margin-bottom: 0;
+    padding-bottom: 0;
     margin-top: 15px;
 }
 
 .print-table-left-body li {
-    margin: 0px;
-    padding: 0px 0px 5px 0px;
+    margin: 0;
+    padding: 0 0 5px 0;
     line-height: 18px
 }
 
@@ -99,13 +88,12 @@ h3 {
 .print-table-right .logo {
     text-align: center;
     width: 12mm;
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
     height: 12mm;
 }
 
 .print-table-right-header {
-    text-align: center;
     width: 42mm;
     text-align: left;
     height: 12mm;
@@ -116,7 +104,7 @@ h3 {
 }
 
 .registrationCard-details {
-    padding: 0mm 5mm 0mm 5mm;
+    padding: 0 5mm 0 5mm;
 }
 
 .registrationCard-details-name {
@@ -514,7 +502,7 @@ h3 {
                 &.ipd-test-results {
                     white-space: normal;
                     text-overflow: initial;
-                    padding: 0px 5px;
+                    padding: 0 5px;
                     border-right-color: $lighterGray;
                     display: inline-block;
                     float: left;
@@ -590,7 +578,7 @@ h3 {
         }
     }
     .notes {
-        padding: 0px 5px 2px 20px;
+        padding: 0 5px 2px 20px;
         font-size: 8pt;
         background: none;
         color: #999;
@@ -816,14 +804,16 @@ h3 {
     color: $black !important;
 }
 
-
+.concept-set-label {
+    font-weight: bold;
+}
 
 .print-patient-summary{
     &.print-wrapper{
       max-width: 100%;
     }
     .dashboard-section {
-        margin-bottom: 0px;
+        margin-bottom: 0;
         &.patientInformation{
             //border: 1px #ccc solid;
             //padding: 5px !important;
@@ -843,7 +833,7 @@ h3 {
                 transform: rotate(-90deg);
                 position: absolute;
                 margin-top: -470px;
-                bottom: 0px;
+                bottom: 0;
                 width: 940px;
                 top: 50%;
                 left: 50%;
@@ -925,10 +915,8 @@ h3 {
                                         li{
                                             padding-left: 10px !important;
                                             .tree-list-item{
-                                                padding: 0px 5px 3px 5px !important;
+                                                padding: 0 5px 3px 5px !important;
                                                 .testUnderPanel{
-                                                    //width: 64.4% !important;
-                                                    width: 463px !important;
                                                     font-weight: normal !important;
 
                                                 }
@@ -958,14 +946,12 @@ h3 {
                 }
             }
             .value-text-only, .text-only{
-                width: auto !important;
-                padding: 3px 0px 0px !important;
+                width: 35% !important;
+                padding-right: 1% !important;
+                padding-left: 1% !important;
                 display:inline-block;
             }
             .testUnderPanel{
-                //width: 65% !important;
-                width: 484px !important;
-                padding: 3px 0px 0px !important;
                 font-weight: normal !important;
             }
             ul li ul li ul li ul li ul li ul li .tree-list-item {

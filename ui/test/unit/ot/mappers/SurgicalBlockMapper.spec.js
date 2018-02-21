@@ -352,8 +352,8 @@ describe("SurgicalBlockMapper", function () {
         surgicalBlock.endDatetime = "2017-05-25T18:00:00.000+0530";
         surgicalBlock.provider = {uuid: "providerUuid"};
         surgicalBlock.location = {uuid: "locationUuid"};
-        surgicalBlock.surgicalAppointments = [{id: 11, uuid: "appointmentUuid", voided: false, patient: {uuid: "patientUuid"}, notes: "need more assistants", sortWeight: 1, surgicalAppointmentAttributes: surgicalAppointmentAttributesResponseFromServer},
-            {id: 12, uuid: "appointmentUuid", voided: false, patient: {uuid: "patientUuid"}, notes: "need more assistants", sortWeight: 0, surgicalAppointmentAttributes: []}];
+        surgicalBlock.surgicalAppointments = [{id: 11, uuid: "appointmentUuid", voided: false, patient: {uuid: "patientUuid"}, notes: "need more assistants", sortWeight: 1, bedLocation: "Ward", bedNumber: "209/2", surgicalAppointmentAttributes: surgicalAppointmentAttributesResponseFromServer},
+            {id: 12, uuid: "appointmentUuid", voided: false, patient: {uuid: "patientUuid"}, notes: "need more assistants", bedLocation: null, bedNumber: null, sortWeight: 0, surgicalAppointmentAttributes: []}];
 
         var surgicalForm = {};
         surgicalForm.id = 10;
@@ -375,6 +375,10 @@ describe("SurgicalBlockMapper", function () {
         expect(mappedToUISurgicalBlock.surgicalAppointments[0].id).toBe(12);
         expect(mappedToUISurgicalBlock.surgicalAppointments[1].sortWeight).toBe(1);
         expect(mappedToUISurgicalBlock.surgicalAppointments[1].id).toBe(11);
+        expect(mappedToUISurgicalBlock.surgicalAppointments[0].bedLocation).toBe("");
+        expect(mappedToUISurgicalBlock.surgicalAppointments[0].bedId).toBe("");
+        expect(mappedToUISurgicalBlock.surgicalAppointments[1].bedLocation).toBe("Ward");
+        expect(mappedToUISurgicalBlock.surgicalAppointments[1].bedId).toBe("209/2");
     });
 
     it('Should map the UISurgicalBlock with appointments and appointment attributes to the openmrsSurgicalBlock', function () {

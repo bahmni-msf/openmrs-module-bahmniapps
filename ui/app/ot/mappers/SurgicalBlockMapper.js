@@ -41,6 +41,8 @@ Bahmni.OT.SurgicalBlockMapper = function () {
             actualEndDatetime: Bahmni.Common.Util.DateUtil.parseServerDateToDate(openMrsSurgicalAppointment.actualEndDatetime),
             notes: openMrsSurgicalAppointment.notes,
             status: openMrsSurgicalAppointment.status,
+            bedLocation: (openMrsSurgicalAppointment.bedLocation || ""),
+            bedId: (openMrsSurgicalAppointment.bedNumber || ""),
             surgicalAppointmentAttributes: new Bahmni.OT.SurgicalBlockMapper().mapAttributes(surgicalAppointmentAttributes, attributeTypes)
         };
     };

@@ -9,6 +9,7 @@ angular.module('bahmni.appointments')
             $scope.enableServiceTypes = appService.getAppDescriptor().getConfigValue('enableServiceTypes');
             $scope.allowedActions = appService.getAppDescriptor().getConfigValue('allowedActions') || [];
             $scope.allowedActionsByStatus = appService.getAppDescriptor().getConfigValue('allowedActionsByStatus') || {};
+            $scope.colorsForListView = appService.getAppDescriptor().getConfigValue('colorsForListView') || {};
             $scope.manageAppointmentPrivilege = Bahmni.Appointments.Constants.privilegeManageAppointments;
             $scope.searchedPatient = false;
             var oldPatientData = [];
@@ -33,9 +34,6 @@ angular.module('bahmni.appointments')
                 $scope.searchedPatient = $stateParams.isSearchEnabled && $stateParams.patient;
                 $scope.startDate = $stateParams.viewDate || moment().startOf('day').toDate();
                 $scope.isFilterOpen = $stateParams.isFilterOpen;
-                if (!$scope.searchedPatient) {
-                    return $scope.getAppointmentsForDate($scope.startDate);
-                }
             };
 
             $scope.getAppointmentsForDate = function (viewDate) {

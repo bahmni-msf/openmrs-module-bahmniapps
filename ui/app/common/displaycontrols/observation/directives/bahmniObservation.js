@@ -94,6 +94,7 @@ angular.module('bahmni.common.displaycontrol.observation')
             };
 
             var link = function ($scope, element) {
+                $scope.enableBoldForPrint = $scope.section.printConceptSetLabelBold;
                 $scope.initialization && spinner.forPromise($scope.initialization, element);
             };
 

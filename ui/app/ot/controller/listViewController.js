@@ -8,9 +8,11 @@ angular.module('bahmni.ot')
             var endDatetime = moment(startDatetime).endOf('day').toDate();
             $scope.tableInfo = [
                 {heading: 'Status', sortInfo: 'status'},
+                {heading: 'Day', sortInfo: 'derivedAttributes.expectedStartDate'},
                 {heading: 'Date', sortInfo: 'derivedAttributes.expectedStartDate'},
                 {heading: 'Identifier', sortInfo: 'derivedAttributes.patientIdentifier'},
                 {heading: 'Patient Name', sortInfo: 'derivedAttributes.patientName'},
+                {heading: 'Patient Age', sortInfo: 'derivedAttributes.patientAge'},
                 {heading: 'Start Time', sortInfo: 'derivedAttributes.expectedStartTime'},
                 {heading: 'Est Time', sortInfo: 'derivedAttributes.duration'},
                 {heading: 'Actual Time', sortInfo: 'actualStartDatetime'},
@@ -23,7 +25,9 @@ angular.module('bahmni.ot')
                 {heading: 'Anaesthetist', sortInfo: 'surgicalAppointmentAttributes.anaesthetist.value'},
                 {heading: 'Scrub Nurse', sortInfo: 'surgicalAppointmentAttributes.scrubNurse.value'},
                 {heading: 'Circulating Nurse', sortInfo: 'surgicalAppointmentAttributes.circulatingNurse.value'},
-                {heading: 'Status Change Notes', sortInfo: 'notes'}];
+                {heading: 'Status Change Notes', sortInfo: 'notes'},
+                {heading: 'Bed Location', sortInfo: 'bedLocation'},
+                {heading: 'Bed ID', sortInfo: 'bedId'}];
 
             var filterSurgicalBlocksAndMapAppointmentsForDisplay = function (surgicalBlocks) {
                 var clonedSurgicalBlocks = _.cloneDeep(surgicalBlocks);
@@ -47,6 +51,7 @@ angular.module('bahmni.ot')
                         );
                         mappedAppointment.derivedAttributes.expectedStartDate = moment(blockStartDatetime).startOf('day').toDate();
                         mappedAppointment.derivedAttributes.patientIdentifier = mappedAppointment.patient.display.split(' - ')[0];
+                        mappedAppointment.derivedAttributes.patientAge = mappedAppointment.patient.person.age;
                         mappedAppointment.derivedAttributes.patientName = mappedAppointment.patient.display.split(' - ')[1];
                         if (mappedAppointment.status === Bahmni.OT.Constants.completed || mappedAppointment.status === Bahmni.OT.Constants.scheduled) {
                             mappedAppointment.derivedAttributes.expectedStartTime = blockStartDatetime;

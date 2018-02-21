@@ -19,8 +19,22 @@ angular.module('bahmni.appointments')
             $scope.showStartTimes = [];
             $scope.showEndTimes = [];
 
+            var isProviderCurrentlyAvailableForAppointments = function (selectedProvider, config) {
+                var providers = config.providers;
+                return _.find(providers, function (provider) {
+                    return selectedProvider.uuid === provider.uuid;
+                });
+            };
             var init = function () {
                 wireAutocompleteEvents();
+                var providerCurrentAvailability = "False";
+                if (!_.isEmpty(appointmentContext) && !_.isEmpty(appointmentContext.appointment) && !_.isEmpty(appointmentContext.appointment.provider)) {
+                    providerCurrentAvailability = isProviderCurrentlyAvailableForAppointments(appointmentContext.appointment.provider, appointmentCreateConfig);
+                }
+                if (_.isEmpty(providerCurrentAvailability)) {
+                    appointmentContext.appointment.provider.person = {display: appointmentContext.appointment.provider.name};
+                    appointmentCreateConfig.providers.push(appointmentContext.appointment.provider);
+                }
                 $scope.appointment = Bahmni.Appointments.AppointmentViewModel.create(appointmentContext.appointment || {appointmentKind: 'Scheduled'}, appointmentCreateConfig);
                 $scope.selectedService = appointmentCreateConfig.selectedService;
                 $scope.isPastAppointment = $scope.isEditMode() ? Bahmni.Common.Util.DateUtil.isBeforeDate($scope.appointment.date, moment().startOf('day')) : false;
@@ -46,7 +60,7 @@ angular.module('bahmni.appointments')
                 $scope.validatedAppointment = Bahmni.Appointments.Appointment.create($scope.appointment);
                 var conflictingAppointments = getConflictingAppointments($scope.validatedAppointment);
                 if (conflictingAppointments.length === 0) {
-                    saveAppointment($scope.validatedAppointment);
+                    return saveAppointment($scope.validatedAppointment);
                 } else {
                     $scope.displayConflictConfirmationDialog();
                 }
@@ -433,7 +447,7 @@ angular.module('bahmni.appointments')
             };
 
             var saveAppointment = function (appointment) {
-                appointmentsService.save(appointment).then(function () {
+                return spinner.forPromise(appointmentsService.save(appointment).then(function () {
                     messagingService.showMessage('info', 'APPOINTMENT_SAVE_SUCCESS');
                     $scope.showConfirmationPopUp = false;
                     var params = $state.params;
@@ -441,7 +455,7 @@ angular.module('bahmni.appointments')
                     params.isFilterOpen = true;
                     params.isSearchEnabled = params.isSearchEnabled && $scope.isEditMode();
                     $state.go('^', params, {reload: true});
-                });
+                }));
             };
 
             var wireAutocompleteEvents = function () {

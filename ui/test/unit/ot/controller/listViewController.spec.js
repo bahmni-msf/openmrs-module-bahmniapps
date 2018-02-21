@@ -104,7 +104,7 @@ describe('listViewController', function () {
 
       var surgicalAppointmentsForOT2Block = [{
           "id": 105,
-          "patient": {"uuid": "3ee5efbf-1267-43af-943d-d1ee8ced9285", "display": "EG100145M - Al Padas e"},
+          "patient": {"uuid": "3ee5efbf-1267-43af-943d-d1ee8ced9285", "display": "EG100145M - Al Padas e", "person" : {"age": "25"}},
           "actualStartDatetime": "2017-06-22T08:54:00.000+0530",
           "actualEndDatetime": "2017-06-22T09:54:00.000+0530",
           "status": "POSTPONED",
@@ -136,7 +136,10 @@ describe('listViewController', function () {
           "id": 96,
           "patient": {
               "uuid": "168eed46-dabe-4b7b-a0d6-a8e4ccc02510",
-              "display": "EG100104M - Al Padjhjvj hjhj hjjhhjhj"
+              "display": "EG100104M - Al Padjhjvj hjhj hjjhhjhj",
+              "person": {
+                  "age": "45"
+              }
           },
           "actualStartDatetime": "2017-06-22T10:00:00.000+0530",
           "actualEndDatetime": "2017-06-22T11:30:00.000+0530",
@@ -170,7 +173,7 @@ describe('listViewController', function () {
 
       var surgicalAppointmentsForOT1Block = [{
           "id": 104,
-          "patient": {"uuid": "2300015f-95a3-4d47-933d-a81138ad0aa6", "display": "EG100137M - Al Pad Hassan"},
+          "patient": {"uuid": "2300015f-95a3-4d47-933d-a81138ad0aa6", "display": "EG100137M - Al Pad Hassan", "person": {"age": "98"}},
           "actualStartDatetime": "2017-06-22T09:00:00.000+0530",
           "actualEndDatetime": "2017-06-22T13:00:00.000+0530",
           "status": "SCHEDULED",
@@ -205,7 +208,10 @@ describe('listViewController', function () {
           "id": 107,
           "patient": {
               "uuid": "2848a63a-b273-4d9d-8e10-1ad3e39ab1a6",
-              "display": "IQ100079F - XKHRQKVNNJKC UHNTLIXSNERE"
+              "display": "IQ100079F - XKHRQKVNNJKC UHNTLIXSNERE",
+              "person": {
+                  "age": "34"
+              }
           },
           "actualStartDatetime": "2017-06-22T08:30:00.000+0530",
           "actualEndDatetime": "2017-06-22T09:30:00.000+0530",
@@ -239,7 +245,10 @@ describe('listViewController', function () {
           "id": 106,
           "patient": {
               "uuid": "9b41d661-df96-4815-aea1-ecc8278dd220",
-              "display": "IQ100072F - QXHTPLJYKLTF JVMSGICIQZVB"
+              "display": "IQ100072F - QXHTPLJYKLTF JVMSGICIQZVB",
+              "person": {
+                  "age": "34"
+              }
           },
           "actualStartDatetime": "2017-06-22T09:45:00.000+0530",
           "actualEndDatetime": "2017-06-22T13:00:00.000+0530",
@@ -273,7 +282,10 @@ describe('listViewController', function () {
           "id": 108,
           "patient": {
               "uuid": "0c58967c-a415-48c8-9830-adcaa94b9d4f",
-              "display": "IQ100074F - CUYCTOEPHJDP OCECDYHMGPSO"
+              "display": "IQ100074F - CUYCTOEPHJDP OCECDYHMGPSO",
+              "person": {
+                  "age": "56"
+              }
           },
           "actualStartDatetime": "2017-06-22T14:30:00.000+0530",
           "actualEndDatetime": "2017-06-22T16:30:00.000+0530",
@@ -397,6 +409,7 @@ describe('listViewController', function () {
         expect(scope.surgicalAppointmentList[0].derivedAttributes.expectedStartTime).toEqual(moment("2017-06-22T09:00:00.000+0530").toDate());
         expect(scope.surgicalAppointmentList[0].derivedAttributes.expectedStartDate).toEqual(moment("2017-06-22T00:00:00.000+0530").toDate());
         expect(scope.surgicalAppointmentList[0].derivedAttributes.patientIdentifier).toEqual("EG100137M");
+        expect(scope.surgicalAppointmentList[0].derivedAttributes.patientAge).toEqual("98");
         expect(scope.surgicalAppointmentList[0].status).toEqual("SCHEDULED");
     });
 
@@ -508,6 +521,16 @@ describe('listViewController', function () {
         expect(scope.surgicalAppointmentList[3].id).toEqual(106);
         expect(scope.surgicalAppointmentList[4].id).toEqual(96);
         expect(scope.surgicalAppointmentList[5].id).toEqual(108);
+
+        scope.sortSurgicalAppointmentsBy('derivedAttributes.patientAge');
+        expect(scope.sortColumn).toEqual('derivedAttributes.patientAge');
+        expect(scope.surgicalAppointmentList.length).toEqual(6);
+        expect(scope.surgicalAppointmentList[0].id).toEqual(104);
+        expect(scope.surgicalAppointmentList[1].id).toEqual(108);
+        expect(scope.surgicalAppointmentList[2].id).toEqual(96);
+        expect(scope.surgicalAppointmentList[3].id).toEqual(106);
+        expect(scope.surgicalAppointmentList[4].id).toEqual(107);
+        expect(scope.surgicalAppointmentList[5].id).toEqual(105);
     });
 
     it("should reverse sort appointments if sorted on the same column consecutively", function () {
@@ -630,5 +653,23 @@ describe('listViewController', function () {
         createController();
         var isCancelled = scope.isStatusCancelled('SCHEDULED');
         expect(isCancelled).toBeFalsy();
+    });
+
+    it("should have bed location and bed id in table info", function () {
+        scope.filterParams = {
+            providers: [],
+            locations: {"OT 1": true, "OT 2": true, "OT 3": true},
+            statusList: []
+        };
+        var event = {
+            stopPropagation: function () {
+            }
+        };
+        createController();
+        expect(scope.tableInfo.length).toBe(21);
+        expect(scope.tableInfo[19].heading).toBe("Bed Location");
+        expect(scope.tableInfo[19].sortInfo).toBe("bedLocation");
+        expect(scope.tableInfo[20].heading).toBe("Bed ID");
+        expect(scope.tableInfo[20].sortInfo).toBe("bedId");
     });
 });
