@@ -56,7 +56,7 @@ describe("cancelSurgicalBlockController", function () {
         surgicalAppointmentService.updateSurgicalBlock.and.returnValue(specUtil.simplePromise({data:{provider: {person: { display:"something"}}}}));
         messagingService.showMessage.and.returnValue({});
         translate.instant.and.returnValue('Cancelled surgeries for Surgeon Dr.');
-        scope.ngDialogData = {surgicalBlock: {id:32, uuid: "blockUuid", surgicalAppointments: [{id:32,uuid:"appointmentUuid", status:"POSTPONED", notes: "Patient not available", patient: {uuid:1}}, {id:33, status: "SCHEDULED", patient: {uuid:2}}], provider: {uuid: 1}, location: {uuid:2}, status: "CANCELLED"}};
+        scope.ngDialogData = {surgicalBlock: {id:32, uuid: "blockUuid", surgicalAppointments: [{id:32,uuid:"appointmentUuid", bedNumber: "202", "bedLocation": "RC", status:"POSTPONED", notes: "Patient not available", patient: {uuid:1}}, {id:33, status: "SCHEDULED", bedNumber: "204", "bedLocation": "RC", patient: {uuid:2}}], provider: {uuid: 1}, location: {uuid:2}, status: "CANCELLED"}};
         scope.surgicalBlockSelected = {provider: {person: {display: "something"}}};
         scope.surgicalBlock = {status: "CANCELLED", notes: "Cancelled as Surgeon on leave"};
         createController();
