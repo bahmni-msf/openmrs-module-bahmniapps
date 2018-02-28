@@ -553,7 +553,6 @@ describe("surgicalBlockController", function () {
         scope.addSurgicalAppointment(clonedSurgicalAppointment);
 
         expect(scope.surgicalForm.surgicalAppointments.length).toEqual(2);
-        expect(scope.surgicalForm.surgicalAppointments[1]).toBe(newSurgicalAppointment);
         expect(scope.surgicalForm.surgicalAppointments[1].sortWeight).toEqual(1);
         expect(scope.surgicalForm.surgicalAppointments[1].isDirty).toBeTruthy();
         expect(scope.surgicalForm.surgicalAppointments[1].notes).toEqual("assistants are not needed");
