@@ -27,7 +27,7 @@ angular.module('bahmni.ot')
                 {heading: 'Circulating Nurse', sortInfo: 'surgicalAppointmentAttributes.circulatingNurse.value'},
                 {heading: 'Status Change Notes', sortInfo: 'notes'},
                 {heading: 'Bed Location', sortInfo: 'bedLocation'},
-                {heading: 'Bed ID', sortInfo: 'bedId'}];
+                {heading: 'Bed ID', sortInfo: 'bedNumber'}];
 
             var filterSurgicalBlocksAndMapAppointmentsForDisplay = function (surgicalBlocks) {
                 var clonedSurgicalBlocks = _.cloneDeep(surgicalBlocks);

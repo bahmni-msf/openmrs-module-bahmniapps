@@ -376,9 +376,9 @@ describe("SurgicalBlockMapper", function () {
         expect(mappedToUISurgicalBlock.surgicalAppointments[1].sortWeight).toBe(1);
         expect(mappedToUISurgicalBlock.surgicalAppointments[1].id).toBe(11);
         expect(mappedToUISurgicalBlock.surgicalAppointments[0].bedLocation).toBe("");
-        expect(mappedToUISurgicalBlock.surgicalAppointments[0].bedId).toBe("");
+        expect(mappedToUISurgicalBlock.surgicalAppointments[0].bedNumber).toBe("");
         expect(mappedToUISurgicalBlock.surgicalAppointments[1].bedLocation).toBe("Ward");
-        expect(mappedToUISurgicalBlock.surgicalAppointments[1].bedId).toBe("209/2");
+        expect(mappedToUISurgicalBlock.surgicalAppointments[1].bedNumber).toBe("209/2");
     });
 
     it('Should map the UISurgicalBlock with appointments and appointment attributes to the openmrsSurgicalBlock', function () {

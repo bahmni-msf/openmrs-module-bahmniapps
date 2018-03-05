@@ -42,7 +42,7 @@ Bahmni.OT.SurgicalBlockMapper = function () {
             notes: openMrsSurgicalAppointment.notes,
             status: openMrsSurgicalAppointment.status,
             bedLocation: (openMrsSurgicalAppointment.bedLocation || ""),
-            bedId: (openMrsSurgicalAppointment.bedNumber || ""),
+            bedNumber: (openMrsSurgicalAppointment.bedNumber || ""),
             surgicalAppointmentAttributes: new Bahmni.OT.SurgicalBlockMapper().mapAttributes(surgicalAppointmentAttributes, attributeTypes)
         };
     };

@@ -670,6 +670,6 @@ describe('listViewController', function () {
         expect(scope.tableInfo[19].heading).toBe("Bed Location");
         expect(scope.tableInfo[19].sortInfo).toBe("bedLocation");
         expect(scope.tableInfo[20].heading).toBe("Bed ID");
-        expect(scope.tableInfo[20].sortInfo).toBe("bedId");
+        expect(scope.tableInfo[20].sortInfo).toBe("bedNumber");
     });
 });
