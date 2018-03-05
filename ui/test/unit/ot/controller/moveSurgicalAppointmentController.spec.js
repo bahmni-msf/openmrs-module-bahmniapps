@@ -25,6 +25,8 @@ describe("moveSurgicalAppointmentController", function () {
             expectedStartDatetime: "2017-08-22T03:30:00.000Z",
             expectedEndDatetime: "2017-08-22T03:45:00.000Z"
         },
+        bedNumber: "201",
+        bedLocation: "RC",
         surgicalAppointmentAttributes: [{
             uuid: "6827805f-6eaa-46a4-bda3-077b5e2afab4",
             surgicalAppointmentAttributeType: {name: "cleaningTime"},

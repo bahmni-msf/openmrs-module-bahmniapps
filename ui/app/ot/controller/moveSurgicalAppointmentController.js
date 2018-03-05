@@ -58,7 +58,7 @@ angular.module('bahmni.ot').controller('moveSurgicalAppointmentController', ['$r
                 appointment.surgicalAppointmentAttributes = _.values(appointment.surgicalAppointmentAttributes).filter(function (attribute) {
                     return !_.isUndefined(attribute.value);
                 });
-                return _.omit(appointment, ['derivedAttributes', 'surgicalBlock']);
+                return _.omit(appointment, ['derivedAttributes', 'surgicalBlock', 'bedNumber', 'bedLocation']);
             });
 
             return surgicalAppointmentService.updateSurgicalBlock(surgicalBlock);
