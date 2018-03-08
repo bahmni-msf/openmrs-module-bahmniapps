@@ -31,7 +31,7 @@
         <concept-set concept-set-name="getAdtConceptConfig" observations="adtObservations"></concept-set>
     </div>
     <div class="dialog-button-group ipd-button-group">
-        <button id="modal-revise-button1" class="secondary-button" ng-click="transferConfirmation()">Move</button>
+        <button id="modal-revise-button1" ng-disabled="isDisabled" class="secondary-button" ng-click="transferConfirmation()">Move</button>
         <button id="modal-revise-button3" class="secondary-button" ng-click="cancelConfirmationDialog()">Cancel</button>
     </div>
 

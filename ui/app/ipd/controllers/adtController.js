@@ -289,9 +289,14 @@ angular.module('bahmni.ipd')
                 });
             };
 
+            var disableButton = function () {
+                $scope.isDisabled = true;
+            };
+
             $scope.transferConfirmation = function () {
                 var encounterData = getEncounterData($scope.encounterConfig.getTransferEncounterTypeUuid(), getCurrentVisitTypeUuid());
-                bedService.getCompleteBedDetailsByBedId($rootScope.selectedBedInfo.bed.bedId).then(function (response) {
+                disableButton();
+                spinner.forPromise(bedService.getCompleteBedDetailsByBedId($rootScope.selectedBedInfo.bed.bedId).then(function (response) {
                     var bedDetails = response.data;
                     if (!bedDetails.patients.length) {
                         encounterService.create(encounterData).then(function (response) {
@@ -303,7 +308,7 @@ angular.module('bahmni.ipd')
                         showErrorMessage(bedDetails);
                         reloadStateWithContextParams();
                     }
-                });
+                }));
             };
 
             $scope.discharge = function () {
