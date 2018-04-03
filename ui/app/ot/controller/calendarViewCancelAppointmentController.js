@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('bahmni.ot').controller('calendarViewCancelAppointmentController', [
-    '$scope', '$translate', 'ngDialog', 'surgicalAppointmentService', 'messagingService', 'surgicalAppointmentHelper',
-    function ($scope, $translate, ngDialog, surgicalAppointmentService, messagingService, surgicalAppointmentHelper) {
+    '$scope', '$translate', '$q', 'ngDialog', 'surgicalAppointmentService', 'messagingService', 'surgicalAppointmentHelper',
+    function ($scope, $translate, $q, ngDialog, surgicalAppointmentService, messagingService, surgicalAppointmentHelper) {
         var ngDialogSurgicalAppointment = $scope.ngDialogData.surgicalAppointment;
         var attributes = surgicalAppointmentHelper.getAppointmentAttributes(ngDialogSurgicalAppointment);
         $scope.appointment = {
@@ -22,11 +22,11 @@ angular.module('bahmni.ot').controller('calendarViewCancelAppointmentController'
             surgicalAppointment.surgicalBlock = {uuid: $scope.ngDialogData.surgicalBlock.uuid};
             surgicalAppointment.patient = {uuid: ngDialogSurgicalAppointment.patient.uuid};
             surgicalAppointment.sortWeight = null;
-            surgicalAppointmentService.updateSurgicalAppointment(surgicalAppointment).then(function (response) {
-                ngDialogSurgicalAppointment.patient = response.data.patient;
-                ngDialogSurgicalAppointment.status = response.data.status;
-                ngDialogSurgicalAppointment.notes = response.data.notes;
-                ngDialogSurgicalAppointment.sortWeight = response.data.sortWeight;
+            $q.all([updateSortWeightOfSurgicalAppointments(), surgicalAppointmentService.updateSurgicalAppointment(surgicalAppointment)]).then(function (response) {
+                ngDialogSurgicalAppointment.patient = response[1].data.patient;
+                ngDialogSurgicalAppointment.status = response[1].data.status;
+                ngDialogSurgicalAppointment.notes = response[1].data.notes;
+                ngDialogSurgicalAppointment.sortWeight = response[1].data.sortWeight;
                 var message = '';
                 if (ngDialogSurgicalAppointment.status === Bahmni.OT.Constants.postponed) {
                     message = $translate.instant("OT_SURGICAL_APPOINTMENT_POSTPONED_MESSAGE");
@@ -37,6 +37,28 @@ angular.module('bahmni.ot').controller('calendarViewCancelAppointmentController'
                 messagingService.showMessage('info', message);
                 ngDialog.close();
             });
+        };
+
+        var updateSortWeightOfSurgicalAppointments = function () {
+            var surgicalBlock = _.cloneDeep($scope.ngDialogData.surgicalBlock);
+            var surgicalAppointments = _.filter(surgicalBlock.surgicalAppointments, function (appointment) {
+                return appointment.uuid !== $scope.ngDialogData.surgicalAppointment.uuid;
+            });
+            surgicalBlock.surgicalAppointments = _.map(surgicalAppointments, function (appointment, index) {
+                appointment.sortWeight = index;
+                return appointment;
+            });
+            surgicalBlock.provider = {uuid: surgicalBlock.provider.uuid};
+            surgicalBlock.location = {uuid: surgicalBlock.location.uuid};
+            surgicalBlock.surgicalAppointments = _.map(surgicalBlock.surgicalAppointments, function (appointment) {
+                appointment.patient = {uuid: appointment.patient.uuid};
+                appointment.surgicalAppointmentAttributes = _.values(appointment.surgicalAppointmentAttributes).filter(function (attribute) {
+                    return !_.isUndefined(attribute.value);
+                });
+                return _.omit(appointment, ['derivedAttributes', 'surgicalBlock', 'bedNumber', 'bedLocation']);
+            });
+
+            return surgicalAppointmentService.updateSurgicalBlock(surgicalBlock);
         };
 
         $scope.closeDialog = function () {

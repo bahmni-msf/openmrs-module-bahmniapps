@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('bahmni.ipd')
-    .controller('RoomController', ['$scope', '$rootScope', '$state', 'appService',
-        function ($scope, $rootScope, $state, appService) {
+    .controller('RoomController', ['$scope', '$rootScope', '$state', '$translate', 'appService',
+        function ($scope, $rootScope, $state, $translate, appService) {
             var init = function () {
+                $scope.defaultTags = ['AVAILABLE', 'OCCUPIED'];
                 var appDescriptor = appService.getAppDescriptor();
-                var tagsColorConfig = appDescriptor.getConfigValue("colorForTags");
-                $rootScope.bedTagsColorConfig = tagsColorConfig;
+                $rootScope.bedTagsColorConfig = appDescriptor.getConfigValue("colorForTags");
                 $rootScope.currentView = $rootScope.currentView || "Grid";
                 $scope.currentView = $rootScope.currentView;
 
@@ -31,6 +31,15 @@ angular.module('bahmni.ipd')
             $scope.toggleWardView = function () {
                 $rootScope.currentView = ($rootScope.currentView == "Grid") ? "List" : "Grid";
                 $scope.currentView = $rootScope.currentView;
+            };
+
+            $scope.getTagName = function (tag) {
+                if (tag === 'AVAILABLE') {
+                    return $translate.instant("KEY_AVAILABLE");
+                }
+                else if (tag === 'OCCUPIED') {
+                    return $translate.instant("KEY_OCCUPIED");
+                }
             };
 
             init();

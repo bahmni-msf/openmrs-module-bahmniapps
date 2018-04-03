@@ -1,16 +1,16 @@
 'use strict';
 
 angular.module('bahmni.ipd')
-    .controller('RoomGridController', ['$scope', '$rootScope', '$state', 'appService', 'messagingService',
-        function ($scope, $rootScope, $state, appService, messagingService) {
-            $scope.getColorForTheTag = function (tag) {
+    .controller('RoomGridController', ['$scope', '$rootScope', '$state', '$translate',
+        function ($scope, $rootScope, $state, $translate) {
+            $scope.getColorForTheTag = function (bed) {
                 _.forEach($rootScope.bedTagsColorConfig, function (tagConfig) {
-                    if (tag.bedTagMaps.length >= 2) {
-                        if (tagConfig.name === "MultiTag") {
-                            tag.bedTagMaps[0].bedTag.color = tagConfig.color;
+                    if (bed.bedTagMaps.length >= 2) {
+                        if ($translate.instant(tagConfig.name) === "MultiTag") {
+                            bed.bedTagMaps[0].bedTag.color = tagConfig.color;
                         }
-                    } else if (tag.bedTagMaps[0] !== undefined && tagConfig.name === tag.bedTagMaps[0].bedTag.name) {
-                        tag.bedTagMaps[0].bedTag.color = tagConfig.color;
+                    } else if (bed.bedTagMaps[0] !== undefined && $translate.instant(tagConfig.name) === bed.bedTagMaps[0].bedTag.name) {
+                        bed.bedTagMaps[0].bedTag.color = tagConfig.color;
                     }
                 });
             };

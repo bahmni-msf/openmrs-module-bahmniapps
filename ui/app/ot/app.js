@@ -10,8 +10,8 @@ angular.module('ot').config(['$stateProvider', '$httpProvider', '$urlRouterProvi
         $urlRouterProvider.otherwise('/home');
 
         var homeBackLink = {type: "link", name: "Home", value: "../home/", accessKey: "h", icon: "fa-home"};
-        var otSchedulingLink = {type: "state", name: "OT Scheduling", value: "otScheduling", accessKey: "b"};
-        var queuesLink = {type: "state", name: "Surgical Queues", value: "home", accessKey: "b"};
+        var otSchedulingLink = {type: "state", name: "OT_SCHEDULING_KEY", value: "otScheduling", accessKey: "b"};
+        var queuesLink = {type: "state", name: "OT_SURGICAL_QUEUES_KEY", value: "home", accessKey: "b"};
         var navigationLinks = [queuesLink, otSchedulingLink];
 
         // @if DEBUG='production'

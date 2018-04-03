@@ -12,6 +12,7 @@ describe('RoomGridController', function () {
             return [{"tagName":"Lost","color":"#E1FF00"},{"tagName":"Isolation","color":"#00FBFF"},{"tagName":"Strict Isolation","color":"#4D00FF"}];
         }
     });
+    var translate = jasmine.createSpyObj('$translate', ['instant']);
     var state = jasmine.createSpyObj('$state',['go']);
     var room = {
         "name": "ROOM1",
@@ -77,6 +78,7 @@ describe('RoomGridController', function () {
             $scope: scope,
             $rootScope: rootScope,
             $state: state,
+            $translate: translate,
             messagingService: messagingService,
             appService: appService,
             room: room
@@ -114,6 +116,7 @@ describe('RoomGridController', function () {
         scope.onSelectBed(bed);
         expect(rootScope.selectedBedInfo.bed).toEqual(bed);
     });
+
     it('Should reset patient on rootScope on selecting AVAILABLE bed and go to bedManagement.bed state', function () {
         var bed = {
             bedId: 9,
@@ -130,6 +133,7 @@ describe('RoomGridController', function () {
         expect(rootScope.selectedBedInfo.bed).toEqual(bed);
         expect(state.go).toHaveBeenCalledWith("bedManagement.bed", jasmine.any(Object));
     });
+
     it('Should not reset patient on rootScope on selecting Occupied bed and go to bedManagement.bed state ', function () {
         var bed = {
             bedId: 9,
@@ -145,5 +149,22 @@ describe('RoomGridController', function () {
         expect(rootScope.patient).not.toBeUndefined();
         expect(rootScope.selectedBedInfo.bed).toEqual(bed);
         expect(state.go).toHaveBeenCalledWith("bedManagement.bed", jasmine.any(Object));
+    });
+
+    it("should get color for beds", function () {
+        var bed = {
+            bedId: 9,
+            bedNumber: "404-i",
+            bedType: "normal bed",
+            bedTagMaps: [{bedTag: {id: 1, name: "Lost", uuid: "someUuid"}, uuid: "tagUuid"}],
+            status: "OCCUPIED"
+        };
+        rootScope.patient = {name: "patientName", uuid: "patientUuid"};
+        rootScope.bedTagsColorConfig =
+        state.current = {name: "bedManagement"};
+        initController(rootScope, state);
+        scope.getColorForTheTag(bed);
+        expect(translate.instant).toHaveBeenCalled();
+
     });
 });

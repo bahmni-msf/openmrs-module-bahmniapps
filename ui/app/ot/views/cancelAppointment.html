@@ -9,8 +9,8 @@
         <label for="cancel-button"ng-class="{'selected' : appointment.status === 'CANCELLED'}"><input type="radio" name="status" id="cancel-button" ng-model="appointment.status"  value="CANCELLED" required/> {{'OT_SURGICAL_APPOINTMENT_CANCEL_APPOINTMENT' | translate}}</label>
     </p>
    <p class="location">{{'OT_SURGICAL_APPOINTMENT_REASON_FOR_CHANGE' | translate}} <sup>*</sup></p>
-    <textarea required placeholder="enter reason" id="reasonForChange" class="ot-cancel-dialog-notes" ng-model="appointment.notes" msd-elastic></textarea>
+    <textarea required placeholder="{{'OT_ENTER_REASON_KEY' | translate}}" id="reasonForChange" class="ot-cancel-dialog-notes" ng-model="appointment.notes" msd-elastic></textarea>
     <p class="ot-cancel-dialog-buttons">
-        <input type="submit" value="Confirm"/>
+        <input type="submit" value="{{'OT_CONFIRM_KEY' | translate}}"/>
     </p>
 </form>

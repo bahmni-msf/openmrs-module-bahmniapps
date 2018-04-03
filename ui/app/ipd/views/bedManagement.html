@@ -1,53 +1,53 @@
 <!--<ui-view/>-->
 <div id="bedManagement" class="bed-management">
     <div class="left-pane">
-        <h6>Patient Details</h6>
+        <h6>{{'PATIENT_DETAILS_KEY' | translate}}</h6>
         <div class="admitted-patient-info clearfix">
             <p class="patient-attributes">
-                <label>Patient ID: </label>
+                <label>{{'PATIENT_ID_KEY' | translate}}</label>
                 <a ng-click="goToAdtPatientDashboard()">{{ patient.identifier }}</a>
             </p>
             <p class="patient-attributes">
-                <label>Patient Name: </label>
+                <label>{{'PATIENT_NAME_KEY' | translate}}</label>
                 <a ng-click="goToAdtPatientDashboard()">{{ patient.name }}</a>
             </p>
             <p class="patient-attributes">
-                <label>Age: </label>
+                <label>{{'AGE_KEY' | translate}}</label>
                 <span>{{ patient.age }}</span>
             </p>
             <p class="patient-attributes">
-                <label>Gender: </label>
+                <label>{{'GENDER_KEY' | translate}}</label>
                 <span ng-show="patient.gender == 'M'">Male</span>
                 <span ng-show="patient.gender == 'F'">Female</span>
             </p>
         </div>
         <adt patient="patient" encounterConfig="encounterConfig" bed="bed"></adt>
-        <h6>Bed Details</h6>
+        <h6>{{'BED_DETAILS_KEY' | translate}}</h6>
         <div class="patient-bed-details clearfix">
             <p class="patient-attributes">
-                <label>Department: </label>
+                <label>{{'DEPARTMENT_KEY' | translate}}</label>
                 <span>{{ward.name}}</span>
             </p>
             <p class="patient-attributes">
-                <label>Location: </label>
+                <label>{{'LOCATION_KEY' | translate}}</label>
                 <span>{{$root.selectedBedInfo.roomName}}</span>
             </p>
             <p class="patient-attributes">
-                <label>Room / Bed# </label>
+                <label>{{'ROOM_BED_KEY' | translate}}</label>
                 <span>{{$root.selectedBedInfo.bed.bedNumber}}</span>
             </p>
             <p class="patient-attributes">
-                <label>Status: </label>
+                <label>{{'STATUS_KEY' | translate}}</label>
                 <span>{{$root.selectedBedInfo.bed.status}}</span>
             </p>
             <div class="patient-attributes">
-                <label>Tags: </label>
+                <label>{{'TAGS_KEY' | translate}}</label>
                 <span class="bed-tags-wrapper">
                     <span class="bed-tags-preview" ng-repeat="tag in $root.selectedBedInfo.bed.bedTagMaps">
                         {{tag.bedTag.name}}
                     </span>
                 </span>
-                <a ng-click="editTagsOntheBed()" show-if-privilege="{{editTagsPrivilege}}" ng-if="canEditTags()">Edit</a>
+                <a ng-click="editTagsOntheBed()" show-if-privilege="{{editTagsPrivilege}}" ng-if="canEditTags()">{{'EDIT_KEY' | translate}}</a>
             </div>
         </div>
     </div>
@@ -55,7 +55,7 @@
 </div>
 <div class="right-pane">
     <div class="bed-management-header clearfix">
-        <h6>Admission Master</h6>
+        <h6>{{'ADMISSION_MASTER' | translate}}</h6>
         <div class="bed-type-selection">
            <button ng-repeat="option in wards"
                     ng-click="onSelectDepartment(option.ward)"

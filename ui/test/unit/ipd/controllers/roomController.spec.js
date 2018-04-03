@@ -3,7 +3,7 @@
 describe('RoomController', function () {
 
     var controller;
-    var rootScope;
+    var rootScope, translate;
     var scope;
     var messagingService = jasmine.createSpyObj('messagingService', ['showMessage']);
     var appService = jasmine.createSpyObj('appService', ['getAppDescriptor']);
@@ -72,9 +72,12 @@ describe('RoomController', function () {
         "totalBeds": 9,
         "availableBeds": 1
     };
-    beforeEach(function () {
-        module('bahmni.ipd');
-    });
+
+    var translatedMessages = {
+            "KEY_AVAILABLE": "Available",
+            "KEY_OCCUPIED": "Occupied"
+            };
+
 
     var initController = function (rootScope, state) {
         controller('RoomController', {
@@ -82,11 +85,14 @@ describe('RoomController', function () {
             $rootScope: rootScope,
             $state: state,
             messagingService: messagingService,
-            appService: appService
+            appService: appService,
+            $translate: translate
+
         });
     };
 
     beforeEach(function () {
+        module('bahmni.ipd');
         inject(function ($controller, $rootScope) {
             controller = $controller;
             rootScope = $rootScope;
@@ -95,6 +101,10 @@ describe('RoomController', function () {
             spyOn(scope, '$emit');
             scope.room = room;
             scope.currentView = "Grid";
+        });
+        translate = jasmine.createSpyObj('$translate', ['instant']);
+        translate.instant.and.callFake(function (key) {
+            return translatedMessages[key];
         });
     });
 

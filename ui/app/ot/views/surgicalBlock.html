@@ -20,11 +20,11 @@
                     <select ng-options="surgeon as surgeon.person.display for surgeon in ::surgeons track by surgeon.uuid"
                             ng-model="surgicalForm.provider"
                             required>
-                        <option value=""> Select Surgeon </option>
+                        <option value=""> {{'OT_SELECT_SURGEON_KEY' | translate}} </option>
                     </select>
                 </p>
                 <p class="location-block">
-                    <label>Location<sup>*</sup></label>
+                    <label>{{'LOCATION' | translate}}<sup>*</sup></label>
                     <span ng-repeat="location in ::locations track by location.uuid">
                         <label class="location-buttons" for="{{::location.display}}">
                             <i ng-if="location.name == surgicalForm.location.name" class="fa fa-check" aria-hidden="true"></i>
@@ -36,12 +36,12 @@
                 </p>
                 <p>
                     <span class="start-time">
-                        <label>Start Date-time<sup>*</sup></label>
+                        <label>{{'OT_START_DATE_TIME_KEY' | translate}}<sup>*</sup></label>
                         <input type="datetime-local" ng-model="surgicalForm.startDatetime" required
                                ng-class="{'illegalValue' : !isStartDatetimeBeforeEndDatetime(surgicalForm.startDatetime, surgicalForm.endDatetime)}" ng-change="changeInStartDateTime()">
                     </span>
                     <span class="start-time">
-                        <label>End Date-time<sup>*</sup></label>
+                        <label>{{'OT_END_DATE_TIME_KEY' | translate}}<sup>*</sup></label>
                         <input type="datetime-local" ng-model="surgicalForm.endDatetime" ng-class="{'illegalValue' : !isStartDatetimeBeforeEndDatetime(surgicalForm.startDatetime,
                          surgicalForm.endDatetime)}" required>
                     </span>
@@ -57,7 +57,7 @@
                         {{'OT_ADD_SURGERY_KEY' | translate}}
                     </button>
                 </h4>
-                <h5 ng-if="surgicalForm.uuid">Remaining block duration: {{availableBlockDuration}}</h5>
+                <h5 ng-if="surgicalForm.uuid">{{'OT_REMAINING_BLOCK_DURATION_KEY' | translate}} : {{availableBlockDuration}}</h5>
                 <table class="table">
                     <thead>
                     <tr>

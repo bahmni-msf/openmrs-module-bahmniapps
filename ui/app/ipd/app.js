@@ -10,8 +10,8 @@ angular.module('ipd').config(['$stateProvider', '$httpProvider', '$urlRouterProv
         $urlRouterProvider.otherwise('/home');
 
         var homeBackLink = {type: "link", name: "Home", value: "../home/", accessKey: "h", icon: "fa-home"};
-        var admitLink = {type: "state", name: "Admit", value: "home", accessKey: "a"};
-        var bedManagementLink = {type: "state", name: "Bed Management", value: "bedManagement", accessKey: "b"};
+        var admitLink = {type: "state", name: "ADMIT_HOME_KEY", value: "home", accessKey: "a"};
+        var bedManagementLink = {type: "state", name: "BED_MANAGEMENT_KEY", value: "bedManagement", accessKey: "b"};
         var navigationLinks = [admitLink, bedManagementLink];
 
         // @if DEBUG='production'
