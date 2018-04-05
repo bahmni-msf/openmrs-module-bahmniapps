@@ -69,7 +69,7 @@ angular.module('bahmni.ot')
                     messagingService.showMessage('error', "{{'OT_SURGICAL_APPOINTMENT_EXCEEDS_BLOCK_DURATION' | translate}}");
                     return;
                 }
-                $scope.updateSortWeight();
+                $scope.updateSortWeight(surgicalForm);
                 var surgicalBlock = new Bahmni.OT.SurgicalBlockMapper().mapSurgicalBlockUIToDomain(surgicalForm);
                 var saveOrupdateSurgicalBlock = _.isEmpty(surgicalBlock.uuid) ? surgicalAppointmentService.saveSurgicalBlock : surgicalAppointmentService.updateSurgicalBlock;
                 spinner.forPromise(saveOrupdateSurgicalBlock(surgicalBlock)).then(function (response) {
@@ -140,9 +140,12 @@ angular.module('bahmni.ot')
                 }
             };
 
-            $scope.updateSortWeight = function () {
-                _.map($scope.surgicalForm.surgicalAppointments, function (appointment, index) {
-                    appointment.sortWeight = index;
+            $scope.updateSortWeight = function (surgicalBlock) {
+                var index = 0;
+                _.map(surgicalBlock.surgicalAppointments, function (appointment) {
+                    if (appointment.status !== 'POSTPONED' && appointment.status !== 'CANCELLED') {
+                        appointment.sortWeight = index++;
+                    }
                     return appointment;
                 });
             };

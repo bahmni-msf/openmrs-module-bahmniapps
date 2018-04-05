@@ -621,7 +621,7 @@ describe("surgicalBlockController", function () {
         scope.surgicalForm = {};
         scope.surgicalForm.surgicalAppointments = [{id:3, sortWeight:1},{id:1, sortWeight:0}, {id:2, sortWeight:2}];
 
-        scope.updateSortWeight();
+        scope.updateSortWeight(scope.surgicalForm);
 
         expect(scope.surgicalForm.surgicalAppointments[0].id).toBe(3);
         expect(scope.surgicalForm.surgicalAppointments[0].sortWeight).toBe(0);
