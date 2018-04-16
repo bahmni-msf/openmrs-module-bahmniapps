@@ -142,7 +142,7 @@ angular.module('bahmni.ot')
 
             $scope.updateSortWeight = function (surgicalBlock) {
                 var index = 0;
-                _.map(surgicalBlock.surgicalAppointments, function (appointment) {
+                _.map(surgicalBlock && surgicalBlock.surgicalAppointments, function (appointment) {
                     if (appointment.status !== 'POSTPONED' && appointment.status !== 'CANCELLED') {
                         appointment.sortWeight = index++;
                     }
