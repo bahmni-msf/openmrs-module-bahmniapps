@@ -1669,7 +1669,7 @@ describe("AddTreatmentController", function () {
             expect(discontinuedDrugOrder.previousOrderUuid).toEqual(drugOrder.uuid);
             expect(discontinuedDrugOrder.uuid).toEqual(undefined);
             expect(discontinuedDrugOrder.scheduledDate).toEqual(drugOrder.dateStopped);
-            expect(discontinuedDrugOrder.dateActivated).toEqual(drugOrder.dateStopped);
+            expect(discontinuedDrugOrder.dateActivated).toBe(null);
         });
     });
 
