@@ -310,7 +310,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         dot: true,
-                        cwd: '<%= yeoman.nodeModules %>/bahmni-form-controls/dist',
+                        cwd: '<%= yeoman.nodeModules %>/bahmni-form-controls-dwb/dist',
                         dest: '<%= yeoman.app %>/components/bahmni-form-controls/',
                         src: [
                             '*.*'
