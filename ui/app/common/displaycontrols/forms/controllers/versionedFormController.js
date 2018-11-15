@@ -65,4 +65,18 @@ angular.module('bahmni.common.displaycontrol.forms')
                 "patient": $scope.patient,
                 "section": $scope.section
             };
+
+            $scope.getConfigToFetchDataAndShow = function (data) {
+                console.log('getConfigToFetchDataAndShow', $scope)
+                return {
+                    patient: $scope.patient,
+                    config: {
+                        showGroupDateTime: false,
+                        encounterUuid: data.encounterUuid,
+                        observationUuid: data.uuid,
+                        formType : $scope.section.type
+                    },
+                   
+                };
+            };
         }]);

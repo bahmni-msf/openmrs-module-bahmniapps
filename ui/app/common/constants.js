@@ -253,7 +253,8 @@ Bahmni.Common = Bahmni.Common || {};
         localeLangs: "/bahmni_config/openmrs/apps/home/locale_languages.json",
         privilegeRequiredErrorMessage: "PRIVILEGE_REQUIRED",
         patientFormsUrl: RESTWS_V1 + "/bahmnicore/patient/{patientUuid}/forms",
-        defaultPossibleRelativeSearchLimit: 10
+        defaultPossibleRelativeSearchLimit: 10,
+        forms2Type : 'formsV2',
     };
 })();
 
