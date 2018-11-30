@@ -254,7 +254,7 @@ Bahmni.Common = Bahmni.Common || {};
         privilegeRequiredErrorMessage: "PRIVILEGE_REQUIRED",
         patientFormsUrl: RESTWS_V1 + "/bahmnicore/patient/{patientUuid}/forms",
         defaultPossibleRelativeSearchLimit: 10,
-        forms2Type : 'formsV2',
+        forms2Type: "formsV2"
     };
 })();
 
