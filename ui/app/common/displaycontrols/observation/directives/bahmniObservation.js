@@ -1,8 +1,10 @@
 'use strict';
 
 angular.module('bahmni.common.displaycontrol.observation')
-    .directive('bahmniObservation', ['observationsService', 'appService', '$q', 'spinner', '$rootScope', 'formHierarchyService', '$translate',
-        function (observationsService, appService, $q, spinner, $rootScope, formHierarchyService, $translate) {
+    .directive('bahmniObservation', ['encounterService', 'observationsService', 'appService', '$q', 'spinner', '$rootScope',
+        'formRecordTreeBuildService', '$translate',
+        function (encounterService, observationsService, appService, $q, spinner, $rootScope,
+                  formRecordTreeBuildService, $translate) {
             var controller = function ($scope) {
                 $scope.print = $rootScope.isBeingPrinted || false;
 
@@ -44,34 +46,50 @@ angular.module('bahmni.common.displaycontrol.observation')
                     });
 
                     if (formObservations.length > 0) {
-                        formHierarchyService.build($scope.bahmniObservations);
+                        formRecordTreeBuildService.build($scope.bahmniObservations);
                     }
                 };
 
                 var fetchObservations = function () {
-                    if ($scope.observations) {
-                        mapObservation($scope.observations, $scope.config);
-                        $scope.isFulfilmentDisplayControl = true;
-                    } else {
-                        if ($scope.config.observationUuid) {
-                            $scope.initialization = observationsService.getByUuid($scope.config.observationUuid).then(function (response) {
-                                mapObservation([response.data], $scope.config);
+                    if ($scope.config.formType === Bahmni.Common.Constants.forms2Type) {
+                        var getFormNameAndVersion = Bahmni.Common.Util.FormFieldPathUtil.getFormNameAndVersion;
+                        encounterService.findByEncounterUuid($scope.config.encounterUuid).then(function (reponse) {
+                            var encounterTransaction = reponse.data;
+                            var observationsForSelectedForm = encounterTransaction.observations.filter((obs) => {
+                                if (obs.formFieldPath) {
+                                    var obsFormNameAndVersion = getFormNameAndVersion(obs.formFieldPath);
+                                    return obsFormNameAndVersion.formName === $scope.config.formName;
+                                }
                             });
-                        } else if ($scope.config.encounterUuid) {
-                            var fetchForEncounter = observationsService.fetchForEncounter($scope.config.encounterUuid, $scope.config.conceptNames);
-                            $scope.initialization = fetchForEncounter.then(function (response) {
-                                mapObservation(response.data, $scope.config);
-                            });
-                        } else if ($scope.enrollment) {
-                            $scope.initialization = observationsService.fetchForPatientProgram($scope.enrollment, $scope.config.conceptNames, $scope.config.scope, $scope.config.obsIgnoreList).then(function (response) {
-                                mapObservation(response.data, $scope.config);
-                            });
+                            mapObservation(observationsForSelectedForm);
+                        });
+                        $scope.title = $scope.config.formName;
+                    }
+                    else {
+                        if ($scope.observations) {
+                            mapObservation($scope.observations, $scope.config);
+                            $scope.isFulfilmentDisplayControl = true;
                         } else {
-                            $scope.initialization = observationsService.fetch($scope.patient.uuid, $scope.config.conceptNames,
-                                $scope.config.scope, $scope.config.numberOfVisits, $scope.visitUuid,
-                                $scope.config.obsIgnoreList, null).then(function (response) {
+                            if ($scope.config.observationUuid) {
+                                $scope.initialization = observationsService.getByUuid($scope.config.observationUuid).then(function (response) {
+                                    mapObservation([response.data], $scope.config);
+                                });
+                            } else if ($scope.config.encounterUuid) {
+                                var fetchForEncounter = observationsService.fetchForEncounter($scope.config.encounterUuid, $scope.config.conceptNames);
+                                $scope.initialization = fetchForEncounter.then(function (response) {
                                     mapObservation(response.data, $scope.config);
                                 });
+                            } else if ($scope.enrollment) {
+                                $scope.initialization = observationsService.fetchForPatientProgram($scope.enrollment, $scope.config.conceptNames, $scope.config.scope, $scope.config.obsIgnoreList).then(function (response) {
+                                    mapObservation(response.data, $scope.config);
+                                });
+                            } else {
+                                $scope.initialization = observationsService.fetch($scope.patient.uuid, $scope.config.conceptNames,
+                                    $scope.config.scope, $scope.config.numberOfVisits, $scope.visitUuid,
+                                    $scope.config.obsIgnoreList, null).then(function (response) {
+                                        mapObservation(response.data, $scope.config);
+                                    });
+                            }
                         }
                     }
                 };
