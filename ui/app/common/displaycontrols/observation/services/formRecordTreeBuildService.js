@@ -108,7 +108,9 @@ angular.module('bahmni.common.displaycontrol.observation')
                 if (record.control.type === 'section') {
                     var sectionGroup = self.createObsGroupForSection(record);
                     self.createGroupMembersForForm(record, sectionGroup, obsList);
-                    obsGroup.groupMembers.push(sectionGroup);
+                    if(sectionGroup.groupMembers.length > 0) {
+                        obsGroup.groupMembers.push(sectionGroup);
+                    }
                 }
             });
         };
