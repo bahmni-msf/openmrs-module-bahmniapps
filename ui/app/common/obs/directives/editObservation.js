@@ -2,9 +2,9 @@
 
 angular.module('bahmni.common.obs')
     .directive('editObservation', ['$q', 'spinner', '$state', '$rootScope', 'ngDialog', 'messagingService',
-        'encounterService', 'configurations', 'contextChangeHandler', 'auditLogService',
+        'encounterService', 'configurations', 'contextChangeHandler', 'auditLogService', 'formService',
         function ($q, spinner, $state, $rootScope, ngDialog, messagingService, encounterService, configurations,
-                  contextChangeHandler, auditLogService) {
+                  contextChangeHandler, auditLogService, formService) {
             var controller = function ($scope) {
                 var ObservationUtil = Bahmni.Common.Obs.ObservationUtil;
                 var findEditableObs = function (observations) {
@@ -18,6 +18,7 @@ angular.module('bahmni.common.obs')
                 var contextChange = function () {
                     return contextChangeHandler.execute();
                 };
+
                 var init = function () {
                     var consultationMapper = new Bahmni.ConsultationMapper(configurations.dosageFrequencyConfig(), configurations.dosageInstructionConfig(),
                         configurations.consultationNoteConcept(), configurations.labOrderNotesConcept());
@@ -37,10 +38,33 @@ angular.module('bahmni.common.obs')
                             $scope.editableObservations = $scope.encounter.observations;
                         }
                         $scope.patient = {uuid: $scope.encounter.patientUuid};
+                        if ($scope.isFormBuilderForm()) {
+                            setFormDetails();
+                        }
                     });
                 };
 
-                spinner.forPromise(init());
+                $scope.isFormBuilderForm = function () {
+                    return $scope.observation.formType === "v2";
+                };
+
+                var setFormDetails = function () {
+                    formService.getAllForms().then(function (response) {
+                        var allForms = response.data;
+                        var observationForm = getFormByFormName(allForms, $scope.observation.formName, $scope.observation.formVersion);
+                        if (observationForm) {
+                            $scope.formDetails = new Bahmni.ObservationForm(
+                                observationForm.uuid, $rootScope.currentUser, $scope.observation.formName,
+                                $scope.observation.formVersion, $scope.editableObservations);
+                        }
+                    });
+                };
+
+                var getFormByFormName = function (formList, formName, formVersion) {
+                    return _.find(formList, function (form) {
+                        return form.name == formName && form.version == formVersion;
+                    });
+                };
 
                 var isFormValid = function () {
                     var contxChange = contextChange();
@@ -84,6 +108,9 @@ angular.module('bahmni.common.obs')
                         var allObservations = updateEditedObservation($scope.encounter.observations);
                         $scope.encounter.observations = [getEditedObservation(allObservations)];
                     }
+                    if ($scope.isFormBuilderForm()) {
+                        $scope.encounter.observations = $scope.formDetails.component.getValue().observations;
+                    }
                     $scope.encounter.observations = new Bahmni.Common.Domain.ObservationFilter().filter($scope.encounter.observations);
                     $scope.encounter.orders = addOrdersToEncounter();
                     $scope.encounter.extensions = {};
@@ -118,6 +145,8 @@ angular.module('bahmni.common.obs')
                     });
                     return tempOrders;
                 };
+
+                spinner.forPromise(init());
             };
 
             return {
