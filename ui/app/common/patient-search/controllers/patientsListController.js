@@ -4,6 +4,7 @@ angular.module('bahmni.common.patientSearch')
 .controller('PatientsListController', ['$scope', '$window', 'patientService', '$rootScope', 'appService', 'spinner',
     '$stateParams', '$bahmniCookieStore', 'printer', 'configurationService',
     function ($scope, $window, patientService, $rootScope, appService, spinner, $stateParams, $bahmniCookieStore, printer, configurationService) {
+        var programConfig = appService.getAppDescriptor().getConfigValue("program");
         var initialize = function () {
             var searchTypes = appService.getAppDescriptor().getExtensions("org.bahmni.patient.search", "config").map(mapExtensionToSearchType);
             $scope.search = new Bahmni.Common.PatientSearch.Search(_.without(searchTypes, undefined));
@@ -11,7 +12,14 @@ angular.module('bahmni.common.patientSearch')
             $scope.$watch('search.searchType', function (currentSearchType) {
                 _.isEmpty(currentSearchType) || fetchPatients(currentSearchType);
             });
-            getPatientCountBySearchTypeIndex(0);
+            if (programConfig.runPatientSearchInSerial) {
+                getPatientCountBySearchTypeIndex(0);
+            }
+            else {
+                _.each($scope.search.searchTypes, function (searchType) {
+                    _.isEmpty(searchType) || ($scope.search.searchType != searchType && getPatientCount(searchType));
+                });
+            }
             if ($rootScope.currentSearchType != null) {
                 $scope.search.switchSearchType($rootScope.currentSearchType);
             }
@@ -115,10 +123,19 @@ angular.module('bahmni.common.patientSearch')
             };
         };
 
+        var debounceGetPatientCount = _.debounce(function (currentSearchType) {
+            getPatientCount(currentSearchType);
+        }, programConfig.debouncePatientSearchApiInterval, {});
+
         var fetchPatients = function (currentSearchType) {
             $rootScope.currentSearchType = currentSearchType;
             if ($scope.search.isCurrentSearchLookUp()) {
-                getPatientCount(currentSearchType);
+                if (programConfig.debouncePatientSearchApi) {
+                    debounceGetPatientCount(currentSearchType);
+                }
+                else {
+                    getPatientCount(currentSearchType);
+                }
             }
         };
 
