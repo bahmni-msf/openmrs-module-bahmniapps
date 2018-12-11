@@ -67,7 +67,7 @@ angular.module('bahmni.common.obs')
                 };
 
                 var showErrorMessage = function (errMsg) {
-                    var errorMessage = errMsg? errMsg: "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}";
+                    var errorMessage = errMsg ? errMsg : "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}";
                     messagingService.showMessage('error', errorMessage);
                 };
 
@@ -75,7 +75,7 @@ angular.module('bahmni.common.obs')
                     var contxChange = contextChange();
                     var shouldAllow = contxChange["allow"];
                     if (!shouldAllow) {
-                        showErrorMessage(contxChange["errorMessage"] );
+                        showErrorMessage(contxChange["errorMessage"]);
                     }
                     return shouldAllow;
                 };

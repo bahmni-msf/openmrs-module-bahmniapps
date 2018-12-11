@@ -343,7 +343,6 @@ describe("ensure that the directive edit-observation works properly", function (
         compiledScope.save();
 
         expect(messageServiceMock.showMessage).toHaveBeenCalledWith( 'error', "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}");
-        expect(rootScope.$broadcast).toHaveBeenCalledWith('event:errorsOnForm');
     });
 
     it('should display saveSuccess message when formDetails component has no errors', function () {
@@ -363,7 +362,6 @@ describe("ensure that the directive edit-observation works properly", function (
         compiledScope.save();
 
         expect(messageServiceMock.showMessage).toHaveBeenCalledWith('info', "{{'CLINICAL_SAVE_SUCCESS_MESSAGE_KEY' | translate}}");
-        expect(rootScope.$broadcast).not.toHaveBeenCalled();
     });
 });
 
