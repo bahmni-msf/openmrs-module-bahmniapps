@@ -212,6 +212,19 @@ describe("PatientsListController", function () {
                 expect(debounceReturnFunc).toHaveBeenCalled()
             });
 
+            it('should call function returned from debounce with Default interval when ' +
+                'debouncePatientSearchApiInterval is not provided', function () {
+                getAppDescriptor.getConfigValue.and.returnValue({
+                    "debouncePatientSearchApi": true,
+                });
+                var debounceReturnFunc = jasmine.createSpy();
+                spyOn(_, 'debounce').and.returnValue(debounceReturnFunc);
+                scope.$apply(setUp);
+
+                expect(_.debounce).toHaveBeenCalledWith(jasmine.any(Function), 2000, jasmine.any(Object));
+                expect(debounceReturnFunc).toHaveBeenCalled()
+            });
+
             it('should not call function returned from debounce when debouncePatientSearchApi is false', function () {
                 getAppDescriptor.getConfigValue.and.returnValue({
                     "debouncePatientSearchApi": false,
