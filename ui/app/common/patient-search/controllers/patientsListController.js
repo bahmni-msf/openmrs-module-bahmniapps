@@ -13,7 +13,7 @@ angular.module('bahmni.common.patientSearch')
             $scope.$watch('search.searchType', function (currentSearchType) {
                 _.isEmpty(currentSearchType) || fetchPatients(currentSearchType);
             });
-            if (programConfig.runPatientSearchInSerial) {
+            if (programConfig && programConfig.runPatientSearchInSerial) {
                 getPatientCountBySearchTypeIndex(0);
             }
             else {
@@ -126,12 +126,12 @@ angular.module('bahmni.common.patientSearch')
 
         var debounceGetPatientCount = _.debounce(function (currentSearchType) {
             getPatientCount(currentSearchType);
-        }, programConfig.debouncePatientSearchApiInterval || DEFAULT_DEBOUNCE_INTERVAL, {});
+        }, (programConfig && programConfig.debouncePatientSearchApiInterval) || DEFAULT_DEBOUNCE_INTERVAL, {});
 
         var fetchPatients = function (currentSearchType) {
             $rootScope.currentSearchType = currentSearchType;
             if ($scope.search.isCurrentSearchLookUp()) {
-                if (programConfig.debouncePatientSearchApi) {
+                if (programConfig && programConfig.debouncePatientSearchApi) {
                     debounceGetPatientCount(currentSearchType);
                 }
                 else {
