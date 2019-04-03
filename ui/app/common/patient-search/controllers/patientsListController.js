@@ -18,7 +18,7 @@ angular.module('bahmni.common.patientSearch')
             }
             else {
                 _.each($scope.search.searchTypes, function (searchType) {
-                    _.isEmpty(searchType) || ($scope.search.searchType != searchType && getPatientCount(searchType));
+                    _.isEmpty(searchType) || ($scope.search.searchType != searchType && getPatientCount(searchType, null));
                 });
             }
             if ($rootScope.currentSearchType != null) {
@@ -43,7 +43,7 @@ angular.module('bahmni.common.patientSearch')
                 $scope.forwardPatient($scope.search.searchResults[0]);
             }
         };
-        var getPatientCount = function (searchType) {
+        var getPatientCount = function (searchType, patientListSpinner) {
             if (searchType.handler) {
                 var params = { q: searchType.handler, v: "full",
                     location_uuid: $bahmniCookieStore.get(Bahmni.Common.Constants.locationCookieName).uuid,
@@ -55,6 +55,9 @@ angular.module('bahmni.common.patientSearch')
                     searchType.patientCount = response.data.length;
                     if ($scope.search.isSelectedSearch(searchType)) {
                         $scope.search.updatePatientList(response.data);
+                    }
+                    if (patientListSpinner !== null) {
+                        spinner.hide(patientListSpinner, $(".tab-content"));
                     }
                 });
             }
@@ -120,18 +123,19 @@ angular.module('bahmni.common.patientSearch')
             };
         };
 
-        var debounceGetPatientCount = _.debounce(function (currentSearchType) {
-            getPatientCount(currentSearchType);
+        var debounceGetPatientCount = _.debounce(function (currentSearchType, patientListSpinner) {
+            getPatientCount(currentSearchType, patientListSpinner);
         }, programConfig.debouncePatientSearchApiInterval || DEFAULT_DEBOUNCE_INTERVAL, {});
 
         var fetchPatients = function (currentSearchType) {
+            var patientListSpinner = spinner.show($(".tab-content"));
             $rootScope.currentSearchType = currentSearchType;
             if ($scope.search.isCurrentSearchLookUp()) {
                 if (programConfig.debouncePatientSearchApi) {
-                    debounceGetPatientCount(currentSearchType);
+                    debounceGetPatientCount(currentSearchType, patientListSpinner);
                 }
                 else {
-                    getPatientCount(currentSearchType);
+                    getPatientCount(currentSearchType, patientListSpinner);
                 }
             }
         };
