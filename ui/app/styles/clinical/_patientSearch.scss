@@ -53,6 +53,11 @@
   }
 }
 
+.patient-list-spinner.spinnable {
+  top: 32px;
+  margin-top: -32px;
+}
+
 .patient-search-wrapper {
   i.ipd-indication{
     position: absolute;
@@ -82,7 +87,7 @@
       }
     }
   }
-  
+
   .tabs {
     margin-top: 5px;
   }
@@ -109,7 +114,7 @@
         }
         @media screen and (max-width: 1013px) {
           width: 136px;
-        }        
+        }
         @media screen and (max-width: 1005px) {
           width: 135px;
         }

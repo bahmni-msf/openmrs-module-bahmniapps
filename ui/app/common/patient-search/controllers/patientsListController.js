@@ -6,6 +6,7 @@ angular.module('bahmni.common.patientSearch')
     function ($scope, $window, patientService, $rootScope, appService, spinner, $stateParams, $bahmniCookieStore, printer, configurationService) {
         const DEFAULT_DEBOUNCE_INTERVAL = 2000;
         var programConfig = appService.getAppDescriptor().getConfigValue("program");
+        var patientListSpinner;
         var initialize = function () {
             var searchTypes = appService.getAppDescriptor().getExtensions("org.bahmni.patient.search", "config").map(mapExtensionToSearchType);
             $scope.search = new Bahmni.Common.PatientSearch.Search(_.without(searchTypes, undefined));
@@ -128,9 +129,12 @@ angular.module('bahmni.common.patientSearch')
         }, programConfig.debouncePatientSearchApiInterval || DEFAULT_DEBOUNCE_INTERVAL, {});
 
         var fetchPatients = function (currentSearchType) {
-            var patientListSpinner = spinner.show($(".tab-content"));
+            if (patientListSpinner !== undefined) {
+                spinner.hide(patientListSpinner, $(".tab-content"));
+            }
             $rootScope.currentSearchType = currentSearchType;
             if ($scope.search.isCurrentSearchLookUp()) {
+                patientListSpinner = spinner.show($(".tab-content"));
                 if (programConfig.debouncePatientSearchApi) {
                     debounceGetPatientCount(currentSearchType, patientListSpinner);
                 }

@@ -65,11 +65,14 @@ describe("PatientsListController", function () {
                 }
             });
             configurationService = jasmine.createSpyObj('configurationService', ['getConfigurations']);
-            _spinner = jasmine.createSpyObj('spinner', ['forPromise', 'show']);
+            _spinner = jasmine.createSpyObj('spinner', ['forPromise', 'show', 'hide']);
             _spinner.forPromise.and.callFake(function (promiseParam) {
                 return promiseParam;
             });
             _spinner.show.and.callFake(function (){
+                return null;
+            });
+            _spinner.hide.and.callFake(function (){
                 return null;
             });
 
