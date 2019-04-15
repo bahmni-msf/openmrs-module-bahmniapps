@@ -51,11 +51,14 @@
       cursor: not-allowed;
     }
   }
-}
 
-.patient-list-spinner.spinnable {
-  top: 32px;
-  margin-top: -32px;
+  .patient-list-spinner {
+    top: 32px;
+    margin-top: -32px;
+    position: relative;
+    min-height: 2em;
+  }
+
 }
 
 .patient-search-wrapper {
