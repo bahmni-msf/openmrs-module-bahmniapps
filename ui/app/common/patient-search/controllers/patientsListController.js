@@ -14,11 +14,11 @@ angular.module('bahmni.common.patientSearch')
             $scope.$watch('search.searchType', function (currentSearchType) {
                 _.isEmpty(currentSearchType) || fetchPatients(currentSearchType);
             });
-             $scope.$watch('search.activePatients', function (activePatientsList) {
-               if (activePatientsList.length > 0) {
-                spinner.hide(patientListSpinner, $(".tab-content"));
-               }
-             });
+            $scope.$watch('search.activePatients', function (activePatientsList) {
+                if (activePatientsList.length > 0) {
+                    spinner.hide(patientListSpinner, $(".tab-content"));
+                }
+            });
             if (programConfig.runPatientSearchInSerial) {
                 getPatientCountBySearchTypeIndex(0);
             }
