@@ -4,8 +4,8 @@ angular.module('bahmni.common.patientSearch')
 .controller('PatientsListController', ['$scope', '$window', 'patientService', '$rootScope', 'appService', 'spinner',
     '$stateParams', '$bahmniCookieStore', 'printer', 'configurationService',
     function ($scope, $window, patientService, $rootScope, appService, spinner, $stateParams, $bahmniCookieStore, printer, configurationService) {
-        const DEFAULT_DEBOUNCE_INTERVAL = 2000;
-        var programConfig = appService.getAppDescriptor().getConfigValue("program");
+        const DEFAULT_FETCH_DELAY = 2000;
+        var patientSearchConfig = appService.getAppDescriptor().getConfigValue("patientSearch");
         var patientListSpinner;
         var initialize = function () {
             var searchTypes = appService.getAppDescriptor().getExtensions("org.bahmni.patient.search", "config").map(mapExtensionToSearchType);
@@ -19,8 +19,8 @@ angular.module('bahmni.common.patientSearch')
                     spinner.hide(patientListSpinner, $(".tab-content"));
                 }
             });
-            if (programConfig.runPatientSearchInSerial) {
-                getPatientCountBySearchTypeIndex(0);
+            if (patientSearchConfig && patientSearchConfig.serializeSearch) {
+                getPatientCountSeriallyBySearchIndex(0);
             }
             else {
                 _.each($scope.search.searchTypes, function (searchType) {
@@ -129,7 +129,7 @@ angular.module('bahmni.common.patientSearch')
 
         var debounceGetPatientCount = _.debounce(function (currentSearchType, patientListSpinner) {
             getPatientCount(currentSearchType, patientListSpinner);
-        }, programConfig.debouncePatientSearchApiInterval || DEFAULT_DEBOUNCE_INTERVAL, {});
+        }, (patientSearchConfig && patientSearchConfig.fetchDelay) || DEFAULT_FETCH_DELAY, {});
 
         var fetchPatients = function (currentSearchType) {
             if (patientListSpinner !== undefined) {
@@ -138,7 +138,7 @@ angular.module('bahmni.common.patientSearch')
             $rootScope.currentSearchType = currentSearchType;
             if ($scope.search.isCurrentSearchLookUp()) {
                 patientListSpinner = spinner.show($(".tab-content"));
-                if (programConfig.debouncePatientSearchApi) {
+                if (patientSearchConfig && patientSearchConfig.debounceSearch) {
                     debounceGetPatientCount(currentSearchType, patientListSpinner);
                 }
                 else {
@@ -170,7 +170,7 @@ angular.module('bahmni.common.patientSearch')
                 $window.open(appService.getAppDescriptor().formatUrl(link.url, options, true), link.newTab ? "_blank" : "_self");
             }
         };
-        var getPatientCountBySearchTypeIndex = function (index) {
+        var getPatientCountSeriallyBySearchIndex = function (index) {
             if (index === $scope.search.searchTypes.length) {
                 return;
             }
@@ -190,7 +190,7 @@ angular.module('bahmni.common.patientSearch')
                     if ($scope.search.isSelectedSearch(searchType)) {
                         $scope.search.updatePatientList(response.data);
                     }
-                    return getPatientCountBySearchTypeIndex(index + 1);
+                    return getPatientCountSeriallyBySearchIndex(index + 1);
                 });
             }
         };
