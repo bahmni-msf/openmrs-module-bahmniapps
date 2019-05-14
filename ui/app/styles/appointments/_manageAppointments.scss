@@ -309,11 +309,15 @@
         padding-top: 10px;
         color: #0BB118;
       }
-      &.walk-in-app {
+      &.checkbox-container {
         margin-left: 125px;
-        .walk-in-text {
-          display: inline-block;
-          margin-top: 3px;
+        label {
+          margin: 0px;
+          width: auto;
+          .checkbox-text {
+            display: inline-block;
+            margin-top: 3px;
+          }
         }
       }
     }
@@ -369,6 +373,81 @@
     input:disabled {
       color: #ccc;
     }
+    .recurrence-container {
+      .none {
+        display: none !important;
+      }
+      margin-bottom: 0px;
+      > * {
+        width: 100%;
+        padding: 0px;
+        div {
+          padding: 0px 10px;
+          margin-bottom: 0px;
+        }
+      }
+
+      input:not([type=radio]), select {
+        height: 35px;
+        border-radius: 5px;
+        box-sizing: border-box;
+        width: 60px;
+        margin-top: 0px;
+      }
+
+      .recurrence-period-container {
+        .recurrence-period-value-container {
+          display: flex;
+          .recurrence-type {
+            min-width: 150px;
+            margin-left: 15px;
+          }
+        }
+      }
+
+      .recurrence-end-container {
+        .recurrence-end-value-container {
+          *:not(input) {
+            width: auto;
+          }
+          > label {
+            display: flex;
+            align-items: center;
+            margin: 0px;
+            &:not(:last-child) {
+              margin-bottom: 10px;
+            }
+            input[type=radio] {
+              min-width:auto;
+            }
+            .recurrence-end-option-value {
+              padding: 0px;
+              div {
+                padding: 0px;
+                span {
+                  padding: 0px 5px;
+                  &.common-indent {
+                    width: 45px;
+                    display: inline-block;
+                  }
+                }
+                .end-date-value {
+                  width: 160px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+
+
+
+
+
+
+
   }
   .create-appointment-action-btn {
     float: right;
