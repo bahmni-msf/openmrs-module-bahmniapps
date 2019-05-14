@@ -25,6 +25,14 @@ describe("AppointmentsCreateController", function () {
                 if (input === "patientSearchUrl") {
                     return "patientSearchUrl";
                 }
+                else if(input === "recurrence") {
+                    return {
+                        recurrenceTypes: [
+                            "Day"
+                        ],
+                        defaultNumberOfOccurrences: 10
+                    };
+                }
                 else
                     return true;
             },
@@ -979,5 +987,98 @@ describe("AppointmentsCreateController", function () {
         expect(appointmentCreateConfig.providers.length).toBe(2);
         expect(appointmentCreateConfig.providers[0].name).toBe("superman");
         expect(appointmentCreateConfig.providers[1].name).toBe("mahmoud_h");
+    });
+
+    describe('recurring appointments', function () {
+
+        it('should set recurrenceTypes on init', function () {
+            createController();
+            expect($scope.recurrenceTypes).toEqual(["Day"]);
+        });
+
+        it('should set default recurrence frequency on init', function () {
+            createController();
+            expect($scope.appointment.recurringPattern.frequency).toBe(10);
+        });
+
+        it('should call save of appointmentsService when appointment is recurring', function() {
+            createController();
+            $scope.createAppointmentForm = {$invalid: false};
+            var date = moment().toDate();
+            var recurringPattern  = {
+                frequency: 2,
+                period: 2,
+                type: "Day"
+            };
+            $scope.appointment = {
+                patient: {uuid: 'patientUuid'},
+                service: {name: 'Cardiology'},
+                date: date,
+                startTime: '09:00 am',
+                endTime: '11:00 am',
+                setRecurring: true,
+                recurringPattern: recurringPattern
+            };
+            $scope.patientAppointments = [];
+            $state.params = {};
+            var appointmentRequest = Bahmni.Appointments.Appointment.create($scope.appointment);
+            appointmentRequest.recurringPattern = recurringPattern;
+
+            $scope.save();
+
+            expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
+        });
+
+        it('should call save of appointmentsService with no recurringPatternKey in appointment request ' +
+            'when appointment is not recurring', function() {
+            createController();
+            $scope.createAppointmentForm = {$invalid: false};
+            var date = moment().toDate();
+            var recurringPattern  = {};
+            $scope.appointment = {
+                patient: {uuid: 'patientUuid'},
+                service: {name: 'Cardiology'},
+                date: date,
+                startTime: '09:00 am',
+                endTime: '11:00 am',
+                setRecurring: false,
+                recurringPattern: recurringPattern
+            };
+            $scope.patientAppointments = [];
+            $state.params = {};
+            var appointmentRequest = Bahmni.Appointments.Appointment.create($scope.appointment);
+
+            $scope.save();
+
+            expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
+        });
+
+        it('should call save method of appointmentsService with no recurringPattern key when' +
+            ' the user checked the set recurring, filled recurring details and unchecked set recurring', function() {
+            createController();
+            $scope.createAppointmentForm = {$invalid: false};
+            var date = moment().toDate();
+            var recurringPattern  = {
+                frequency: 2,
+                period: 2,
+                type: "Day"
+            };
+            $scope.appointment = {
+                patient: {uuid: 'patientUuid'},
+                service: {name: 'Cardiology'},
+                date: date,
+                startTime: '09:00 am',
+                endTime: '11:00 am',
+                setRecurring: false,
+                recurringPattern: recurringPattern
+            };
+            $scope.patientAppointments = [];
+            $state.params = {};
+            var appointmentRequest = Bahmni.Appointments.Appointment.create($scope.appointment);
+
+            $scope.save();
+
+            expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
+        });
     });
 });

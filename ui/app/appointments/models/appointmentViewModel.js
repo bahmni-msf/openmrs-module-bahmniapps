@@ -69,7 +69,8 @@ Bahmni.Appointments.AppointmentViewModel = (function () {
             endTime: getTimeWithoutDate(appointmentDetails.endDateTime),
             appointmentKind: appointmentDetails.appointmentKind,
             status: appointmentDetails.status,
-            comments: appointmentDetails.comments
+            comments: appointmentDetails.comments,
+            recurringPattern: appointmentDetails.recurringPattern || {}
         });
         return appointment;
     };
