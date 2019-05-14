@@ -3,7 +3,7 @@
 describe("AppointmentsCreateController", function () {
     var $scope, controller, appointmentsServiceService, q, $window, appService, ngDialog, messagingService, $state,
         spinner, appointmentsService, patientService, $translate, appDescriptor, $stateParams, appointmentCreateConfig,
-        appointmentContext, $http;
+        appointmentContext, $http, recurrenceService;
 
     beforeEach(function () {
         module('bahmni.appointments');
@@ -20,10 +20,20 @@ describe("AppointmentsCreateController", function () {
         appointmentsService = jasmine.createSpyObj('appointmentsService', ['save','search']);
         appointmentsService.save.and.returnValue(specUtil.simplePromise({}));
         appService = jasmine.createSpyObj('appService', ['getAppDescriptor']);
+        recurrenceService = jasmine.createSpyObj('recurrenceService', ['getRecurringAppointmentDates']);
+        recurrenceService.getRecurringAppointmentDates.and.returnValue([]);
         appDescriptor = {
             getConfigValue: function (input) {
                 if (input === "patientSearchUrl") {
                     return "patientSearchUrl";
+                }
+                else if(input === "recurrence") {
+                    return {
+                        recurrenceTypes: [
+                            "Day"
+                        ],
+                        defaultFrequency: 10
+                    };
                 }
                 else
                     return true;
@@ -70,7 +80,8 @@ describe("AppointmentsCreateController", function () {
             $stateParams: $stateParams,
             appointmentCreateConfig: appointmentCreateConfig,
             appointmentContext: appointmentContext,
-            $http: $http
+            $http: $http,
+            recurrenceService: recurrenceService
         }
         );
     };
@@ -979,5 +990,179 @@ describe("AppointmentsCreateController", function () {
         expect(appointmentCreateConfig.providers.length).toBe(2);
         expect(appointmentCreateConfig.providers[0].name).toBe("superman");
         expect(appointmentCreateConfig.providers[1].name).toBe("mahmoud_h");
+    });
+
+    describe('recurring appointments', function () {
+
+        it('should set recurrenceTypes on init', function () {
+            createController();
+            expect($scope.recurrenceTypes).toEqual(["Day"]);
+        });
+
+        it('should set default recurrence frequency on init', function () {
+            createController();
+            expect($scope.appointment.recurringPattern.frequency).toBe(10);
+        });
+
+        it('should not set default frequency on init when there is a value in recurrence pattern frequency', function () {
+            var patientAppointmentsData = [{
+                uuid: "veryNewUuid"
+            },
+                {
+                    uuid: "newUuid"
+                }];
+            var patientAppointments = {
+                data: patientAppointmentsData
+            };
+            var recurringPattern  = {
+                frequency: 5,
+                period: 2,
+                type: "Day"
+            };
+            appointmentContext.appointment = {
+                patient: {uuid: 'patientUuid'},
+                service: {name: 'Cardiology'},
+                date: moment().toDate(),
+                startTime: '09:00 am',
+                endTime: '11:00 am',
+                setRecurring: false,
+                recurringPattern: recurringPattern
+            };
+            appointmentsService.search.and.returnValue(specUtil.simplePromise(patientAppointments));
+            createController();
+            $scope.patientAppointments = [];
+            $state.params = {};
+            expect($scope.appointment.recurringPattern.frequency).toBe(5);
+        });
+
+        it('should call getRecurringAppointmentDates of recurrence service when appointment is recurring', function() {
+            createController();
+            var date = moment().toDate();
+            $scope.createAppointmentForm = {$invalid: false};
+            $scope.appointment = {
+                patient: {uuid: 'patientUuid'},
+                service: {name: 'Cardiology'},
+                date: date,
+                startTime: '09:00 am',
+                endTime: '11:00 am',
+                setRecurring: true,
+                recurringPattern: {}
+            };
+            $scope.patientAppointments = [];
+            $state.params = {};
+
+            $scope.save();
+
+            expect(recurrenceService.getRecurringAppointmentDates).toHaveBeenCalledWith({}, date);
+        });
+
+        it('should not call getRecurringAppointmentDates of recurrence service when appointment is not recurring',
+            function() {
+            createController();
+            var date = moment().toDate();
+            $scope.createAppointmentForm = {$invalid: false};
+            $scope.appointment = {
+                patient: {uuid: 'patientUuid'},
+                service: {name: 'Cardiology'},
+                date: date,
+                startTime: '09:00 am',
+                endTime: '11:00 am',
+                setRecurring: false,
+                recurringPattern: {}
+            };
+            $scope.patientAppointments = [];
+            $state.params = {};
+
+            $scope.save();
+
+            expect(recurrenceService.getRecurringAppointmentDates).not.toHaveBeenCalled();
+        });
+
+
+        it('should call save of appointmentsService when appointment is recurring', function() {
+            createController();
+            $scope.createAppointmentForm = {$invalid: false};
+            var date = moment().toDate();
+            var recurringPattern  = {
+                frequency: 2,
+                period: 2,
+                type: "Day"
+            };
+            $scope.appointment = {
+                patient: {uuid: 'patientUuid'},
+                service: {name: 'Cardiology'},
+                date: date,
+                startTime: '09:00 am',
+                endTime: '11:00 am',
+                setRecurring: true,
+                recurringPattern: recurringPattern
+            };
+            $scope.patientAppointments = [];
+            $state.params = {};
+            var appointmentRequest = Bahmni.Appointments.Appointment.create($scope.appointment);
+            appointmentRequest.recurringPattern = recurringPattern;
+            recurrenceService.getRecurringAppointmentDates.and.returnValue([]);
+
+            $scope.save();
+
+            expect(recurrenceService.getRecurringAppointmentDates).toHaveBeenCalled();
+            expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
+        });
+
+        it('should call save of appointmentsService with empty recurring details in appointment request ' +
+            'when appointment is not recurring', function() {
+            createController();
+            $scope.createAppointmentForm = {$invalid: false};
+            var date = moment().toDate();
+            var recurringPattern  = {};
+            $scope.appointment = {
+                patient: {uuid: 'patientUuid'},
+                service: {name: 'Cardiology'},
+                date: date,
+                startTime: '09:00 am',
+                endTime: '11:00 am',
+                setRecurring: false,
+                recurringPattern: recurringPattern
+            };
+            $scope.patientAppointments = [];
+            $state.params = {};
+            var appointmentRequest = Bahmni.Appointments.Appointment.create($scope.appointment);
+            appointmentRequest.recurringPattern = recurringPattern;
+            recurrenceService.getRecurringAppointmentDates.and.returnValue([]);
+
+            $scope.save();
+
+            expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
+        });
+
+        it('should call save method of appointmentsService with empty recurring pattern and appointment dates when' +
+            ' the user checked the set recurring, filled recurring details and unchecked set recurring', function() {
+            createController();
+            $scope.createAppointmentForm = {$invalid: false};
+            var date = moment().toDate();
+            var recurringPattern  = {
+                frequency: 2,
+                period: 2,
+                type: "Day"
+            };
+            $scope.appointment = {
+                patient: {uuid: 'patientUuid'},
+                service: {name: 'Cardiology'},
+                date: date,
+                startTime: '09:00 am',
+                endTime: '11:00 am',
+                setRecurring: false,
+                recurringPattern: recurringPattern
+            };
+            $scope.patientAppointments = [];
+            $state.params = {};
+            var appointmentRequest = Bahmni.Appointments.Appointment.create($scope.appointment);
+            appointmentRequest.recurringPattern = {};
+
+            $scope.save();
+
+            expect(recurrenceService.getRecurringAppointmentDates).not.toHaveBeenCalled();
+            expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
+        });
     });
 });

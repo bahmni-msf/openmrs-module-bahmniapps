@@ -3,8 +3,8 @@
 angular.module('bahmni.appointments')
     .service('appointmentsService', ['$http', 'appService',
         function ($http, appService) {
-            this.save = function (appointment) {
-                return $http.post(Bahmni.Appointments.Constants.createAppointmentUrl, appointment, {
+            this.save = function (appointmentRequest) {
+                return $http.post(Bahmni.Appointments.Constants.createAppointmentUrl, appointmentRequest, {
                     withCredentials: true,
                     headers: {"Accept": "application/json", "Content-Type": "application/json"}
                 });

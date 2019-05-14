@@ -126,6 +126,19 @@
                     <i class="fa fa-exclamation-triangle"></i>
                     <span> {{'APPOINTMENT_CREATION_DATE_WARNING' | translate}} </span>
                 </p>
+
+                <p class="checkbox-container">
+                    <label>
+                        <input type="checkbox" ng-model="appointment.setRecurring">
+                        <span class="checkbox-text" ng-model="appointment.setRecurring">
+                            {{'SET_RECURRING_APPOINTMENT' | translate}}</span>
+                    </label>
+                </p>
+
+                <recurrence recurring-pattern="appointment.recurringPattern" recurrence-types="recurrenceTypes"
+                            ng-if="appointment.setRecurring">
+                </recurrence>
+
                 <p>
                     <label for="startTimeID">
                         {{'APPOINTMENT_START_TIME_KEY' | translate}}<sup class="asterick">*</sup>
@@ -190,10 +203,12 @@
                     <i class="fa fa-exclamation-triangle"></i>
                     <span> {{'APPOINTMENT_CREATION_OUT_OF_RANGE_WARNING' | translate}} </span>
                 </p>
-                <p class="walk-in-app">
-                    <input type="checkbox" ng-model="appointment.appointmentKind" ng-true-value="'WalkIn'"
+                <p class="checkbox-container">
+                    <label>
+                        <input type="checkbox" ng-model="appointment.appointmentKind" ng-true-value="'WalkIn'"
                            ng-false-value="'Scheduled'" ng-disabled="isEditMode() && !isEditAllowed()">
-                    <span class="walk-in-text">{{'APPOINTMENT_CREATE_WALK_IN' | translate}}</span>
+                        <span class="checkbox-text">{{'APPOINTMENT_CREATE_WALK_IN' | translate}}</span>
+                    </label>
                 </p>
                 <p>
                     <label for="notes">

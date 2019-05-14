@@ -1,11 +1,13 @@
 'use strict';
 
 angular.module('bahmni.appointments')
-    .controller('AppointmentsCreateController', ['$scope', '$q', '$window', '$state', '$translate', 'spinner', 'patientService',
-        'appointmentsService', 'appointmentsServiceService', 'messagingService',
-        'ngDialog', 'appService', '$stateParams', 'appointmentCreateConfig', 'appointmentContext', '$http', 'sessionService',
-        function ($scope, $q, $window, $state, $translate, spinner, patientService, appointmentsService, appointmentsServiceService,
-                  messagingService, ngDialog, appService, $stateParams, appointmentCreateConfig, appointmentContext, $http, sessionService) {
+    .controller('AppointmentsCreateController', ['$scope', '$q', '$window', '$state', '$translate', 'spinner',
+        'patientService', 'appointmentsService', 'appointmentsServiceService', 'messagingService',
+        'ngDialog', 'appService', '$stateParams', 'appointmentCreateConfig', 'appointmentContext', '$http',
+        'sessionService', 'recurrenceService',
+        function ($scope, $q, $window, $state, $translate, spinner, patientService, appointmentsService,
+                  appointmentsServiceService, messagingService, ngDialog, appService, $stateParams,
+                  appointmentCreateConfig, appointmentContext, $http, sessionService, recurrenceService) {
             $scope.isFilterOpen = $stateParams.isFilterOpen;
             $scope.showConfirmationPopUp = true;
             $scope.enableSpecialities = appService.getAppDescriptor().getConfigValue('enableSpecialities');
@@ -16,6 +18,7 @@ angular.module('bahmni.appointments')
             $scope.minDuration = Bahmni.Appointments.Constants.minDurationForAppointment;
             $scope.appointmentCreateConfig = appointmentCreateConfig;
             $scope.enableEditService = appService.getAppDescriptor().getConfigValue('isServiceOnAppointmentEditable');
+            $scope.recurrenceTypes = appService.getAppDescriptor().getConfigValue("recurrence").recurrenceTypes;
             $scope.showStartTimes = [];
             $scope.showEndTimes = [];
             var patientSearchURL = appService.getAppDescriptor().getConfigValue('patientSearchUrl');
@@ -40,6 +43,8 @@ angular.module('bahmni.appointments')
                     }
                 }
                 $scope.appointment = Bahmni.Appointments.AppointmentViewModel.create(appointmentContext.appointment || {appointmentKind: 'Scheduled'}, appointmentCreateConfig);
+                $scope.appointment.recurringPattern.frequency = $scope.appointment.recurringPattern.frequency ||
+                    appService.getAppDescriptor().getConfigValue("recurrence").defaultFrequency;
                 $scope.appointment.newProvider = null;
                 $scope.selectedService = appointmentCreateConfig.selectedService;
                 $scope.isPastAppointment = $scope.isEditMode() ? Bahmni.Common.Util.DateUtil.isBeforeDate($scope.appointment.date, moment().startOf('day')) : false;
@@ -88,6 +93,11 @@ angular.module('bahmni.appointments')
             };
 
             $scope.save = function () {
+                var appointmentDates = [];
+                if ($scope.appointment.setRecurring) {
+                    appointmentDates = recurrenceService
+                        .getRecurringAppointmentDates($scope.appointment.recurringPattern, $scope.appointment.date);
+                }
                 var message;
                 if ($scope.createAppointmentForm.$invalid) {
                     message = $scope.createAppointmentForm.$error.pattern
@@ -104,7 +114,8 @@ angular.module('bahmni.appointments')
                 $scope.validatedAppointment = Bahmni.Appointments.Appointment.create($scope.appointment);
                 var conflictingAppointments = getConflictingAppointments($scope.validatedAppointment);
                 if (conflictingAppointments.length === 0) {
-                    return saveAppointment($scope.validatedAppointment);
+                    return saveAppointment($scope.validatedAppointment,
+                        $scope.appointment.recurringPattern);
                 } else {
                     $scope.displayConflictConfirmationDialog();
                 }
@@ -498,8 +509,14 @@ angular.module('bahmni.appointments')
                 });
             };
 
-            var saveAppointment = function (appointment) {
-                return spinner.forPromise(appointmentsService.save(appointment).then(function () {
+            var saveAppointment = function (appointmentRequest, recurringPattern) {
+                if ($scope.appointment.setRecurring) {
+                    appointmentRequest.recurringPattern = recurringPattern;
+                }
+                else {
+                    appointmentRequest.recurringPattern = {};
+                }
+                return spinner.forPromise(appointmentsService.save(appointmentRequest).then(function () {
                     messagingService.showMessage('info', 'APPOINTMENT_SAVE_SUCCESS');
                     $scope.showConfirmationPopUp = false;
                     var params = $state.params;
