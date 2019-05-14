@@ -1,0 +1,45 @@
+<div class="recurrence-container">
+    <div class="recurrence-period-container">
+        <p>
+            <label>
+                {{'RECURRENCE_REPEAT_EVERY_KEY' | translate}}<sup class="asterick">*</sup>
+            </label>
+        </p>
+        <div class="recurrence-period-value-container">
+            <input type="number" min="0" ng-model="recurringPattern.period"
+                   required/>
+            <select class="recurrence-type" ng-model="recurringPattern.type"
+                    ng-options="recurrenceType for recurrenceType in recurrenceTypes" required>
+                <option value="">{{ ::'PLACEHOLDER_RECURRENCE_TYPE' | translate}}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="recurrence-end-container" ng-if="recurringPattern.type == 'Day'">
+        <p>
+            <label>
+                {{'RECURRENCE_ENDS_KEY' | translate}}
+                <sup class="asterick">*</sup>
+            </label>
+        </p>
+        <div class="recurrence-end-value-container">
+            <label>
+                <input type="radio">
+                <div class="recurrence-end-option-value">
+                    <div>
+                        <span class="common-indent">{{ :: 'RECURRENCE_NUMBER_OF_OCCURRENCES_PREFIX' | translate}} </span>
+                        <input type="number" min="0"
+                               ng-model="recurringPattern.frequency"
+                               ng-disabled="isEditMode()" />
+                        <span>{{ :: 'RECURRENCE_NUMBER_OF_OCCURRENCES_SUFFIX' | translate}}</span>
+                    </div>
+                    <div ng-if="isEditMode()">
+                        <span>{{ :: 'RECURRENCE_PENDING_OCCURRENCES_PREFIX' | translate}}</span>
+                        <input type="number" min="0"
+                               ng-model="recurringPattern.pendingOccurrences"/>
+                    </div>
+                </div>
+            </label>
+        </div>
+    </div>
+</div>
