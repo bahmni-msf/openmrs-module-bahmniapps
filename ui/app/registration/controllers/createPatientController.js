@@ -7,9 +7,11 @@ angular.module('bahmni.registration')
             $scope.actions = {};
             var errorMessage;
             var configValueForEnterId = appService.getAppDescriptor().getConfigValue('showEnterID');
+            var showPatientIdentifier = appService.getAppDescriptor().getConfigValue('showPatientIdentifier');
             $scope.addressHierarchyConfigs = appService.getAppDescriptor().getConfigValue("addressHierarchy");
             $scope.disablePhotoCapture = appService.getAppDescriptor().getConfigValue("disablePhotoCapture");
             $scope.showEnterID = configValueForEnterId === null ? true : configValueForEnterId;
+            $scope.showPatientIdentifier = showPatientIdentifier === null ? true : showPatientIdentifier;
             $scope.today = Bahmni.Common.Util.DateTimeFormatter.getDateWithoutTime(dateUtil.now());
 
             var getPersonAttributeTypes = function () {
