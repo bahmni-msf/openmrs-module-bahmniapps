@@ -487,4 +487,54 @@ describe('CreatePatientController', function() {
         expect(scopeMock.disablePhotoCapture).toBeTruthy();
     });
 
+    it("should return false if there is showPatientIdentifier config defined to be false", function () {
+        appServiceMock.getAppDescriptor = function () {
+            return {
+                getConfigValue: function (config) {
+                    if (config === "showPatientIdentifier") {
+                        return false;
+                    }
+                }
+
+            };
+        };
+        $aController('CreatePatientController', {
+            $scope: scopeMock,
+            $rootScope: rootScopeMock,
+            $state: stateMock,
+            patientService: patientServiceMock,
+            preferences: preferencesMock,
+            spinner: spinnerMock,
+            appService: appServiceMock,
+            ngDialog: ngDialogMock
+        });
+
+        expect(scopeMock.showPatientIdentifier).toBeFalsy();
+    });
+
+    it("should return true if there is no showPatientIdentifier config defined", function () {
+        appServiceMock.getAppDescriptor = function () {
+            return {
+                getConfigValue: function (config) {
+                    if (config === "showPatientIdentifier") {
+                        return null;
+                    }
+                }
+
+            };
+        };
+        $aController('CreatePatientController', {
+            $scope: scopeMock,
+            $rootScope: rootScopeMock,
+            $state: stateMock,
+            patientService: patientServiceMock,
+            preferences: preferencesMock,
+            spinner: spinnerMock,
+            appService: appServiceMock,
+            ngDialog: ngDialogMock
+        });
+
+        expect(scopeMock.showPatientIdentifier).toBeTruthy();
+    });
+
 });
