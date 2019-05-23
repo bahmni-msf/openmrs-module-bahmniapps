@@ -1080,5 +1080,33 @@ describe("AppointmentsCreateController", function () {
 
             expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
         });
+
+        it('should call save of appointmentsService when appointment is recurring with end date', function() {
+            createController();
+            $scope.createAppointmentForm = {$invalid: false};
+            var date = moment().toDate();
+            var recurringPattern  = {
+                endDate: moment().toDate(),
+                period: 2,
+                type: "Day"
+            };
+            $scope.appointment = {
+                patient: {uuid: 'patientUuid'},
+                service: {name: 'Cardiology'},
+                date: date,
+                startTime: '09:00 am',
+                endTime: '11:00 am',
+                setRecurring: true,
+                recurringPattern: recurringPattern
+            };
+            $scope.patientAppointments = [];
+            $state.params = {};
+            var appointmentRequest = Bahmni.Appointments.Appointment.create($scope.appointment);
+            appointmentRequest.recurringPattern = recurringPattern;
+
+            $scope.save();
+
+            expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
+        });
     });
 });

@@ -109,11 +109,28 @@ angular.module('bahmni.appointments')
                 $scope.validatedAppointment = Bahmni.Appointments.Appointment.create($scope.appointment);
                 var conflictingAppointments = getConflictingAppointments($scope.validatedAppointment);
                 if (conflictingAppointments.length === 0) {
+                    if ($scope.appointment.recurringPattern) {
+                        updateRecurringPattern($scope.appointment.recurringPattern, $scope.appointment.startTime);
+                    }
                     return saveAppointment($scope.validatedAppointment,
                         $scope.appointment.recurringPattern);
                 } else {
                     $scope.displayConflictConfirmationDialog();
                 }
+            };
+
+            var updateRecurringPattern = function (recurringPattern, startTime) {
+                $scope.previousRecurringDetails = {};
+                $scope.previousRecurringDetails.frequency = recurringPattern.frequency;
+                $scope.previousRecurringDetails.endDate = recurringPattern.endDate;
+                $scope.previousRecurringDetails.recurrenceTerminationType = recurringPattern.recurrenceTerminationType;
+                if (recurringPattern.recurrenceTerminationType === 'endDate') {
+                    recurringPattern.endDate = getDateTime(recurringPattern.endDate, startTime || "00:00");
+                    delete recurringPattern.frequency;
+                } else {
+                    delete recurringPattern.endDate;
+                }
+                delete recurringPattern.recurrenceTerminationType;
             };
 
             $scope.search = function () {
@@ -519,6 +536,12 @@ angular.module('bahmni.appointments')
                     params.isFilterOpen = true;
                     params.isSearchEnabled = params.isSearchEnabled && $scope.isEditMode();
                     $state.go('^', params, {reload: true});
+                }, function () {
+                    $scope.appointment.recurringPattern.frequency = $scope.previousRecurringDetails.frequency ?
+                        $scope.previousRecurringDetails.frequency :
+                        recurrenceConfig.defaultNumberOfOccurrences;
+                    $scope.appointment.recurringPattern.endDate = $scope.previousRecurringDetails.endDate ? $scope.previousRecurringDetails.endDate : null;
+                    $scope.appointment.recurringPattern.recurrenceTerminationType = $scope.previousRecurringDetails.recurrenceTerminationType;
                 }));
             };
 

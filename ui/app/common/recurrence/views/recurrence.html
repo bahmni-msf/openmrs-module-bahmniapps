@@ -6,7 +6,7 @@
             </label>
         </p>
         <div class="recurrence-period-value-container">
-            <input type="number" min="0" ng-model="recurringPattern.period"
+            <input type="number" min="1" ng-model="recurringPattern.period"
                    required/>
             <select class="recurrence-type" ng-model="recurringPattern.type"
                     ng-options="recurrenceType for recurrenceType in recurrenceTypes" required>
@@ -15,28 +15,46 @@
         </div>
     </div>
 
-    <div class="recurrence-end-container" ng-if="recurringPattern.type == 'Day'">
+    <div class="recurrence-end-container" ng-if="recurringPattern.type">
         <p>
             <label>
                 {{'RECURRENCE_ENDS_KEY' | translate}}
                 <sup class="asterick">*</sup>
             </label>
         </p>
-        <div class="recurrence-end-value-container">
+        <div class="recurrence-end-value-container" required="recurringPattern.recurrenceTerminationType">
             <label>
-                <input type="radio">
+                <input type="radio" name="recurrenceTerminationSelection"
+                       ng-value="'frequency'"
+                       ng-model="recurringPattern.recurrenceTerminationType"
+                       ng-required="!recurringPattern.recurrenceTerminationType">
                 <div class="recurrence-end-option-value">
                     <div>
                         <span class="common-indent">{{ :: 'RECURRENCE_NUMBER_OF_OCCURRENCES_PREFIX' | translate}} </span>
-                        <input type="number" min="0"
+                        <input type="number" min="{{isRecurrenceTerminationTypeFrequency() ? 1 : 0}}"
                                ng-model="recurringPattern.frequency"
-                               ng-disabled="isEditMode()" />
+                               ng-disabled="isEditMode()"
+                               ng-required="isRecurrenceTerminationTypeFrequency()"/>
                         <span>{{ :: 'RECURRENCE_NUMBER_OF_OCCURRENCES_SUFFIX' | translate}}</span>
                     </div>
-                    <div ng-if="isEditMode()">
+                    <div ng-if="isEditMode()" class="none">
                         <span>{{ :: 'RECURRENCE_PENDING_OCCURRENCES_PREFIX' | translate}}</span>
                         <input type="number" min="0"
                                ng-model="recurringPattern.pendingOccurrences"/>
+                    </div>
+                </div>
+            </label>
+            <label>
+                <input type="radio" name="recurrenceTerminationSelection"
+                       ng-value="'endDate'"
+                       ng-model="recurringPattern.recurrenceTerminationType"
+                       ng-required="!recurringPattern.recurrenceTerminationType">
+                <div class="recurrence-end-option-value">
+                    <div>
+                        <span class="common-indent">{{ :: 'RECURRENCE_END_DATE_PREFIX' | translate}}</span>
+                        <input date-converter class="end-date-value" type="date" min="{{isRecurrenceTerminationTypeEndDate() ? getMinEndDate() : null}}"
+                               ng-model="recurringPattern.endDate"
+                               ng-required="isRecurrenceTerminationTypeEndDate()"/>
                     </div>
                 </div>
             </label>
