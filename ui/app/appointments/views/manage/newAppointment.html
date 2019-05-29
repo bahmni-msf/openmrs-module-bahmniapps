@@ -135,7 +135,10 @@
                     </label>
                 </p>
 
-                <recurrence start-date="appointment.date" recurring-pattern="appointment.recurringPattern" recurrence-types="recurrenceTypes"
+                <recurrence start-date="appointment.date"
+                            recurring-pattern="appointment.recurringPattern"
+                            recurrence-types="recurrenceTypes"
+                            week-days="weekDays"
                             ng-if="appointment.setRecurring">
                 </recurrence>
 

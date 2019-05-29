@@ -16,6 +16,20 @@ angular.module('bahmni.common.recurrence')
             $scope.isRecurrenceTerminationTypeEndDate = function () {
                 return $scope.recurringPattern.recurrenceTerminationType === 'endDate';
             };
+
+            $scope.updateSelectedDays = function (day) {
+                var index = $scope.recurringPattern.daysOfWeek.indexOf(day);
+                if (index == -1) {
+                    $scope.recurringPattern.daysOfWeek.push(day);
+                } else {
+                    $scope.recurringPattern.daysOfWeek.splice(index, 1);
+                }
+            };
+
+            $scope.isDaySelected = function (day) {
+                $scope.recurringPattern.daysOfWeek = $scope.recurringPattern.daysOfWeek || [];
+                return $scope.recurringPattern.daysOfWeek.includes(day);
+            };
         };
 
         return {
@@ -23,7 +37,8 @@ angular.module('bahmni.common.recurrence')
             scope: {
                 recurringPattern: "=",
                 recurrenceTypes: "=",
-                startDate: "="
+                startDate: "=",
+                weekDays: "="
             },
             controller: controller,
             templateUrl: "../common/recurrence/views/recurrence.html"

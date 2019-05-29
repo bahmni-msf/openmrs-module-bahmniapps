@@ -32,6 +32,16 @@ angular.module('bahmni.appointments')
                     return selectedProvider.uuid === provider.uuid;
                 }));
             };
+
+            var getWeekDays = function (startOfWeek) {
+                startOfWeek = startOfWeek > 0 ? startOfWeek : 2;
+                var weekDays = [];
+                var momentWeekDays = moment.weekdays();
+                return weekDays.concat(momentWeekDays.splice(startOfWeek - 1)).concat(momentWeekDays);
+            };
+
+            $scope.weekDays = getWeekDays(appService.getAppDescriptor().getConfigValue("startOfWeek"));
+
             var init = function () {
                 wireAutocompleteEvents();
                 if (!_.isEmpty(appointmentContext) && !_.isEmpty(appointmentContext.appointment) && !_.isEmpty(appointmentContext.appointment.provider)) {

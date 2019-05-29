@@ -15,6 +15,21 @@
         </div>
     </div>
 
+    <div class="recurrence-days-container" ng-if="recurringPattern.type === 'Week'">
+        <p>
+            <label>
+                {{'RECURRENCE_REPEAT_ON' | translate}}<sup class="asterick">*</sup>
+            </label>
+        </p>
+        <div class="recurrence-days-value-container">
+            <label ng-repeat="day in weekDays">
+                <input type="checkbox" value="{{day}}" ng-required="recurringPattern.daysOfWeek.length === 0" ng-click="updateSelectedDays(day)" ng-checked="isDaySelected(day)">
+                <div>{{day.substring(0, 3)}}</div>
+            </label>
+        </div>
+    </div>
+
+
     <div class="recurrence-end-container" ng-if="recurringPattern.type">
         <p>
             <label>
