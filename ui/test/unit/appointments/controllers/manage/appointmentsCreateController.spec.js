@@ -33,6 +33,9 @@ describe("AppointmentsCreateController", function () {
                         defaultNumberOfOccurrences: 10
                     };
                 }
+                else if (input == "startOfWeek") {
+                    return 3;
+                }
                 else
                     return true;
             },
@@ -1001,6 +1004,23 @@ describe("AppointmentsCreateController", function () {
             expect($scope.appointment.recurringPattern.frequency).toBe(10);
         });
 
+        it('should set weekDays based on the config variable startOfWeek', function() {
+            createController();
+            expect($scope.weekDays).toEqual(["Tuesday", "Wednesday", "Thursday", "Friday",
+                "Saturday", "Sunday", "Monday"])
+        });
+
+        it('should set weekDays based on the config variable startOfWeek', function() {
+            appDescriptor.getConfigValue = function (input) {
+                if (input === "startOfWeek") {
+                    return 0;
+                }
+            };
+            createController();
+            expect($scope.weekDays).toEqual(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+                "Saturday", "Sunday"])
+        });
+
         it('should call save of appointmentsService when appointment is recurring', function() {
             createController();
             $scope.createAppointmentForm = {$invalid: false};
@@ -1106,6 +1126,65 @@ describe("AppointmentsCreateController", function () {
 
             $scope.save();
 
+            expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
+        });
+
+        it('should call save of appointmentsService when appointment is recurring weekly with end date', function() {
+            createController();
+            $scope.createAppointmentForm = {$invalid: false};
+            var date = moment().toDate();
+            var recurringPattern  = {
+                endDate: moment().toDate(),
+                period: 2,
+                daysOfWeek: ["Saturday", "Wednesday"],
+                type: "Week"
+            };
+            $scope.appointment = {
+                patient: {uuid: 'patientUuid'},
+                service: {name: 'Cardiology'},
+                date: date,
+                startTime: '09:00 am',
+                endTime: '11:00 am',
+                setRecurring: true,
+                recurringPattern: recurringPattern
+            };
+            $scope.patientAppointments = [];
+            $state.params = {};
+            var appointmentRequest = Bahmni.Appointments.Appointment.create($scope.appointment);
+            appointmentRequest.recurringPattern = recurringPattern;
+
+            $scope.save();
+
+            expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
+        });
+
+        it('should call save of appointmentsService when appointment is recurring weekly with frequency', function() {
+            createController();
+            $scope.createAppointmentForm = {$invalid: false};
+            var date = moment().toDate();
+            var recurringPattern  = {
+                frequency: 2,
+                period: 2,
+                daysOfWeek: ["Saturday", "Wednesday"],
+                type: "Week"
+            };
+            $scope.appointment = {
+                patient: {uuid: 'patientUuid'},
+                service: {name: 'Cardiology'},
+                date: date,
+                startTime: '09:00 am',
+                endTime: '11:00 am',
+                setRecurring: true,
+                recurringPattern: recurringPattern
+            };
+            $scope.patientAppointments = [];
+            $state.params = {};
+            var appointmentRequest = Bahmni.Appointments.Appointment.create($scope.appointment);
+            appointmentRequest.recurringPattern = recurringPattern;
+
+            $scope.save();
+
+            expect(appointmentRequest.endDate).toBeUndefined();
             expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
         });
     });

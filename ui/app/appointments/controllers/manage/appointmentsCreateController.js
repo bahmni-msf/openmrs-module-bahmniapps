@@ -130,10 +130,10 @@ angular.module('bahmni.appointments')
             };
 
             var updateRecurringPattern = function (recurringPattern, startTime) {
-                $scope.previousRecurringDetails = {};
-                $scope.previousRecurringDetails.frequency = recurringPattern.frequency;
-                $scope.previousRecurringDetails.endDate = recurringPattern.endDate;
-                $scope.previousRecurringDetails.recurrenceTerminationType = recurringPattern.recurrenceTerminationType;
+                persistRecurrenceDetails(recurringPattern);
+                if (recurringPattern.type !== 'Week') {
+                    delete recurringPattern.daysOfWeek;
+                }
                 if (recurringPattern.recurrenceTerminationType === 'endDate') {
                     recurringPattern.endDate = getDateTime(recurringPattern.endDate, startTime || "00:00");
                     delete recurringPattern.frequency;
@@ -141,6 +141,14 @@ angular.module('bahmni.appointments')
                     delete recurringPattern.endDate;
                 }
                 delete recurringPattern.recurrenceTerminationType;
+            };
+
+            var persistRecurrenceDetails = function (recurringPattern) {
+                $scope.previousRecurringDetails = {};
+                $scope.previousRecurringDetails.frequency = recurringPattern.frequency;
+                $scope.previousRecurringDetails.endDate = recurringPattern.endDate;
+                $scope.previousRecurringDetails.recurrenceTerminationType = recurringPattern.recurrenceTerminationType;
+                $scope.previousRecurringDetails.daysOfWeek = recurringPattern.daysOfWeek;
             };
 
             $scope.search = function () {
@@ -547,12 +555,17 @@ angular.module('bahmni.appointments')
                     params.isSearchEnabled = params.isSearchEnabled && $scope.isEditMode();
                     $state.go('^', params, {reload: true});
                 }, function () {
-                    $scope.appointment.recurringPattern.frequency = $scope.previousRecurringDetails.frequency ?
-                        $scope.previousRecurringDetails.frequency :
-                        recurrenceConfig.defaultNumberOfOccurrences;
-                    $scope.appointment.recurringPattern.endDate = $scope.previousRecurringDetails.endDate ? $scope.previousRecurringDetails.endDate : null;
-                    $scope.appointment.recurringPattern.recurrenceTerminationType = $scope.previousRecurringDetails.recurrenceTerminationType;
+                    restoreRecurrenceDetails();
                 }));
+            };
+
+            var restoreRecurrenceDetails = function () {
+                $scope.appointment.recurringPattern.frequency = $scope.previousRecurringDetails.frequency ?
+                    $scope.previousRecurringDetails.frequency :
+                    recurrenceConfig.defaultNumberOfOccurrences;
+                $scope.appointment.recurringPattern.endDate = $scope.previousRecurringDetails.endDate ? $scope.previousRecurringDetails.endDate : null;
+                $scope.appointment.recurringPattern.recurrenceTerminationType = $scope.previousRecurringDetails.recurrenceTerminationType;
+                $scope.appointment.recurringPattern.daysOfWeek = $scope.previousRecurringDetails.daysOfWeek;
             };
 
             var wireAutocompleteEvents = function () {
