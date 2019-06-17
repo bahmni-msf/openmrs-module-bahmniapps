@@ -49,7 +49,8 @@
                         <input type="number" min="{{isRecurrenceTerminationTypeFrequency() ? 1 : 0}}"
                                ng-model="recurringPattern.frequency"
                                ng-disabled="isEditMode()"
-                               ng-required="isRecurrenceTerminationTypeFrequency()"/>
+                               ng-required="isRecurrenceTerminationTypeFrequency()"
+                               ng-change="setTerminationType('frequency')"/>
                         <span>{{ :: 'RECURRENCE_NUMBER_OF_OCCURRENCES_SUFFIX' | translate}}</span>
                     </div>
                     <div ng-if="isEditMode()" class="none">
@@ -63,13 +64,14 @@
                 <input type="radio" name="recurrenceTerminationSelection"
                        ng-value="'endDate'"
                        ng-model="recurringPattern.recurrenceTerminationType"
-                       ng-required="!recurringPattern.recurrenceTerminationType">
+                       ng-required="!recurringPattern.recurrenceTerminationType"/>
                 <div class="recurrence-end-option-value">
                     <div>
                         <span class="common-indent">{{ :: 'RECURRENCE_END_DATE_PREFIX' | translate}}</span>
                         <input date-converter class="end-date-value" type="date" min="{{isRecurrenceTerminationTypeEndDate() ? getMinEndDate() : null}}"
                                ng-model="recurringPattern.endDate"
-                               ng-required="isRecurrenceTerminationTypeEndDate()"/>
+                               ng-required="isRecurrenceTerminationTypeEndDate()"
+                               ng-change="setTerminationType('endDate')"/>
                     </div>
                 </div>
             </label>

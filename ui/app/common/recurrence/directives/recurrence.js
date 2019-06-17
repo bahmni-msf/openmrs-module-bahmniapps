@@ -30,6 +30,26 @@ angular.module('bahmni.common.recurrence')
                 $scope.recurringPattern.daysOfWeek = $scope.recurringPattern.daysOfWeek || [];
                 return $scope.recurringPattern.daysOfWeek.includes(day);
             };
+
+            $scope.setTerminationType = function (terminationType) {
+                $scope.recurringPattern.recurrenceTerminationType = terminationType;
+            };
+
+            function setRecurrenceTerminationType() {
+                if ($scope.recurringPattern.frequency) {
+                   $scope.setTerminationType("frequency");
+                } else if ($scope.recurringPattern.endDate) {
+                    $scope.setTerminationType("endDate");
+                } else {
+                    $scope.setTerminationType("");
+                }
+            }
+
+            var init = function () {
+                setRecurrenceTerminationType();
+            };
+
+            init();
         };
 
         return {
