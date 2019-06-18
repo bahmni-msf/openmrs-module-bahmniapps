@@ -52,9 +52,16 @@ angular.module('bahmni.appointments')
                     }
                 }
                 $scope.appointment = Bahmni.Appointments.AppointmentViewModel.create(appointmentContext.appointment || {appointmentKind: 'Scheduled'}, appointmentCreateConfig);
-                var recurrenceConfig = appService.getAppDescriptor().getConfigValue("recurrence");
-                $scope.appointment.recurringPattern.frequency = recurrenceConfig ?
-                    recurrenceConfig.defaultNumberOfOccurrences : "";
+                if ($scope.isEditMode()) {
+                    if (!_.isEmpty($scope.appointment.recurringPattern)) {
+
+                        $scope.appointment.setRecurring = true;
+                    }
+                } else {
+                    var recurrenceConfig = appService.getAppDescriptor().getConfigValue("recurrence");
+                    $scope.appointment.recurringPattern.frequency = recurrenceConfig ?
+                        recurrenceConfig.defaultNumberOfOccurrences : "";
+                }
                 $scope.appointment.newProvider = null;
                 $scope.selectedService = appointmentCreateConfig.selectedService;
                 $scope.isPastAppointment = $scope.isEditMode() ? Bahmni.Common.Util.DateUtil.isBeforeDate($scope.appointment.date, moment().startOf('day')) : false;

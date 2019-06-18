@@ -9,7 +9,7 @@
             <input type="number" min="1" ng-model="recurringPattern.period"
                    required/>
             <select class="recurrence-type" ng-model="recurringPattern.type"
-                    ng-options="recurrenceType for recurrenceType in recurrenceTypes" required>
+                    ng-options="(recurrenceType | uppercase) as recurrenceType for recurrenceType in recurrenceTypes" required>
                 <option value="">{{ ::'PLACEHOLDER_RECURRENCE_TYPE' | translate}}</option>
             </select>
         </div>

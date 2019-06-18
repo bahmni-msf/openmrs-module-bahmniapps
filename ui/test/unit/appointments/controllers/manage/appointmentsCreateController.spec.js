@@ -1187,5 +1187,30 @@ describe("AppointmentsCreateController", function () {
             expect(appointmentRequest.endDate).toBeUndefined();
             expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
         });
+
+        iit('should set setRecurring to true in edit mode for recurring appointment', function() {
+            var date = moment().toDate();
+            var recurringPattern  = {
+                frequency: 2,
+                period: 2,
+                daysOfWeek: ["Saturday", "Wednesday"],
+                type: "Week"
+            };
+            var appointment = {
+                uuid: 'uuid',
+                patient: {uuid: 'patientUuid'},
+                service: {name: 'Cardiology'},
+                date: date,
+                startTime: '09:00 am',
+                endTime: '11:00 am',
+                recurringPattern: recurringPattern
+            };
+            appointmentContext = {appointment: appointment};
+
+            createController();
+
+            expect($scope.appointment.setRecurring).toBeTruthy();
+        });
+
     });
 });
