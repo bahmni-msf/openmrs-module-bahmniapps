@@ -1006,8 +1006,8 @@ describe("AppointmentsCreateController", function () {
 
         it('should set weekDays based on the config variable startOfWeek', function() {
             createController();
-            expect($scope.weekDays).toEqual(["Tuesday", "Wednesday", "Thursday", "Friday",
-                "Saturday", "Sunday", "Monday"])
+            expect($scope.weekDays).toEqual(["TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY",
+                "SATURDAY", "SUNDAY", "MONDAY"])
         });
 
         it('should set weekDays based on the config variable startOfWeek', function() {
@@ -1017,8 +1017,8 @@ describe("AppointmentsCreateController", function () {
                 }
             };
             createController();
-            expect($scope.weekDays).toEqual(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
-                "Saturday", "Sunday"])
+            expect($scope.weekDays).toEqual(["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY",
+                "SATURDAY", "SUNDAY"])
         });
 
         it('should call save of appointmentsService when appointment is recurring', function() {

@@ -37,7 +37,10 @@ angular.module('bahmni.appointments')
                 startOfWeek = startOfWeek > 0 ? startOfWeek : 2;
                 var weekDays = [];
                 var momentWeekDays = moment.weekdays();
-                return weekDays.concat(momentWeekDays.splice(startOfWeek - 1)).concat(momentWeekDays);
+                weekDays = weekDays.concat(momentWeekDays.splice(startOfWeek - 1)).concat(momentWeekDays);
+                return _.map(weekDays, function (weekDay) {
+                    return weekDay.toUpperCase();
+                });
             };
 
             $scope.weekDays = getWeekDays(appService.getAppDescriptor().getConfigValue("startOfWeek"));
@@ -131,7 +134,7 @@ angular.module('bahmni.appointments')
 
             var updateRecurringPattern = function (recurringPattern, startTime) {
                 persistRecurrenceDetails(recurringPattern);
-                if (recurringPattern.type !== 'Week') {
+                if (recurringPattern.type !== 'WEEK') {
                     delete recurringPattern.daysOfWeek;
                 }
                 if (recurringPattern.recurrenceTerminationType === 'endDate') {

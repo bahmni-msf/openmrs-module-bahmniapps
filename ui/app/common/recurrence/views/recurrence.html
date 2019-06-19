@@ -9,13 +9,13 @@
             <input type="number" min="1" ng-model="recurringPattern.period"
                    required/>
             <select class="recurrence-type" ng-model="recurringPattern.type"
-                    ng-options="recurrenceType for recurrenceType in recurrenceTypes" required>
+                    ng-options="(recurrenceType | uppercase) as recurrenceType for recurrenceType in recurrenceTypes" required>
                 <option value="">{{ ::'PLACEHOLDER_RECURRENCE_TYPE' | translate}}</option>
             </select>
         </div>
     </div>
 
-    <div class="recurrence-days-container" ng-if="recurringPattern.type === 'Week'">
+    <div class="recurrence-days-container" ng-if="recurringPattern.type === 'WEEK'">
         <p>
             <label>
                 {{'RECURRENCE_REPEAT_ON' | translate}}<sup class="asterick">*</sup>
@@ -24,7 +24,7 @@
         <div class="recurrence-days-value-container">
             <label ng-repeat="day in weekDays">
                 <input type="checkbox" value="{{day}}" ng-required="recurringPattern.daysOfWeek.length === 0" ng-click="updateSelectedDays(day)" ng-checked="isDaySelected(day)">
-                <div>{{day.substring(0, 3)}}</div>
+                <div>{{day.substring(0, 3)[0].toUpperCase() + day.substring(0, 3).slice(1).toLowerCase()}}</div>
             </label>
         </div>
     </div>
