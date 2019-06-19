@@ -56,6 +56,12 @@ Bahmni.Appointments.AppointmentViewModel = (function () {
             });
         };
 
+        function mapRecurringPattern () {
+            return Object.assign(appointmentDetails.recurringPattern, {
+                endDate: getDateWithoutTime(appointmentDetails.recurringPattern.endDate)
+            });
+        }
+
         var appointment = new Appointment({
             uuid: appointmentDetails.uuid,
             patient: appointmentDetails.patient && parsePatient(appointmentDetails.patient),
@@ -70,7 +76,7 @@ Bahmni.Appointments.AppointmentViewModel = (function () {
             appointmentKind: appointmentDetails.appointmentKind,
             status: appointmentDetails.status,
             comments: appointmentDetails.comments,
-            recurringPattern: appointmentDetails.recurringPattern || {}
+            recurringPattern: appointmentDetails.recurringPattern ? mapRecurringPattern() : {}
         });
         return appointment;
     };

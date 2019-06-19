@@ -126,10 +126,10 @@ describe('AppointmentViewModel', function () {
             providers: providers,
             selectedService: selectedService
         };
-        appointmentViewModel = Bahmni.Appointments.AppointmentViewModel.create(appointmentResponse, config);
     });
 
     it('should parse the appointment response', function () {
+        appointmentViewModel = Bahmni.Appointments.AppointmentViewModel.create(appointmentResponse, config);
         expect(appointmentViewModel.uuid).toBe(appointmentResponse.uuid);
         expect(appointmentViewModel.patient).toEqual({label: appointmentResponse.patient.name + " (" + appointmentResponse.patient.identifier + ")", uuid: appointmentResponse.patient.uuid});
         expect(appointmentViewModel.speciality).toBe(config.specialities[1]);
@@ -144,4 +144,36 @@ describe('AppointmentViewModel', function () {
         expect(appointmentViewModel.status).toBe(appointmentResponse.status);
         expect(appointmentViewModel.comments).toBe(appointmentResponse.comments);
     });
+
+    it("should set recurringPattern to appntment object when appointmentResponse have recurringPattern", function () {
+        var recurringPattern = {
+            period: 2,
+            frequency: 3,
+            type: "DAY"
+        };
+        appointmentResponse.recurringPattern = recurringPattern;
+
+        appointmentViewModel = Bahmni.Appointments.AppointmentViewModel.create(appointmentResponse, config);
+
+        expect(appointmentViewModel.recurringPattern.period).toBe(2);
+        expect(appointmentViewModel.recurringPattern.frequency).toBe(3);
+        expect(appointmentViewModel.recurringPattern.type).toBe("DAY");
+    });
+
+    it("should convert endDate of recurring pattern to date object when appointment object is created", function () {
+        var recurringPattern = {
+            period: 2,
+            endDate: 1502212200000,
+            type: "DAY"
+        };
+        appointmentResponse.recurringPattern = recurringPattern;
+
+        appointmentViewModel = Bahmni.Appointments.AppointmentViewModel.create(appointmentResponse, config);
+
+        expect(appointmentViewModel.recurringPattern.period).toBe(2);
+        expect(appointmentViewModel.recurringPattern.endDate)
+            .toEqual(new Date(moment(appointmentResponse.recurringPattern.endDate)));
+        expect(appointmentViewModel.recurringPattern.type).toBe("DAY");
+    });
+
 });
