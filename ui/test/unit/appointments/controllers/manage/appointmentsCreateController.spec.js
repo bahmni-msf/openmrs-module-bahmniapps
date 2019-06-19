@@ -1187,5 +1187,74 @@ describe("AppointmentsCreateController", function () {
             expect(appointmentRequest.endDate).toBeUndefined();
             expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
         });
+
+        it('should set setRecurring to true in edit mode for recurring appointment', function() {
+            var date = moment().toDate();
+            var recurringPattern  = {
+                frequency: 2,
+                period: 2,
+                daysOfWeek: ["Saturday", "Wednesday"],
+                type: "Week"
+            };
+            var appointment = {
+                uuid: 'uuid',
+                patient: {uuid: 'patientUuid'},
+                service: {name: 'Cardiology'},
+                date: date,
+                startTime: '09:00 am',
+                endTime: '11:00 am',
+                recurringPattern: recurringPattern
+            };
+            appointmentContext = {appointment: appointment};
+            appointmentsService.search.and.returnValue(specUtil.simplePromise([]));
+
+            createController();
+
+            expect($scope.appointment.setRecurring).toBeTruthy();
+        });
+
+        it('should not set setRecurring to true for non recurring appointment in edit mode', function () {
+            var date = moment().toDate();
+            var appointment = {
+                uuid: 'uuid',
+                patient: {uuid: 'patientUuid'},
+                service: {name: 'Cardiology'},
+                date: date,
+                startTime: '09:00 am',
+                endTime: '11:00 am',
+                recurringPattern: undefined
+            };
+            appointmentContext = {appointment: appointment};
+            appointmentsService.search.and.returnValue(specUtil.simplePromise([]));
+
+            createController();
+
+            expect($scope.appointment.setRecurring).toBeFalsy();
+        });
+
+        it('should not replace frequency with default occurrences when the appointment is in edit mode', function () {
+            var date = moment().toDate();
+            var recurringPattern  = {
+                frequency: 2,
+                period: 2,
+                daysOfWeek: ["Saturday", "Wednesday"],
+                type: "Week"
+            };
+            var appointment = {
+                uuid: 'uuid',
+                patient: {uuid: 'patientUuid'},
+                service: {name: 'Cardiology'},
+                date: date,
+                startTime: '09:00 am',
+                endTime: '11:00 am',
+                recurringPattern: recurringPattern
+            };
+            appointmentContext = {appointment: appointment};
+            appointmentsService.search.and.returnValue(specUtil.simplePromise([]));
+
+            createController();
+
+            expect($scope.appointment.recurringPattern.frequency).toBe(2);
+        });
     });
 });

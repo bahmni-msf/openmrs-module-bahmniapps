@@ -45,6 +45,18 @@ angular.module('bahmni.appointments')
 
             $scope.weekDays = getWeekDays(appService.getAppDescriptor().getConfigValue("startOfWeek"));
 
+            var setDefaultFrequency = function () {
+                var recurrenceConfig = appService.getAppDescriptor().getConfigValue("recurrence");
+                $scope.appointment.recurringPattern.frequency = recurrenceConfig ?
+                    recurrenceConfig.defaultNumberOfOccurrences : "";
+            };
+
+            var setRecurringToTrueForRecurringAppointments = function () {
+                if (!_.isEmpty($scope.appointment.recurringPattern)) {
+                    $scope.appointment.setRecurring = true;
+                }
+            };
+
             var init = function () {
                 wireAutocompleteEvents();
                 if (!_.isEmpty(appointmentContext) && !_.isEmpty(appointmentContext.appointment) && !_.isEmpty(appointmentContext.appointment.provider)) {
@@ -55,9 +67,11 @@ angular.module('bahmni.appointments')
                     }
                 }
                 $scope.appointment = Bahmni.Appointments.AppointmentViewModel.create(appointmentContext.appointment || {appointmentKind: 'Scheduled'}, appointmentCreateConfig);
-                var recurrenceConfig = appService.getAppDescriptor().getConfigValue("recurrence");
-                $scope.appointment.recurringPattern.frequency = recurrenceConfig ?
-                    recurrenceConfig.defaultNumberOfOccurrences : "";
+                if ($scope.isEditMode()) {
+                    setRecurringToTrueForRecurringAppointments();
+                } else {
+                    setDefaultFrequency();
+                }
                 $scope.appointment.newProvider = null;
                 $scope.selectedService = appointmentCreateConfig.selectedService;
                 $scope.isPastAppointment = $scope.isEditMode() ? Bahmni.Common.Util.DateUtil.isBeforeDate($scope.appointment.date, moment().startOf('day')) : false;
