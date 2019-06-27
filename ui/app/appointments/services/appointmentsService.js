@@ -9,6 +9,13 @@ angular.module('bahmni.appointments')
                     headers: {"Accept": "application/json", "Content-Type": "application/json"}
                 });
             };
+            this.update = function (appointmentRequest) {
+                var updateAppointmentUrl = appService.getAppDescriptor().formatUrl(Bahmni.Appointments.Constants.updateAppointmentUrl, {appointmentUuid: appointmentRequest.uuid});
+                return $http.put(updateAppointmentUrl, appointmentRequest, {
+                    withCredentials: true,
+                    headers: {"Accept": "application/json", "Content-Type": "application/json"}
+                });
+            };
             this.search = function (appointment) {
                 return $http.post(Bahmni.Appointments.Constants.searchAppointmentUrl, appointment, {
                     withCredentials: true,
