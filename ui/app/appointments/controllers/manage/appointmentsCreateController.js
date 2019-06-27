@@ -54,7 +54,13 @@ angular.module('bahmni.appointments')
             var setRecurringToTrueForRecurringAppointments = function () {
                 if (!_.isEmpty($scope.appointment.recurringPattern)) {
                     $scope.appointment.setRecurring = true;
+                    $scope.updateRecurrenceInstance('');
+                    $scope.isRecurringAppointment = true;
                 }
+            };
+
+            $scope.updateRecurrenceInstance = function (recurrenceInstance) {
+                $scope.appointment.recurrenceInstance = recurrenceInstance;
             };
 
             var init = function () {
@@ -69,6 +75,7 @@ angular.module('bahmni.appointments')
                 $scope.appointment = Bahmni.Appointments.AppointmentViewModel.create(appointmentContext.appointment || {appointmentKind: 'Scheduled'}, appointmentCreateConfig);
                 if ($scope.isEditMode()) {
                     setRecurringToTrueForRecurringAppointments();
+                    $scope.previousAppointmentStartDate = $scope.appointment.date;
                 } else {
                     setDefaultFrequency();
                 }
@@ -139,8 +146,7 @@ angular.module('bahmni.appointments')
                     if ($scope.appointment.recurringPattern) {
                         updateRecurringPattern($scope.appointment.recurringPattern, $scope.appointment.startTime);
                     }
-                    return saveAppointment($scope.validatedAppointment,
-                        $scope.appointment.recurringPattern);
+                    return saveAppointment($scope.validatedAppointment, $scope.appointment.recurringPattern);
                 } else {
                     $scope.displayConflictConfirmationDialog();
                 }
@@ -420,6 +426,18 @@ angular.module('bahmni.appointments')
                     $scope.warning.outOfRange = isSelectedSlotOutOfRange();
                     triggerSlotCalculation();
                 }
+                if ($scope.isEditMode() && $scope.appointment.setRecurring) {
+                    $scope.disableAllAppointments = isDateChanged($scope.appointment.date, $scope.previousAppointmentStartDate);
+                    if ($scope.disableAllAppointments && $scope.appointment.recurrenceInstance === 'allAppointments') {
+                        $scope.updateRecurrenceInstance('');
+                    }
+                }
+            };
+
+            var isDateChanged = function (originalDate, newDate) {
+                return originalDate !== undefined && !(originalDate.getFullYear() === newDate.getFullYear()
+                    && originalDate.getDate() === newDate.getDate()
+                    && originalDate.getMonth() === newDate.getMonth());
             };
 
             var setServiceDetails = function (service) {
@@ -559,21 +577,43 @@ angular.module('bahmni.appointments')
             var saveAppointment = function (appointmentRequest, recurringPattern) {
                 if ($scope.appointment.setRecurring) {
                     appointmentRequest.recurringPattern = recurringPattern;
-                }
-                else {
+                } else {
                     delete appointmentRequest.recurringPattern;
                 }
-                return spinner.forPromise(appointmentsService.save(appointmentRequest).then(function () {
-                    messagingService.showMessage('info', 'APPOINTMENT_SAVE_SUCCESS');
-                    $scope.showConfirmationPopUp = false;
-                    var params = $state.params;
-                    params.viewDate = moment($scope.appointment.date).startOf('day').toDate();
-                    params.isFilterOpen = true;
-                    params.isSearchEnabled = params.isSearchEnabled && $scope.isEditMode();
-                    $state.go('^', params, {reload: true});
+                if ($scope.isEditMode()) {
+                    if ($scope.appointment.setRecurring && $scope.isRecurringAppointment) {
+                        appointmentRequest.applyForAll = $scope.appointment.recurrenceInstance === 'allAppointments';
+                    }
+                    return getPromiseForUpdate(appointmentRequest);
+                } else {
+                    return getPromiseForSave(appointmentRequest);
+                }
+            };
+
+            var getPromiseForUpdate = function (appointmentRequest) {
+                spinner.forPromise(appointmentsService.update(appointmentRequest).then(function () {
+                    saveAppointmentSuccessHandler();
                 }, function () {
                     restoreRecurrenceDetails();
                 }));
+            };
+
+            var getPromiseForSave = function (appointmentRequest) {
+                spinner.forPromise(appointmentsService.save(appointmentRequest).then(function () {
+                    saveAppointmentSuccessHandler();
+                }, function () {
+                    restoreRecurrenceDetails();
+                }));
+            };
+
+            var saveAppointmentSuccessHandler = function () {
+                messagingService.showMessage('info', 'APPOINTMENT_SAVE_SUCCESS');
+                $scope.showConfirmationPopUp = false;
+                var params = $state.params;
+                params.viewDate = moment($scope.appointment.date).startOf('day').toDate();
+                params.isFilterOpen = true;
+                params.isSearchEnabled = params.isSearchEnabled && $scope.isEditMode();
+                $state.go('^', params, {reload: true});
             };
 
             var restoreRecurrenceDetails = function () {

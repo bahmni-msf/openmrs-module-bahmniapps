@@ -220,6 +220,28 @@
                     <textarea placeholder="{{ ::'PLACEHOLDER_CREATE_NOTES' | translate }}" id="notes"
                               ng-model="appointment.comments"></textarea>
                 </p>
+                <div class="appointment-instance-container" ng-if="appointment.setRecurring && isRecurringAppointment">
+                    <p/>
+                    <div>
+                        <label>
+                            <input type="radio" name="recurrenceInstance"
+                                   ng-model="appointment.recurrenceInstance"
+                                   ng-required="appointment.setRecurring && isEditMode()"
+                                   ng-click="updateRecurrenceInstance('thisAppointment')"
+                                   ng-value="'thisAppointment'">
+                            <span> {{ 'RECURRENCE_THIS_APPOINTMENT' | translate }}</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="recurrenceInstance"
+                                   ng-disabled="disableAllAppointments"
+                                   ng-model="appointment.recurrenceInstance"
+                                   ng-required="appointment.setRecurring  && isEditMode()"
+                                   ng-click="updateRecurrenceInstance('allAppointments')"
+                                   ng-value="'allAppointments'">
+                            <span> {{ 'RECURRENCE_ALL_APPOINTMENTS' | translate }}</span>
+                        </label>
+                    </div>
+                </div>
             </section>
             <a class="create-appointment-action-btn" ui-sref="^">{{::'APPOINTMENT_CREATE_CANCEL' | translate }}</a>
             <button type="submit" class="service-save-btn create-appointment-action-btn">{{::'APPOINTMENT_CREATE_SAVE' |
