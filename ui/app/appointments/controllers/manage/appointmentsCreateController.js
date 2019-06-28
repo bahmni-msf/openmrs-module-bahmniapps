@@ -584,6 +584,7 @@ angular.module('bahmni.appointments')
                     if ($scope.appointment.setRecurring && $scope.isRecurringAppointment) {
                         appointmentRequest.applyForAll = $scope.appointment.recurrenceInstance === 'allAppointments';
                     }
+                    appointmentRequest.timeZone = moment.tz.guess();
                     return getPromiseForUpdate(appointmentRequest);
                 } else {
                     return getPromiseForSave(appointmentRequest);
