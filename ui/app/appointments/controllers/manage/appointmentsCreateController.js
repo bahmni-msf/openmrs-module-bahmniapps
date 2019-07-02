@@ -26,6 +26,8 @@ angular.module('bahmni.appointments')
 
             $scope.maxAppointmentProviders = appService.getAppDescriptor().getConfigValue("maxAppointmentProviders") || 1;
 
+            var previousAppointmentStartDate;
+
             var isProviderNotAvailableForAppointments = function (selectedProvider) {
                 var providers = appointmentCreateConfig.providers;
                 return _.isUndefined(_.find(providers, function (provider) {
@@ -75,7 +77,7 @@ angular.module('bahmni.appointments')
                 $scope.appointment = Bahmni.Appointments.AppointmentViewModel.create(appointmentContext.appointment || {appointmentKind: 'Scheduled'}, appointmentCreateConfig);
                 if ($scope.isEditMode()) {
                     setRecurringToTrueForRecurringAppointments();
-                    $scope.previousAppointmentStartDate = $scope.appointment.date;
+                    previousAppointmentStartDate = $scope.appointment.date;
                 } else {
                     setDefaultFrequency();
                 }
@@ -427,7 +429,7 @@ angular.module('bahmni.appointments')
                     triggerSlotCalculation();
                 }
                 if ($scope.isEditMode() && $scope.appointment.setRecurring) {
-                    $scope.disableAllAppointments = isDateChanged($scope.appointment.date, $scope.previousAppointmentStartDate);
+                    $scope.disableAllAppointments = isDateChanged(previousAppointmentStartDate, $scope.appointment.date);
                     if ($scope.disableAllAppointments && $scope.appointment.recurrenceInstance === 'allAppointments') {
                         $scope.updateRecurrenceInstance('');
                     }

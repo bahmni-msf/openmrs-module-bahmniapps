@@ -1245,42 +1245,6 @@ describe("AppointmentsCreateController", function () {
             expect(appointmentsService.update).toHaveBeenCalled();
         });
 
-        it('should call update recurrence instance type when start date changed for recurring appointment in edit mode', function() {
-            createController();
-            var date = moment().toDate();
-            var recurringPattern  = {
-                frequency: 2,
-                period: 2,
-                daysOfWeek: ["Saturday", "Wednesday"],
-                type: "Week"
-            };
-            var appointment = {
-                uuid: 'uuid',
-                patient: {uuid: 'patientUuid'},
-                service: {name: 'Cardiology'},
-                date: date,
-                startTime: '09:00 am',
-                endTime: '11:00 am',
-                recurringPattern: recurringPattern,
-                applyForAll: true
-            };
-            appointmentContext = {appointment: appointment};
-            appointmentsService.update.and.returnValue(specUtil.simplePromise([]));
-
-            $scope.appointment = appointment;
-            $scope.patientAppointments = [];
-            $state.params = {};
-
-            $scope.previousAppointmentStartDate = moment("01-01-2000", "DD-MM-YYYY").toDate();
-            $scope.appointment.recurrenceInstance = 'allAppointments';
-            $scope.appointment.setRecurring = true;
-            $scope.createAppointmentForm = {$invalid: false};
-
-            $scope.updateRecurrenceInstance = jasmine.createSpy('updateRecurrenceInstance');
-            $scope.checkAvailability();
-            expect($scope.updateRecurrenceInstance).toHaveBeenCalled();
-        });
-
         it('should not set setRecurring to true for non recurring appointment in edit mode', function () {
             var date = moment().toDate();
             var appointment = {
