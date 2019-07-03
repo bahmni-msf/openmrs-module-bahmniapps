@@ -8,9 +8,10 @@ describe('AppointmentsService', function () {
     });
 
     beforeEach(module(function ($provide) {
-        mockHttp = jasmine.createSpyObj('$http', ['get', 'post']);
+        mockHttp = jasmine.createSpyObj('$http', ['get', 'post', 'put']);
         mockHttp.get.and.returnValue(specUtil.simplePromise({}));
         mockHttp.post.and.returnValue(specUtil.simplePromise({}));
+        mockHttp.put.and.returnValue(specUtil.simplePromise({}));
         appDescriptor = jasmine.createSpyObj('appDescriptor', ['formatUrl']);
         appService = jasmine.createSpyObj('appService', ['getAppDescriptor']);
         appService.getAppDescriptor.and.returnValue(appDescriptor);
@@ -27,6 +28,15 @@ describe('AppointmentsService', function () {
         var headers = {"Accept": "application/json", "Content-Type": "application/json"};
         var params = {withCredentials: true, headers: headers};
         expect(mockHttp.post).toHaveBeenCalledWith(Bahmni.Appointments.Constants.createAppointmentUrl, appointment, params);
+    });
+
+    it('should update the appointment', function () {
+        var appointment = {uuid: "uuid1"};
+        appointmentsService.update(appointment);
+        var headers = {"Accept": "application/json", "Content-Type": "application/json"};
+        var params = {withCredentials: true, headers: headers};
+        var updateUrl = appService.getAppDescriptor().formatUrl(Bahmni.Appointments.Constants.updateAppointmentUrl, {appointmentUuid: appointment.uuid})
+        expect(mockHttp.put).toHaveBeenCalledWith(updateUrl, appointment, params);
     });
 
     it('should search for appointments with given info', function () {
@@ -68,13 +78,18 @@ describe('AppointmentsService', function () {
         var appointment = {status: 'Scheduled', uuid: "7d162c29-3f12-11e4-adec-0800271c1b75"};
         var toStatus = "CheckedIn";
         var onDate = new Date();
+        var applyForAll = "true";
         var changeStatusUrl = Bahmni.Appointments.Constants.changeAppointmentStatusUrl;
         changeStatusUrl.replace('{{appointmentUuid}}', appointment.uuid);
         appDescriptor.formatUrl.and.returnValue(changeStatusUrl);
-        appointmentsService.changeStatus(appointment, toStatus, onDate);
+        appointmentsService.changeStatus(appointment, toStatus, onDate, applyForAll);
         var headers = {"Accept": "application/json", "Content-Type": "application/json"};
         var params = {withCredentials: true, headers: headers};
-        expect(mockHttp.post).toHaveBeenCalledWith(changeStatusUrl, {'toStatus': toStatus, 'onDate': onDate},  params);
+        expect(mockHttp.post).toHaveBeenCalledWith(changeStatusUrl, {
+            'toStatus': toStatus,
+            'onDate': onDate,
+            'applyForAll': applyForAll
+        }, params);
     });
 });
 

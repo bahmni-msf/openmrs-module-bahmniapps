@@ -167,5 +167,7 @@
   "RECURRENCE_END_DATE_PREFIX": "On ",
   "RECURRENCE_REPEAT_ON": "Repeat on",
   "RECURRENCE_THIS_APPOINTMENT": "This appointment",
-  "RECURRENCE_ALL_APPOINTMENTS" : "All appointments"
+  "RECURRENCE_ALL_APPOINTMENTS" : "All appointments",
+  "DONT_CANCEL_KEY": "Don't Cancel",
+  "RECURRENCE_INDICATION_MESSAGE": "This is a recurring appointment"
 }
