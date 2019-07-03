@@ -79,6 +79,7 @@ describe('AppointmentsService', function () {
         var toStatus = "CheckedIn";
         var onDate = new Date();
         var applyForAll = "true";
+        var timeZone = "Asia/Calcutta";
         var changeStatusUrl = Bahmni.Appointments.Constants.changeAppointmentStatusUrl;
         changeStatusUrl.replace('{{appointmentUuid}}', appointment.uuid);
         appDescriptor.formatUrl.and.returnValue(changeStatusUrl);
@@ -88,7 +89,8 @@ describe('AppointmentsService', function () {
         expect(mockHttp.post).toHaveBeenCalledWith(changeStatusUrl, {
             'toStatus': toStatus,
             'onDate': onDate,
-            'applyForAll': applyForAll
+            'applyForAll': applyForAll,
+            'timeZone': timeZone
         }, params);
     });
 });

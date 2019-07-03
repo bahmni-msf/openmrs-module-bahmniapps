@@ -58,7 +58,7 @@ angular.module('bahmni.appointments')
             };
 
             this.changeStatus = function (appointmentUuid, toStatus, onDate, applyForAll) {
-                var params = {toStatus: toStatus, onDate: onDate, applyForAll: applyForAll};
+                var params = {toStatus: toStatus, onDate: onDate, applyForAll: applyForAll, timeZone: moment.tz.guess()};
                 var changeStatusUrl = appService.getAppDescriptor().formatUrl(Bahmni.Appointments.Constants.changeAppointmentStatusUrl, {appointmentUuid: appointmentUuid});
                 return $http.post(changeStatusUrl, params, {
                     withCredentials: true,
