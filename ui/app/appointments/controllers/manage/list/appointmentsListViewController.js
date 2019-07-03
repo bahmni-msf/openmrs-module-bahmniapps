@@ -188,11 +188,11 @@ angular.module('bahmni.appointments')
                 showPopUp(scope);
             };
 
-            var changeStatus = function (toStatus, onDate, closeConfirmBox) {
+            var changeStatus = function (toStatus, onDate, closeConfirmBox, applyForAll) {
                 var message = $translate.instant('APPOINTMENT_STATUS_CHANGE_SUCCESS_MESSAGE', {
                     toStatus: toStatus
                 });
-                return appointmentsService.changeStatus($scope.selectedAppointment.uuid, toStatus, onDate).then(function (response) {
+                return appointmentsService.changeStatus($scope.selectedAppointment.uuid, toStatus, onDate, applyForAll).then(function (response) {
                     ngDialog.close();
                     $scope.selectedAppointment.status = response.data.status;
                     closeConfirmBox();
@@ -205,7 +205,11 @@ angular.module('bahmni.appointments')
                 scope.message = $translate.instant('APPOINTMENT_STATUS_CHANGE_CONFIRM_MESSAGE', {
                     toStatus: toStatus
                 });
-                scope.yes = _.partial(changeStatus, toStatus, undefined, _);
+                scope.yes = _.partial(changeStatus, toStatus, undefined, _, "false");
+                if (toStatus === 'Cancelled' && $scope.selectedAppointment.recurringPattern) {
+                    scope.recurrenceIndicationMessage = $translate.instant('RECURRENCE_INDICATION_MESSAGE');
+                    scope.yes_all = _.partial(changeStatus, toStatus, undefined, _, "true");
+                }
                 showPopUp(scope);
             };
 
@@ -220,9 +224,15 @@ angular.module('bahmni.appointments')
                 popUpScope.no = function (closeConfirmBox) {
                     closeConfirmBox();
                 };
+                let actions = [{name: 'yes', display: 'YES_KEY'}, {name: 'no', display: 'NO_KEY'}];
+                if (popUpScope.recurrenceIndicationMessage !== undefined && popUpScope.yes_all !== undefined) {
+                    actions = [{name: 'yes', display: 'RECURRENCE_THIS_APPOINTMENT'},
+                        {name: 'yes_all', display: 'RECURRENCE_ALL_APPOINTMENTS'},
+                        {name: 'no', display: 'DONT_CANCEL_KEY', class: 'right'}];
+                }
                 confirmBox({
                     scope: popUpScope,
-                    actions: [{name: 'yes', display: 'YES_KEY'}, {name: 'no', display: 'NO_KEY'}],
+                    actions: actions,
                     className: "ngdialog-theme-default"
                 });
             };
