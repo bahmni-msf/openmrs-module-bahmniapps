@@ -77,7 +77,7 @@ angular.module('bahmni.appointments')
                     });
                     scope.no = closeConfirmBox;
                     scope.yes = _.partial(changeStatus, appointment, toStatus, undefined, _);
-                    let actions = [{name: 'yes', display: 'YES_KEY'}, {name: 'no', display: 'NO_KEY'}];
+                    var actions = [{name: 'yes', display: 'YES_KEY'}, {name: 'no', display: 'NO_KEY'}];
                     if (toStatus === 'Cancelled' && appointment.recurringPattern) {
                         scope.recurrenceIndicationMessage = $translate.instant('RECURRENCE_INDICATION_MESSAGE');
                         scope.yes_all = _.partial(changeStatus, appointment, toStatus, undefined, _, "true");
