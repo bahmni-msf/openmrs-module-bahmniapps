@@ -10,6 +10,7 @@ angular.module('bahmni.common.uiHelper')
                 confirmBoxScope.$destroy();
             };
             confirmBoxScope.scope = config.scope;
+            confirmBoxScope.isRecurringAppointment = config.scope.yes_all !== undefined && config.scope.yes_all !== '';
             confirmBoxScope.actions = config.actions;
             dialog = ngDialog.open({
                 template: '../common/ui-helper/views/confirmBox.html',
