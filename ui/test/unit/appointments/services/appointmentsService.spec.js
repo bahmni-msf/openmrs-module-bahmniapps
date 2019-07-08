@@ -79,7 +79,7 @@ describe('AppointmentsService', function () {
         var toStatus = "CheckedIn";
         var onDate = new Date();
         var applyForAll = "true";
-        var timeZone = "Asia/Calcutta";
+        var timeZone = moment.tz.guess();
         var changeStatusUrl = Bahmni.Appointments.Constants.changeAppointmentStatusUrl;
         changeStatusUrl.replace('{{appointmentUuid}}', appointment.uuid);
         appDescriptor.formatUrl.and.returnValue(changeStatusUrl);
