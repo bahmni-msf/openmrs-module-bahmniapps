@@ -224,7 +224,7 @@ angular.module('bahmni.appointments')
                 popUpScope.no = function (closeConfirmBox) {
                     closeConfirmBox();
                 };
-                let actions = [{name: 'yes', display: 'YES_KEY'}, {name: 'no', display: 'NO_KEY'}];
+                var actions = [{name: 'yes', display: 'YES_KEY'}, {name: 'no', display: 'NO_KEY'}];
                 if (popUpScope.recurrenceIndicationMessage !== undefined && popUpScope.yes_all !== undefined) {
                     actions = [{name: 'yes', display: 'RECURRENCE_THIS_APPOINTMENT'},
                         {name: 'yes_all', display: 'RECURRENCE_ALL_APPOINTMENTS'},
