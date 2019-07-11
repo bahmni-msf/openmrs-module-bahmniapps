@@ -52,6 +52,8 @@
   "CONFIRM_EDIT_SERVICE_MESSAGE_KEY": "There could be appointments booked against this service. Are you sure you want to save the changes?",
   "APPOINTMENT_SERVICE_SAVE_SUCCESS": "Service saved successfully",
   "APPOINTMENT_SAVE_SUCCESS": "Appointment saved successfully",
+  "RECURRING_APPOINTMENT_SAVE_SUCCESS_APPLYFORALL" : "All recurring appointments are updated successfully",
+  "RECURRING_APPOINTMENT_SAVE_SUCCESS": "This appointment is updated successfully",
   "NAVIGATION_CONFIRMATION_DIALOG_MESSAGE_KEY": "You may have unsaved changes, please choose an option",
   "NAVIGATION_CONFIRMATION_OPTION_DONT_SAVE_KEY" : "Don't save",
   "NAVIGATION_CONFIRMATION_OPTION_CANCEL_KEY" : "Stay on page",
