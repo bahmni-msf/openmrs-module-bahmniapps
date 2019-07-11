@@ -623,7 +623,7 @@ angular.module('bahmni.appointments')
 
             var getPromiseForUpdate = function (appointmentRequest) {
                 spinner.forPromise(appointmentsService.update(appointmentRequest).then(function () {
-                    saveAppointmentSuccessHandler();
+                    saveAppointmentSuccessHandler(true);
                 }, function () {
                     restoreRecurrenceDetails();
                 }));
@@ -637,8 +637,15 @@ angular.module('bahmni.appointments')
                 }));
             };
 
-            var saveAppointmentSuccessHandler = function () {
-                messagingService.showMessage('info', 'APPOINTMENT_SAVE_SUCCESS');
+            var saveAppointmentSuccessHandler = function (isUpdate) {
+                if ($scope.isRecurringAppointment && isUpdate) {
+                    const message = $scope.appointment.recurrenceInstance === 'allAppointments' ?
+                        'RECURRING_APPOINTMENT_SAVE_SUCCESS_APPLYFORALL' : 'RECURRING_APPOINTMENT_SAVE_SUCCESS';
+                    messagingService.showMessage('info', message);
+                }
+                else {
+                    messagingService.showMessage('info', 'APPOINTMENT_SAVE_SUCCESS');
+                }
                 $scope.showConfirmationPopUp = false;
                 var params = $state.params;
                 params.viewDate = moment($scope.appointment.date).startOf('day').toDate();
