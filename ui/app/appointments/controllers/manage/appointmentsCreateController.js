@@ -677,6 +677,10 @@ angular.module('bahmni.appointments')
                 return $scope.isPastAppointment ? false : ($scope.appointment.status === 'Scheduled' || $scope.appointment.status === 'CheckedIn');
             };
 
+            $scope.isEditDisabled = function () {
+                return $scope.isEditMode() && !$scope.isEditAllowed();
+            };
+
             $scope.navigateToPreviousState = function () {
                 $state.go('^', $state.params, {reload: true});
             };

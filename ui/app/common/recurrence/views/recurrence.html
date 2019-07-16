@@ -7,8 +7,8 @@
         </p>
         <div class="recurrence-period-value-container">
             <input type="number" min="1" ng-model="recurringPattern.period"
-                   required/>
-            <select class="recurrence-type" ng-model="recurringPattern.type"
+                   required ng-disabled="isAppointmentCancelled"/>
+            <select class="recurrence-type" ng-model="recurringPattern.type" ng-disabled="isAppointmentCancelled"
                     ng-options="(recurrenceType | uppercase) as recurrenceType for recurrenceType in recurrenceTypes" required>
                 <option value="">{{ ::'PLACEHOLDER_RECURRENCE_TYPE' | translate}}</option>
             </select>
@@ -23,7 +23,11 @@
         </p>
         <div class="recurrence-days-value-container">
             <label ng-repeat="day in weekDays">
-                <input type="checkbox" value="{{day}}" ng-required="recurringPattern.daysOfWeek.length === 0" ng-click="updateSelectedDays(day)" ng-checked="isDaySelected(day)">
+                <input type="checkbox" value="{{day}}"
+                       ng-required="recurringPattern.daysOfWeek.length === 0"
+                       ng-click="updateSelectedDays(day)"
+                       ng-checked="isDaySelected(day)"
+                       ng-disabled="isAppointmentCancelled">
                 <div>{{day.substring(0, 3)[0].toUpperCase() + day.substring(0, 3).slice(1).toLowerCase()}}</div>
             </label>
         </div>
@@ -42,13 +46,14 @@
                 <input type="radio" name="recurrenceTerminationSelection"
                        ng-value="'frequency'"
                        ng-model="recurringPattern.recurrenceTerminationType"
-                       ng-required="!recurringPattern.recurrenceTerminationType">
+                       ng-required="!recurringPattern.recurrenceTerminationType"
+                       ng-disabled="isAppointmentCancelled">
                 <div class="recurrence-end-option-value">
                     <div>
                         <span class="common-indent">{{ :: 'RECURRENCE_NUMBER_OF_OCCURRENCES_PREFIX' | translate}} </span>
                         <input type="number" min="{{isRecurrenceTerminationTypeFrequency() ? 1 : 0}}"
                                ng-model="recurringPattern.frequency"
-                               ng-disabled="isEditMode()"
+                               ng-disabled="isEditMode() || isAppointmentCancelled"
                                ng-required="isRecurrenceTerminationTypeFrequency()"
                                ng-click="setTerminationType('frequency')"/>
                         <span>{{ :: 'RECURRENCE_NUMBER_OF_OCCURRENCES_SUFFIX' | translate}}</span>
@@ -56,7 +61,8 @@
                     <div ng-if="isEditMode()" class="none">
                         <span>{{ :: 'RECURRENCE_PENDING_OCCURRENCES_PREFIX' | translate}}</span>
                         <input type="number" min="0"
-                               ng-model="recurringPattern.pendingOccurrences"/>
+                               ng-model="recurringPattern.pendingOccurrences"
+                               ng-disabled="isAppointmentCancelled"/>
                     </div>
                 </div>
             </label>
@@ -64,14 +70,16 @@
                 <input type="radio" name="recurrenceTerminationSelection"
                        ng-value="'endDate'"
                        ng-model="recurringPattern.recurrenceTerminationType"
-                       ng-required="!recurringPattern.recurrenceTerminationType"/>
+                       ng-required="!recurringPattern.recurrenceTerminationType"
+                       ng-disabled="isAppointmentCancelled"/>
                 <div class="recurrence-end-option-value">
                     <div>
                         <span class="common-indent">{{ :: 'RECURRENCE_END_DATE_PREFIX' | translate}}</span>
                         <input date-converter class="end-date-value" type="date" min="{{isRecurrenceTerminationTypeEndDate() ? getMinEndDate() : null}}"
                                ng-model="recurringPattern.endDate"
                                ng-required="isRecurrenceTerminationTypeEndDate()"
-                               ng-click="setTerminationType('endDate')"/>
+                               ng-click="setTerminationType('endDate')"
+                               ng-disabled="isAppointmentCancelled"/>
                     </div>
                 </div>
             </label>
