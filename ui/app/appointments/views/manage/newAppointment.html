@@ -207,14 +207,10 @@
                     <i class="fa fa-exclamation-triangle"></i>
                     <span> {{'APPOINTMENT_CREATION_OUT_OF_RANGE_WARNING' | translate}} </span>
                 </p>
-                <p class="walk-in-app">
-                    <input type="checkbox" ng-model="appointment.appointmentKind" ng-true-value="'WalkIn'"
-                           ng-false-value="'Scheduled'" ng-disabled="isEditMode() && isFieldEditNotAllowed()">
-                    <span class="walk-in-text">{{'APPOINTMENT_CREATE_WALK_IN' | translate}}</span>
                 <p class="checkbox-container">
                     <label>
                         <input type="checkbox" ng-model="appointment.appointmentKind" ng-true-value="'WalkIn'"
-                           ng-false-value="'Scheduled'" ng-disabled="isEditDisabled()">
+                               ng-false-value="'Scheduled'" ng-disabled="isEditDisabled() && isFieldEditNotAllowed()">
                         <span class="checkbox-text">{{'APPOINTMENT_CREATE_WALK_IN' | translate}}</span>
                     </label>
                 </p>
@@ -234,7 +230,7 @@
                                    ng-required="appointment.setRecurring && isEditMode() && isEditAllowed()"
                                    ng-click="updateRecurrenceInstance('thisAppointment')"
                                    ng-value="'thisAppointment'"
-                                    ng-disabled="isEditDisabled()">
+                                   ng-disabled="isEditDisabled()">
                             <span> {{ 'RECURRENCE_THIS_APPOINTMENT' | translate }}</span>
                         </label>
                         <label>
