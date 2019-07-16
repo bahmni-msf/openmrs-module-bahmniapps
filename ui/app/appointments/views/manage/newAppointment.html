@@ -62,7 +62,7 @@
                     <label for="serviceType">
                         {{'APPOINTMENT_SERVICE_TYPE' | translate}}
                     </label>
-                    <select ng-disabled="!(selectedService.serviceTypes.length > 0) || (isEditMode() && !isEditAllowed())" id="serviceType"
+                    <select ng-disabled="!(selectedService.serviceTypes.length > 0) || isEditDisabled()" id="serviceType"
                             ng-model="appointment.serviceType" ng-change="onServiceTypeChange()"
                             ng-options="serviceType.name + '   [' + serviceType.duration + ' min]'  for serviceType in selectedService.serviceTypes | orderBy:'name'">
                         <option value="">{{ ::'PLACEHOLDER_SERVICE_TYPE' | translate}}
@@ -76,7 +76,7 @@
                     </label>
                     <select id="location" ng-model="appointment.location"
                             ng-options="location.display for location in appointmentCreateConfig.locations | orderBy:'display'"
-                            ng-disabled="isEditMode() && isFieldEditNotAllowed()">
+                            ng-disabled="isEditDisabled() && isFieldEditNotAllowed()">
                         <option value="">{{ ::'PLACEHOLDER_SERVICE_LOCATION' | translate}}
                         </option>
                     </select>
@@ -87,7 +87,7 @@
                     </label>
                     <select id="eleNewProvider" ng-model="appointment.newProvider"
                             ng-options="provider.person.display for provider in appointmentCreateConfig.providers | orderBy:'person.display'"
-                            ng-disabled="isEditMode() && !isEditAllowed()" ng-change="addNewProvider()">
+                            ng-disabled="isEditDisabled()" ng-change="addNewProvider()">
                         <option value="">{{ ::'PLACEHOLDER_CREATE_PROVIDER' | translate}}</option>
                     </select>
                 </p>
@@ -105,7 +105,7 @@
                             <li ng-repeat="appProvider in appointment.providers" ng-show="appProvider.response != 'CANCELLED'">
                                 <label>{{ appProvider.name || appProvider.person.display }}</label>
                                 <input type="button" value="{{'APPOINTMENT_PROVIDER_REMOVE_ACTION' | translate }}" ng-click="removeProviderFromAttendees(appProvider)"
-                                 ng-disabled="isEditMode() && !isUserAllowedToRemoveProvider(appProvider.uuid)"/>
+                                 ng-disabled="isEditDisabled() && !isUserAllowedToRemoveProvider(appProvider.uuid)"/>
                             </li>
                         </ul>
                     </div>
@@ -115,11 +115,11 @@
                     <label for="date">
                         {{'APPOINTMENT_DATE' | translate}}<sup class="asterick">*</sup>
                     </label>
-                    <input  id="date" type="date" ng-min="isEditMode() && !isEditAllowed()" min="{{today}}" required
+                    <input  id="date" type="date" ng-min="isEditDisabled()" min="{{today}}" required
                             ng-model="appointment.date"
                             ng-change="appointment.service && checkAvailability()"
                             placeholder="Pick appointment date"
-                            ng-disabled="isEditMode() && isFieldEditNotAllowed()"/>
+                            ng-disabled="isEditDisabled() && isFieldEditNotAllowed()"/>
                     <span class="slots-remaining"></span>
                 </p>
                 <p class="warning-message" ng-if="warning.appointmentDate">
@@ -129,7 +129,7 @@
 
                 <p class="checkbox-container">
                     <label>
-                        <input type="checkbox" ng-model="appointment.setRecurring">
+                        <input type="checkbox" ng-model="appointment.setRecurring" ng-disabled="isEditDisabled()">
                         <span class="checkbox-text" ng-model="appointment.setRecurring">
                             {{'SET_RECURRING_APPOINTMENT' | translate}}</span>
                     </label>
@@ -139,7 +139,8 @@
                             recurring-pattern="appointment.recurringPattern"
                             recurrence-types="recurrenceTypes"
                             week-days="weekDays"
-                            ng-if="appointment.setRecurring">
+                            ng-if="appointment.setRecurring"
+                            is-appointment-cancelled="isEditDisabled()">
                 </recurrence>
 
                 <p>
@@ -160,7 +161,7 @@
                            non-blank
                            ng-pattern="timeRegex"
                            ng-model-options="{allowInvalid: true}"
-                           ng-disabled="(!appointment.date || (isEditMode() && isFieldEditNotAllowed()))"
+                           ng-disabled="(!appointment.date || (isEditDisabled() && isFieldEditNotAllowed()))"
                            required/>
                     <i class="fa fa-search search-icon-app" aria-hidden="true"></i>
                 </p>
@@ -185,7 +186,7 @@
                            ng-class="{'illegalValue': isInvalid}"
                            placeholder="{{'PLACEHOLDER_APPOINTMENT_TIME_FORMAT' | translate }}"
                            non-blank
-                           ng-disabled='(!appointment.date || (isEditMode() && isFieldEditNotAllowed()))'
+                           ng-disabled='(!appointment.date || (isEditDisabled() && isFieldEditNotAllowed()))'
                            ng-pattern="timeRegex"
                            ng-model-options="{allowInvalid: true}"
                            required/>
@@ -206,10 +207,12 @@
                     <i class="fa fa-exclamation-triangle"></i>
                     <span> {{'APPOINTMENT_CREATION_OUT_OF_RANGE_WARNING' | translate}} </span>
                 </p>
-                <p class="walk-in-app">
-                    <input type="checkbox" ng-model="appointment.appointmentKind" ng-true-value="'WalkIn'"
-                           ng-false-value="'Scheduled'" ng-disabled="isEditMode() && isFieldEditNotAllowed()">
-                    <span class="walk-in-text">{{'APPOINTMENT_CREATE_WALK_IN' | translate}}</span>
+                <p class="checkbox-container">
+                    <label>
+                        <input type="checkbox" ng-model="appointment.appointmentKind" ng-true-value="'WalkIn'"
+                           ng-false-value="'Scheduled'" ng-disabled="isEditDisabled() && isFieldEditNotAllowed()">
+                        <span class="checkbox-text">{{'APPOINTMENT_CREATE_WALK_IN' | translate}}</span>
+                    </label>
                 </p>
                 <p>
                     <label for="notes">
@@ -224,16 +227,17 @@
                         <label>
                             <input type="radio" name="recurrenceInstance"
                                    ng-model="appointment.recurrenceInstance"
-                                   ng-required="appointment.setRecurring && isEditMode()"
+                                   ng-required="appointment.setRecurring && isEditMode() && isEditAllowed()"
                                    ng-click="updateRecurrenceInstance('thisAppointment')"
-                                   ng-value="'thisAppointment'">
+                                   ng-value="'thisAppointment'"
+                                    ng-disabled="isEditDisabled()">
                             <span> {{ 'RECURRENCE_THIS_APPOINTMENT' | translate }}</span>
                         </label>
                         <label>
                             <input type="radio" name="recurrenceInstance"
-                                   ng-disabled="disableAllAppointments"
+                                   ng-disabled="(isEditDisabled()) || disableAllAppointments"
                                    ng-model="appointment.recurrenceInstance"
-                                   ng-required="appointment.setRecurring  && isEditMode()"
+                                   ng-required="appointment.setRecurring  && isEditMode() && isEditAllowed()"
                                    ng-click="updateRecurrenceInstance('allAppointments')"
                                    ng-value="'allAppointments'">
                             <span> {{ 'RECURRENCE_ALL_APPOINTMENTS' | translate }}</span>
