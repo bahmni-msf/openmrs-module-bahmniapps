@@ -68,7 +68,7 @@ describe('CalendarViewPopUp', function () {
         confirmBox.and.callFake(function (config) {
             var close = jasmine.createSpy('close');
             config.scope.yes(close).then(function () {
-                expect(appointmentsService.changeStatus).toHaveBeenCalledWith(appointments[0].uuid, toStatus, undefined);
+                expect(appointmentsService.changeStatus).toHaveBeenCalledWith(appointments[0].uuid, toStatus, undefined, undefined);
                 expect(appointments[0].status).toBe(toStatus);
                 expect(close).toHaveBeenCalled();
                 expect(messagingService.showMessage).toHaveBeenCalledWith('info', message);
