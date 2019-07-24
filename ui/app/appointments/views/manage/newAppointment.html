@@ -129,7 +129,8 @@
 
                 <p class="checkbox-container">
                     <label>
-                        <input type="checkbox" ng-model="appointment.setRecurring" ng-disabled="isEditDisabled()">
+                        <input type="checkbox" ng-model="appointment.setRecurring" ng-disabled="isEditDisabled() || isRecurringAppointment || appointment.appointmentKind === 'WalkIn'" >
+
                         <span class="checkbox-text" ng-model="appointment.setRecurring">
                             {{'SET_RECURRING_APPOINTMENT' | translate}}</span>
                     </label>
@@ -140,7 +141,9 @@
                             recurrence-types="recurrenceTypes"
                             week-days="weekDays"
                             ng-if="appointment.setRecurring"
-                            is-appointment-cancelled="isEditDisabled()">
+                            is-appointment-cancelled="isEditDisabled()"
+                            is-recurring-appointment="isRecurringAppointment"
+                             >
                 </recurrence>
 
                 <p>
@@ -210,7 +213,7 @@
                 <p class="checkbox-container">
                     <label>
                         <input type="checkbox" ng-model="appointment.appointmentKind" ng-true-value="'WalkIn'"
-                               ng-false-value="'Scheduled'" ng-disabled="isEditDisabled() && isFieldEditNotAllowed()">
+                               ng-false-value="'Scheduled'" ng-disabled="isEditDisabled() && isFieldEditNotAllowed() || appointment.setRecurring">
                         <span class="checkbox-text">{{'APPOINTMENT_CREATE_WALK_IN' | translate}}</span>
                     </label>
                 </p>
