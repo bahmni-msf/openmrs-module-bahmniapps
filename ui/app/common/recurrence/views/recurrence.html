@@ -7,8 +7,8 @@
         </p>
         <div class="recurrence-period-value-container">
             <input type="number" min="1" ng-model="recurringPattern.period"
-                   required ng-disabled="isAppointmentCancelled"/>
-            <select class="recurrence-type" ng-model="recurringPattern.type" ng-disabled="isAppointmentCancelled"
+                   required ng-disabled="isAppointmentCancelled || isRecurringAppointment"/>
+            <select class="recurrence-type" ng-model="recurringPattern.type" ng-disabled="isAppointmentCancelled || isRecurringAppointment"
                     ng-options="(recurrenceType | uppercase) as recurrenceType for recurrenceType in recurrenceTypes" required>
                 <option value="">{{ ::'PLACEHOLDER_RECURRENCE_TYPE' | translate}}</option>
             </select>
@@ -27,7 +27,7 @@
                        ng-required="recurringPattern.daysOfWeek.length === 0"
                        ng-click="updateSelectedDays(day)"
                        ng-checked="isDaySelected(day)"
-                       ng-disabled="isAppointmentCancelled">
+                       ng-disabled="isAppointmentCancelled || isRecurringAppointment ">
                 <div>{{day.substring(0, 3)[0].toUpperCase() + day.substring(0, 3).slice(1).toLowerCase()}}</div>
             </label>
         </div>

@@ -59,7 +59,8 @@ angular.module('bahmni.common.recurrence')
                 recurrenceTypes: "=",
                 startDate: "=",
                 weekDays: "=",
-                isAppointmentCancelled: "="
+                isAppointmentCancelled: "=",
+                isRecurringAppointment: "="
             },
             controller: controller,
             templateUrl: "../common/recurrence/views/recurrence.html"
