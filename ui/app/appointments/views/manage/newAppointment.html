@@ -129,7 +129,7 @@
 
                 <p class="checkbox-container">
                     <label>
-                        <input type="checkbox" ng-model="appointment.setRecurring" ng-disabled="isEditDisabled() || isRecurringAppointment || appointment.appointmentKind === 'WalkIn'" >
+                        <input type="checkbox" ng-model="appointment.setRecurring" ng-disabled="isEditDisabled() || isEditMode() || appointment.appointmentKind === 'WalkIn'" >
 
                         <span class="checkbox-text" ng-model="appointment.setRecurring">
                             {{'SET_RECURRING_APPOINTMENT' | translate}}</span>
