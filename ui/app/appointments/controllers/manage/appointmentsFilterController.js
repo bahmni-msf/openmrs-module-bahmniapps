@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('bahmni.appointments')
-    .controller('AppointmentsFilterController', ['$scope', '$state', '$rootScope', '$q', '$translate', 'appointmentsServiceService', 'spinner', 'ivhTreeviewMgr', 'providerService', 'appService',
-        function ($scope, $state, $rootScope, $q, $translate, appointmentsServiceService, spinner, ivhTreeviewMgr, providerService, appService) {
+    .controller('AppointmentsFilterController', ['$scope', '$state', '$rootScope', '$q', '$translate', 'appointmentsServiceService', 'spinner', 'ivhTreeviewMgr', 'providerService', 'appService', 'locationService',
+        function ($scope, $state, $rootScope, $q, $translate, appointmentsServiceService, spinner, ivhTreeviewMgr, providerService, appService, locationService) {
             var init = function () {
                 $scope.isSpecialityEnabled = appService.getAppDescriptor().getConfigValue('enableSpecialities');
                 $scope.isServiceTypeEnabled = appService.getAppDescriptor().getConfigValue('enableServiceTypes');
@@ -22,7 +22,9 @@ angular.module('bahmni.appointments')
                 }
                 var params = {v: "custom:(display,person,uuid,retired,attributes:(attributeType:(display),value,voided))"};
 
-                spinner.forPromise($q.all([appointmentsServiceService.getAllServicesWithServiceTypes(), providerService.list(params)]).then(function (response) {
+                spinner.forPromise($q.all([appointmentsServiceService.getAllServicesWithServiceTypes(), providerService.list(params), locationService.getAllByTag("Appointment Location")]).then(function (response) {
+                    $scope.locations = response[2].data.results;
+
                     $scope.providers = _.filter(response[1].data.results, function (provider) {
                         return _.find(provider.attributes, function (attribute) {
                             return !attribute.voided && !provider.retired && attribute.value && attribute.attributeType.display === Bahmni.Appointments.Constants.availableForAppointments;
@@ -76,6 +78,10 @@ angular.module('bahmni.appointments')
                         return _.includes($state.params.filterParams.providerUuids, provider.uuid);
                     });
 
+                    $scope.selectedLocations = _.filter($scope.locations, function (location) {
+                        return _.includes($state.params.filterParams.locationUuids, location.uuid);
+                    });
+
                     if (!_.isEmpty($state.params.filterParams)) {
                         ivhTreeviewMgr.selectEach($scope.selectedSpecialities, $state.params.filterParams.serviceUuids);
                     }
@@ -102,6 +108,7 @@ angular.module('bahmni.appointments')
                     serviceUuids: [],
                     serviceTypeUuids: [],
                     providerUuids: [],
+                    locationUuids: [],
                     statusList: []
                 };
             };
@@ -118,6 +125,7 @@ angular.module('bahmni.appointments')
                     ivhTreeviewMgr.deselectAll($scope.selectedSpecialities, false);
                 }
                 $scope.selectedProviders = [];
+                $scope.selectedLocations = [];
                 $scope.selectedStatusList = [];
                 $scope.showSelected = false;
                 $scope.filterSelectedValues = undefined;
@@ -184,6 +192,10 @@ angular.module('bahmni.appointments')
 
                 $state.params.filterParams.providerUuids = _.map($scope.selectedProviders, function (provider) {
                     return provider.uuid;
+                });
+
+                $state.params.filterParams.locationUuids = _.map($scope.selectedLocations, function (location) {
+                    return location.uuid;
                 });
 
                 $state.params.filterParams.statusList = _.map($scope.selectedStatusList, function (status) {
