@@ -425,11 +425,19 @@ describe('AppointmentsFilterController', function () {
         expect(scope.locations.length).toBe(2)
     });
 
-    it('should set the selectedLocations', function () {
+    iit('should set the selectedLocations as filter params', function () {
         q.all.and.returnValue(specUtil.simplePromise([servicesWithTypes, providers, locations]));
-        state.params.filterParams.locationUuids = ["0b3fa14c-2402-468a-bdc3-e0c8c67e9522"];
+        scope.selectedLocations = [{
+            display: "IPD",
+            uuid: "0b3fa14c-2402-468a-bdc3-e0c8c67e9522",
+            name: "IPD",
+            description: null,
+            address1: null
+        }]
         createController();
+        scope.applyFilter();
         expect(scope.selectedLocations.length).toBe(1);
+        expect(state.params.filterParams.locationUuids.length).toBe(1);
     });
 
 
