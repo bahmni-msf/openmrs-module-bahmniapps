@@ -78,10 +78,6 @@ angular.module('bahmni.appointments')
                         return _.includes($state.params.filterParams.providerUuids, provider.uuid);
                     });
 
-                    $scope.selectedLocations = _.filter($scope.locations, function (location) {
-                        return _.includes($state.params.filterParams.locationUuids, location.uuid);
-                    });
-
                     if (!_.isEmpty($state.params.filterParams)) {
                         ivhTreeviewMgr.selectEach($scope.selectedSpecialities, $state.params.filterParams.serviceUuids);
                     }
