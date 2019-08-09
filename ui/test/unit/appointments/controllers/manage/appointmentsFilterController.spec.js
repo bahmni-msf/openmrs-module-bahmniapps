@@ -425,7 +425,7 @@ describe('AppointmentsFilterController', function () {
         expect(scope.locations.length).toBe(2)
     });
 
-    iit('should set the selectedLocations as filter params', function () {
+    it('should set the selectedLocations as filter params', function () {
         q.all.and.returnValue(specUtil.simplePromise([servicesWithTypes, providers, locations]));
         scope.selectedLocations = [{
             display: "IPD",
