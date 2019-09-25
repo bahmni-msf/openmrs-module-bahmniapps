@@ -2,8 +2,9 @@
 
 angular.module('bahmni.common.domain')
     .service('observationsService', ['$http', function ($http) {
-        this.fetch = function (patientUuid, conceptNames, scope, numberOfVisits, visitUuid, obsIgnoreList, filterObsWithOrders, patientProgramUuid) {
-            var params = {concept: conceptNames};
+        this.fetch = function (patientUuid, conceptNames, scope, numberOfVisits, visitUuid, obsIgnoreList,
+                               filterObsWithOrders, patientProgramUuid, loadComplexData) {
+            var params = {concept: conceptNames, loadComplexData: loadComplexData ? loadComplexData : false};
             if (obsIgnoreList) {
                 params.obsIgnoreList = obsIgnoreList;
             }
@@ -26,30 +27,30 @@ angular.module('bahmni.common.domain')
             });
         };
 
-        this.getByUuid = function (observationUuid) {
+        this.getByUuid = function (observationUuid, loadComplexData) {
             return $http.get(Bahmni.Common.Constants.observationsUrl, {
-                params: {observationUuid: observationUuid},
+                params: {observationUuid: observationUuid, loadComplexData: loadComplexData ? loadComplexData : false},
                 withCredentials: true
             });
         };
 
-        this.getRevisedObsByUuid = function (observationUuid) {
+        this.getRevisedObsByUuid = function (observationUuid, loadComplexData) {
             return $http.get(Bahmni.Common.Constants.observationsUrl, {
-                params: {observationUuid: observationUuid, revision: "latest"},
+                params: {observationUuid: observationUuid, revision: "latest", loadComplexData: loadComplexData ? loadComplexData :false},
                 withCredentials: true
             });
         };
 
-        this.fetchForEncounter = function (encounterUuid, conceptNames) {
+        this.fetchForEncounter = function (encounterUuid, conceptNames, loadComplexData) {
             return $http.get(Bahmni.Common.Constants.observationsUrl, {
-                params: {encounterUuid: encounterUuid, concept: conceptNames},
+                params: {encounterUuid: encounterUuid, concept: conceptNames, loadComplexData: loadComplexData ? loadComplexData : false},
                 withCredentials: true
             });
         };
 
-        this.fetchForPatientProgram = function (patientProgramUuid, conceptNames, scope, obsIgnoreList) {
+        this.fetchForPatientProgram = function (patientProgramUuid, conceptNames, scope, obsIgnoreList, loadComplexData) {
             return $http.get(Bahmni.Common.Constants.observationsUrl, {
-                params: {patientProgramUuid: patientProgramUuid, concept: conceptNames, scope: scope, obsIgnoreList: obsIgnoreList},
+                params: {patientProgramUuid: patientProgramUuid, concept: conceptNames, scope: scope, obsIgnoreList: obsIgnoreList, loadComplexData: loadComplexData ? loadComplexData : false},
                 withCredentials: true
             });
         };
