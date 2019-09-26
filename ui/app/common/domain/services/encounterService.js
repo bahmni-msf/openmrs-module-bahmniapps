@@ -133,6 +133,7 @@ angular.module('bahmni.common.domain')
             };
 
             this.find = function (params) {
+                params.loadComplexData = params.loadComplexData ? params.loadComplexData : false;
                 return $http.post(Bahmni.Common.Constants.bahmniEncounterUrl + '/find', params, {
                     withCredentials: true
                 });
