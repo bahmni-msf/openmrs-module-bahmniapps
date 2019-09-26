@@ -73,7 +73,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
 
             scope.enrollment = "enrollmentUuid";
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&enrollment=enrollmentUuid&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&enrollment=enrollmentUuid&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var html = '<obs-to-obs-flow-sheet patient="patient" section="section" is-on-dashboard="true" enrollment="enrollment"></obs-to-obs-flow-sheet>';
@@ -110,7 +110,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var element = compile(simpleHtml)(scope);
@@ -148,7 +148,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var element = compile(simpleHtml)(scope);
@@ -187,7 +187,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var element = compile(simpleHtml)(scope);
@@ -233,7 +233,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var element = compile(simpleHtml)(scope);
@@ -278,7 +278,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var element = compile(simpleHtml)(scope);
@@ -327,7 +327,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var element = compile(simpleHtml)(scope);
@@ -365,7 +365,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var element = compile(simpleHtml)(scope);
@@ -410,7 +410,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var element = compile(simpleHtml)(scope);
@@ -459,7 +459,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var element = compile(simpleHtml)(scope);
@@ -507,7 +507,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var element = compile(simpleHtml)(scope);
@@ -549,7 +549,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var element = compile(simpleHtml)(scope);
@@ -590,7 +590,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var element = compile(simpleHtml)(scope);
@@ -639,7 +639,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var element = compile(simpleHtml)(scope);
@@ -682,7 +682,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var element = compile(simpleHtml)(scope);
@@ -734,7 +734,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var element = compile(simpleHtml)(scope);
@@ -786,7 +786,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=TemplateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=TemplateName&v=custom:(uuid,names,displayString)').respond("<div>dummy</div>");
 
             var element = compile(simpleHtml)(scope);
@@ -836,7 +836,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
             scope.patient = {
                 "uuid": "patientUuid"
             };
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&formNames=formName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&formNames=formName&loadComplexData=false&patientUuid=patientUuid').respond({});
 
             var element = compile(simpleHtml)(scope);
 
@@ -889,7 +889,7 @@ describe('obsToObsFlowSheet DisplayControl', function () {
                 "uuid": "patientUuid"
             };
 
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=templateName&patientUuid=patientUuid').respond({});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?conceptNames=Bacteriology,+Rifampicin+result&conceptNames=Bacteriology,+Ethambutol+result&conceptSet=templateName&loadComplexData=false&patientUuid=patientUuid').respond({});
             mockBackend.expectGET('/openmrs/ws/rest/v1/concept?s=byFullySpecifiedName&name=templateName&v=custom:(uuid,names,displayString)')
                 .respond({"results":[{"uuid":"uuid","names":[{"display":"TemplateName","uuid":"uuid1","name":"TemplateName"}],"displayString":"MD, Medication"}]});
             var element = compile(simpleHtml)(scope);
