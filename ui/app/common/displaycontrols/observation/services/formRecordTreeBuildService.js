@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('bahmni.common.displaycontrol.observation')
-    .service('formRecordTreeBuildService', ['formService','$http','$window', function (formService,$http,$window) {
+    .service('formRecordTreeBuildService', ['formService', '$http', '$window', function (formService, $http, $window) {
         var self = this;
 
         self.build = function (bahmniObservations, hasNoHierarchy) {
@@ -104,11 +104,11 @@ angular.module('bahmni.common.displaycontrol.observation')
                                 var formDef = JSON.parse(formDetailsAsString);
                                 formDef.version = observationForm.version;
                                 var locale = $window.localStorage["NG_TRANSLATE_LANG_KEY"] || "en";
-                                return formService.getFormTranslate( formDef.name,formDef.version,locale)
+                                return formService.getFormTranslate(formDef.name, formDef.version, locale)
                                     .then(function (response) {
                                         var translationData = response.data;
-                                forms.push(self.updateObservationsWithRecordTree(formDef, form, translationData));
-                            });
+                                        forms.push(self.updateObservationsWithRecordTree(formDef, form, translationData));
+                                    });
                             }
                             observation.value = forms;
                         });
@@ -140,7 +140,7 @@ angular.module('bahmni.common.displaycontrol.observation')
         self.updateObservationsWithRecordTree = function (formDef, form, translationData) {
             var recordTree = getRecordTree(formDef, form.groupMembers);
             recordTree = JSON.parse(JSON.stringify(recordTree));
-            self.createGroupMembers(recordTree, form, form.groupMembers, translationData );
+            self.createGroupMembers(recordTree, form, form.groupMembers, translationData);
             return form;
         };
 
@@ -154,8 +154,8 @@ angular.module('bahmni.common.displaycontrol.observation')
                     }
                 };
                 var translationKey = column.translationKey;
-                if(translationData && translationData.labels && translationData.labels[translationKey][0] !== translationKey){
-                    obsGroup.concept.shortName =  translationData.labels[translationKey][0];
+                if (translationData && translationData.labels && translationData.labels[translationKey][0] !== translationKey) {
+                    obsGroup.concept.shortName = translationData.labels[translationKey][0];
                 }
                 else {
                     obsGroup.concept.shortName = column.value;
@@ -185,7 +185,7 @@ angular.module('bahmni.common.displaycontrol.observation')
                     var recordObservations = self.getRecordObservations(record.formFieldPath, obsList);
                     var recordConceptTranslations = translationData.concepts[record.control.label.translationKey];
                     _.forEach(recordObservations, function (recordObservation) {
-                        if(recordConceptTranslations && recordConceptTranslations[0] !== record.control.label.translationKey) {
+                        if (recordConceptTranslations && recordConceptTranslations[0] !== record.control.label.translationKey) {
                             recordObservation.concept.shortName = recordConceptTranslations[0];
                         }
                         obsGroup.groupMembers.push(recordObservation);
@@ -230,8 +230,8 @@ angular.module('bahmni.common.displaycontrol.observation')
                 }
             };
             var translationKey = record.control.label.translationKey;
-            if(translationData && translationData.labels && translationData.labels[translationKey][0] !== translationKey){
-                obsGroup.concept.shortName =  translationData.labels[translationKey][0];
+            if (translationData && translationData.labels && translationData.labels[translationKey][0] !== translationKey) {
+                obsGroup.concept.shortName = translationData.labels[translationKey][0];
             }
             else {
                 obsGroup.concept.shortName = record.control.label.value;
