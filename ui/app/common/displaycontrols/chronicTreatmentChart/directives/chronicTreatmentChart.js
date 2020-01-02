@@ -22,7 +22,7 @@ angular.module('bahmni.common.displaycontrol.chronicTreatmentChart').directive('
                             }
                         }
                     };
-                    $scope.regimen = $scope.section.regimenDescendingOrder
+                    $scope.regimen = $scope.section.dateSort == "desc"
                         ? {headers: data.headers, rows: data.rows.reverse()} : data;
                     if (_.isEmpty($scope.regimen.rows)) {
                         $scope.$emit("no-data-present-event");
