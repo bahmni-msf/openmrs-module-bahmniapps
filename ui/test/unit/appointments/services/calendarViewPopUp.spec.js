@@ -77,7 +77,7 @@ describe('CalendarViewPopUp', function () {
         confirmBox.and.callFake(function (config) {
             var close = jasmine.createSpy('close');
             config.scope.yes(close).then(function () {
-                expect(appointmentsService.changeStatus).toHaveBeenCalledWith(appointments[0].uuid, toStatus, undefined, undefined);
+                expect(appointmentsService.changeStatus).toHaveBeenCalledWith(appointments[0].uuid, toStatus, undefined);
                 expect(appointments[0].status).toBe(toStatus);
                 expect(close).toHaveBeenCalled();
                 expect(messagingService.showMessage).toHaveBeenCalledWith('info', message);
@@ -193,38 +193,6 @@ describe('CalendarViewPopUp', function () {
         expect(confirmBox).toHaveBeenCalled();
     });
 
-    it('should show a pop up with option to cancel all appointments on confirmAction', function () {
-        var appointment = {uuid: 'appointmentUuid', recurringPattern: { id: ''}};
-        var toStatus = 'Cancelled';
-        var onDate = new Date();
-        var translatedMessage = 'Are you sure you want change status to ' + toStatus + '?';
-        var recurrenceIndicationMessage = 'This is a recurring appointment';
-
-        $translate.instant.and.callFake(function (value) {
-            if (value === 'APPOINTMENT_STATUS_CHANGE_CONFIRM_MESSAGE')
-                return translatedMessage;
-            else
-                return recurrenceIndicationMessage;
-        });
-
-        confirmBox.and.callFake(function (config) {
-            expect($translate.instant.calls.allArgs()).toEqual( [[ 'APPOINTMENT_STATUS_CHANGE_CONFIRM_MESSAGE', { toStatus : toStatus } ], [ 'RECURRENCE_INDICATION_MESSAGE' ]]);
-            expect(config.scope.message).toEqual(translatedMessage);
-            expect(config.scope.recurrenceIndicationMessage).toEqual(recurrenceIndicationMessage);
-
-            expect(config.scope.no).toEqual(jasmine.any(Function));
-            expect(config.scope.yes).toEqual(jasmine.any(Function));
-            expect(config.actions).toEqual([{name: 'yes', display: 'RECURRENCE_THIS_APPOINTMENT'},
-                {name: 'yes_all', display: 'RECURRENCE_ALL_APPOINTMENTS'},
-                {name: 'no', display: 'DONT_CANCEL_KEY', class: 'right'}]);
-            expect(config.className).toEqual('ngdialog-theme-default');
-        });
-        var config = {scope: {appointments: [appointment]}};
-        calendarViewPopUp(config);
-        popUpScope.confirmAction(appointment, toStatus, onDate);
-        expect(confirmBox).toHaveBeenCalled();
-    });
-
     it('should change status on confirmation on confirmAction', function () {
         var appointment = {uuid: 'appointmentUuid', status: 'Scheduled'};
         var toStatus = 'Cancelled';
@@ -234,7 +202,7 @@ describe('CalendarViewPopUp', function () {
         confirmBox.and.callFake(function (config) {
             var close = jasmine.createSpy('close');
             config.scope.yes(close).then(function () {
-                expect(appointmentsService.changeStatus).toHaveBeenCalledWith(appointment.uuid, toStatus, undefined, undefined);
+                expect(appointmentsService.changeStatus).toHaveBeenCalledWith(appointment.uuid, toStatus, undefined);
                 expect(appointment.status).toBe(toStatus);
                 expect(close).toHaveBeenCalled();
                 expect(messagingService.showMessage).toHaveBeenCalledWith('info', message);

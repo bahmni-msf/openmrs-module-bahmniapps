@@ -309,15 +309,11 @@
         padding-top: 10px;
         color: #0BB118;
       }
-      &.checkbox-container {
+      &.walk-in-app {
         margin-left: 125px;
-        label {
-          margin: 0px;
-          width: auto;
-          .checkbox-text {
-            display: inline-block;
-            margin-top: 3px;
-          }
+        .walk-in-text {
+          display: inline-block;
+          margin-top: 3px;
         }
       }
     }
@@ -340,7 +336,7 @@
       div {
         display: inline-block;
         float: left;
-        width: calc(100% - 120px);
+        width: calc(100% - 130px);
         padding: 8px 10px;
         box-sizing: border-box;
         ul {
@@ -353,12 +349,6 @@
               margin-left: 5px;
             }
           }
-        }
-      }
-      &.appointment-instance-container {
-        div {
-          display: flex;
-          justify-content: space-between;
         }
       }
     }
@@ -379,98 +369,6 @@
     input:disabled {
       color: #ccc;
     }
-    .recurrence-container {
-      .none {
-        display: none !important;
-      }
-      margin-bottom: 0px;
-      > * {
-        width: 100%;
-        padding: 0px;
-        div {
-          padding: 0px 10px;
-          margin-bottom: 0px;
-        }
-      }
-
-      input:not([type=radio]):not([type=checkbox]), select {
-        height: 35px;
-        border-radius: 5px;
-        box-sizing: border-box;
-        width: 60px;
-        margin-top: 0px;
-      }
-
-      .recurrence-period-container {
-        .recurrence-period-value-container {
-          display: flex;
-          .recurrence-type {
-            min-width: 150px;
-            margin-left: 15px;
-          }
-        }
-      }
-
-      .recurrence-days-container {
-        .recurrence-days-value-container {
-          padding-right: 0px;
-          margin-bottom: 5px;
-          label {
-            display: inline-flex;
-            width: 70px;
-            div {
-              display: inline-block;
-              width: auto;
-              line-height: normal;
-              padding-left: 5px;
-            }
-          }
-        }
-      }
-
-      .recurrence-end-container {
-        .recurrence-end-value-container {
-          *:not(input) {
-            width: auto;
-          }
-          > label {
-            display: flex;
-            align-items: center;
-            margin: 0px;
-            &:not(:last-child) {
-              margin-bottom: 10px;
-            }
-            input[type=radio] {
-              min-width:auto;
-            }
-            .recurrence-end-option-value {
-              padding: 0px;
-              div {
-                padding: 0px;
-                span {
-                  padding: 0px 5px;
-                  &.common-indent {
-                    width: 45px;
-                    display: inline-block;
-                  }
-                }
-                .end-date-value {
-                  width: 160px;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-
-
-
-
-
-
-
   }
   .create-appointment-action-btn {
     float: right;
@@ -615,10 +513,10 @@
     color: #ff0000;
     position: absolute;
     z-index: 30;
-    top: 178px;
+    top: 214px;
     display: inline-block;
     width: 200px;
-    left: 95px;
+    left: 218px;
     right: 0;
     margin: auto;
     padding: 10px 5px;
@@ -626,7 +524,7 @@
     border-radius: 0 0 3px 3px;
   }
   &.app-filter-open .calendar-no-appointment {
-    left: 265px;
+    left: 173px;
   }
 }
 

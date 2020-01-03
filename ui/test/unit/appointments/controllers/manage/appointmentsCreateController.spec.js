@@ -17,25 +17,13 @@ describe("AppointmentsCreateController", function () {
     beforeEach(function () {
         appointmentsServiceService = jasmine.createSpyObj('appointmentsServiceService', ['getServiceLoad', 'getService']);
         appointmentsServiceService.getServiceLoad.and.returnValue(specUtil.simplePromise({}));
-        appointmentsService = jasmine.createSpyObj('appointmentsService', ['save','update','search']);
+        appointmentsService = jasmine.createSpyObj('appointmentsService', ['save','search']);
         appointmentsService.save.and.returnValue(specUtil.simplePromise({}));
-        appointmentsService.update.and.returnValue(specUtil.simplePromise({}));
         appService = jasmine.createSpyObj('appService', ['getAppDescriptor']);
         appDescriptor = {
             getConfigValue: function (input) {
                 if (input === "patientSearchUrl") {
                     return "patientSearchUrl";
-                }
-                else if(input === "recurrence") {
-                    return {
-                        recurrenceTypes: [
-                            "Day"
-                        ],
-                        defaultNumberOfOccurrences: 10
-                    };
-                }
-                else if (input == "startOfWeek") {
-                    return 3;
                 }
                 else
                     return true;
@@ -250,7 +238,7 @@ describe("AppointmentsCreateController", function () {
             $scope.appointment = newAppointment;
             $scope.save();
 
-            expect(appointmentsService.update).toHaveBeenCalled();
+            expect(appointmentsService.save).toHaveBeenCalled();
         });
 
         it('should not conflict when the same patient has another appointment at end time of previous appointment', function () {
@@ -279,7 +267,7 @@ describe("AppointmentsCreateController", function () {
             $scope.appointment = newAppointment;
             $scope.save();
 
-            expect(appointmentsService.update).toHaveBeenCalled();
+            expect(appointmentsService.save).toHaveBeenCalled();
         });
 
         it('should initialize patientAppointments, if an appointment is editing', function () {
@@ -1261,303 +1249,6 @@ describe("AppointmentsCreateController", function () {
             createController();
 
             expect($scope.isFieldEditNotAllowed()).toBeTruthy();
-        });
-    });
-
-    describe('recurring appointments', function () {
-
-        it('should set recurrenceTypes on init', function () {
-            createController();
-            expect($scope.recurrenceTypes).toEqual(["Day"]);
-        });
-
-        it('should set default recurrence frequency on init', function () {
-            createController();
-            expect($scope.appointment.recurringPattern.frequency).toBe(10);
-        });
-
-        it('should set weekDays based on the config variable startOfWeek', function() {
-            createController();
-            expect($scope.weekDays).toEqual(["TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY",
-                "SATURDAY", "SUNDAY", "MONDAY"])
-        });
-
-        it('should set weekDays based on the config variable startOfWeek', function() {
-            appDescriptor.getConfigValue = function (input) {
-                if (input === "startOfWeek") {
-                    return 0;
-                }
-            };
-            createController();
-            expect($scope.weekDays).toEqual(["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY",
-                "SATURDAY", "SUNDAY"])
-        });
-
-        it('should call save of appointmentsService when appointment is recurring', function() {
-            createController();
-            $scope.createAppointmentForm = {$invalid: false};
-            var date = moment().toDate();
-            var recurringPattern  = {
-                frequency: 2,
-                period: 2,
-                type: "Day"
-            };
-            $scope.appointment = {
-                patient: {uuid: 'patientUuid'},
-                service: {name: 'Cardiology'},
-                date: date,
-                startTime: '09:00 am',
-                endTime: '11:00 am',
-                setRecurring: true,
-                recurringPattern: recurringPattern
-            };
-            $scope.patientAppointments = [];
-            $state.params = {};
-            var appointmentRequest = Bahmni.Appointments.Appointment.create($scope.appointment);
-            appointmentRequest.recurringPattern = recurringPattern;
-
-            $scope.save();
-
-            expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
-        });
-
-        it('should call save of appointmentsService with no recurringPatternKey in appointment request ' +
-            'when appointment is not recurring', function() {
-            createController();
-            $scope.createAppointmentForm = {$invalid: false};
-            var date = moment().toDate();
-            var recurringPattern  = {};
-            $scope.appointment = {
-                patient: {uuid: 'patientUuid'},
-                service: {name: 'Cardiology'},
-                date: date,
-                startTime: '09:00 am',
-                endTime: '11:00 am',
-                setRecurring: false,
-                recurringPattern: recurringPattern
-            };
-            $scope.patientAppointments = [];
-            $state.params = {};
-            var appointmentRequest = Bahmni.Appointments.Appointment.create($scope.appointment);
-
-            $scope.save();
-
-            expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
-        });
-
-        it('should call save method of appointmentsService with no recurringPattern key when' +
-            ' the user checked the set recurring, filled recurring details and unchecked set recurring', function() {
-            createController();
-            $scope.createAppointmentForm = {$invalid: false};
-            var date = moment().toDate();
-            var recurringPattern  = {
-                frequency: 2,
-                period: 2,
-                type: "Day"
-            };
-            $scope.appointment = {
-                patient: {uuid: 'patientUuid'},
-                service: {name: 'Cardiology'},
-                date: date,
-                startTime: '09:00 am',
-                endTime: '11:00 am',
-                setRecurring: false,
-                recurringPattern: recurringPattern
-            };
-            $scope.patientAppointments = [];
-            $state.params = {};
-            var appointmentRequest = Bahmni.Appointments.Appointment.create($scope.appointment);
-
-            $scope.save();
-
-            expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
-        });
-
-        it('should call save of appointmentsService when appointment is recurring with end date', function() {
-            createController();
-            $scope.createAppointmentForm = {$invalid: false};
-            var date = moment().toDate();
-            var recurringPattern  = {
-                endDate: moment().toDate(),
-                period: 2,
-                type: "Day"
-            };
-            $scope.appointment = {
-                patient: {uuid: 'patientUuid'},
-                service: {name: 'Cardiology'},
-                date: date,
-                startTime: '09:00 am',
-                endTime: '11:00 am',
-                setRecurring: true,
-                recurringPattern: recurringPattern
-            };
-            $scope.patientAppointments = [];
-            $state.params = {};
-            var appointmentRequest = Bahmni.Appointments.Appointment.create($scope.appointment);
-            appointmentRequest.recurringPattern = recurringPattern;
-
-            $scope.save();
-
-            expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
-        });
-
-        it('should call save of appointmentsService when appointment is recurring weekly with end date', function() {
-            createController();
-            $scope.createAppointmentForm = {$invalid: false};
-            var date = moment().toDate();
-            var recurringPattern  = {
-                endDate: moment().toDate(),
-                period: 2,
-                daysOfWeek: ["Saturday", "Wednesday"],
-                type: "Week"
-            };
-            $scope.appointment = {
-                patient: {uuid: 'patientUuid'},
-                service: {name: 'Cardiology'},
-                date: date,
-                startTime: '09:00 am',
-                endTime: '11:00 am',
-                setRecurring: true,
-                recurringPattern: recurringPattern
-            };
-            $scope.patientAppointments = [];
-            $state.params = {};
-            var appointmentRequest = Bahmni.Appointments.Appointment.create($scope.appointment);
-            appointmentRequest.recurringPattern = recurringPattern;
-
-            $scope.save();
-
-            expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
-        });
-
-        it('should call save of appointmentsService when appointment is recurring weekly with frequency', function() {
-            createController();
-            $scope.createAppointmentForm = {$invalid: false};
-            var date = moment().toDate();
-            var recurringPattern  = {
-                frequency: 2,
-                period: 2,
-                daysOfWeek: ["Saturday", "Wednesday"],
-                type: "Week"
-            };
-            $scope.appointment = {
-                patient: {uuid: 'patientUuid'},
-                service: {name: 'Cardiology'},
-                date: date,
-                startTime: '09:00 am',
-                endTime: '11:00 am',
-                setRecurring: true,
-                recurringPattern: recurringPattern
-            };
-            $scope.patientAppointments = [];
-            $state.params = {};
-            var appointmentRequest = Bahmni.Appointments.Appointment.create($scope.appointment);
-            appointmentRequest.recurringPattern = recurringPattern;
-
-            $scope.save();
-
-            expect(appointmentRequest.endDate).toBeUndefined();
-            expect(appointmentsService.save).toHaveBeenCalledWith(appointmentRequest);
-        });
-
-        it('should set setRecurring to true in edit mode for recurring appointment', function() {
-            var date = moment().toDate();
-            var recurringPattern  = {
-                frequency: 2,
-                period: 2,
-                daysOfWeek: ["Saturday", "Wednesday"],
-                type: "Week"
-            };
-            var appointment = {
-                uuid: 'uuid',
-                patient: {uuid: 'patientUuid'},
-                service: {name: 'Cardiology'},
-                date: date,
-                startTime: '09:00 am',
-                endTime: '11:00 am',
-                recurringPattern: recurringPattern
-            };
-            appointmentContext = {appointment: appointment};
-            appointmentsService.search.and.returnValue(specUtil.simplePromise([]));
-
-            createController();
-
-            expect($scope.appointment.setRecurring).toBeTruthy();
-        });
-
-        it('should call update when edit and save recurring appointment', function() {
-            createController();
-            var date = moment().toDate();
-            var recurringPattern  = {
-                frequency: 2,
-                period: 2,
-                daysOfWeek: ["Saturday", "Wednesday"],
-                type: "Week"
-            };
-            var appointment = {
-                uuid: 'uuid',
-                patient: {uuid: 'patientUuid'},
-                service: {name: 'Cardiology'},
-                date: date,
-                startTime: '09:00 am',
-                endTime: '11:00 am',
-                recurringPattern: recurringPattern,
-                applyForAll: true
-            };
-            appointmentContext = {appointment: appointment};
-            appointmentsService.update.and.returnValue(specUtil.simplePromise([]));
-
-            $scope.appointment = appointment;
-            $scope.patientAppointments = [];
-            $state.params = {};
-
-            $scope.createAppointmentForm = {$invalid: false};
-            $scope.save();
-            expect(appointmentsService.update).toHaveBeenCalled();
-        });
-
-        it('should not set setRecurring to true for non recurring appointment in edit mode', function () {
-            var date = moment().toDate();
-            var appointment = {
-                uuid: 'uuid',
-                patient: {uuid: 'patientUuid'},
-                service: {name: 'Cardiology'},
-                date: date,
-                startTime: '09:00 am',
-                endTime: '11:00 am',
-                recurringPattern: undefined
-            };
-            appointmentContext = {appointment: appointment};
-            appointmentsService.search.and.returnValue(specUtil.simplePromise([]));
-
-            createController();
-
-            expect($scope.appointment.setRecurring).toBeFalsy();
-        });
-
-        it('should not replace frequency with default occurrences when the appointment is in edit mode', function () {
-            var date = moment().toDate();
-            var recurringPattern  = {
-                frequency: 2,
-                period: 2,
-                daysOfWeek: ["Saturday", "Wednesday"],
-                type: "Week"
-            };
-            var appointment = {
-                uuid: 'uuid',
-                patient: {uuid: 'patientUuid'},
-                service: {name: 'Cardiology'},
-                date: date,
-                startTime: '09:00 am',
-                endTime: '11:00 am',
-                recurringPattern: recurringPattern
-            };
-            appointmentContext = {appointment: appointment};
-            appointmentsService.search.and.returnValue(specUtil.simplePromise([]));
-
-            createController();
-
-            expect($scope.appointment.recurringPattern.frequency).toBe(2);
         });
     });
 });

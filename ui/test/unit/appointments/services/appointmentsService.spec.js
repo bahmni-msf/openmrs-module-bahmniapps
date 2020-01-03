@@ -8,10 +8,9 @@ describe('AppointmentsService', function () {
     });
 
     beforeEach(module(function ($provide) {
-        mockHttp = jasmine.createSpyObj('$http', ['get', 'post', 'put']);
+        mockHttp = jasmine.createSpyObj('$http', ['get', 'post']);
         mockHttp.get.and.returnValue(specUtil.simplePromise({}));
         mockHttp.post.and.returnValue(specUtil.simplePromise({}));
-        mockHttp.put.and.returnValue(specUtil.simplePromise({}));
         appDescriptor = jasmine.createSpyObj('appDescriptor', ['formatUrl']);
         appService = jasmine.createSpyObj('appService', ['getAppDescriptor']);
         appService.getAppDescriptor.and.returnValue(appDescriptor);
@@ -30,21 +29,20 @@ describe('AppointmentsService', function () {
         expect(mockHttp.post).toHaveBeenCalledWith(Bahmni.Appointments.Constants.createAppointmentUrl, appointment, params);
     });
 
-    it('should update the appointment', function () {
-        var appointment = {uuid: "uuid1"};
-        appointmentsService.update(appointment);
-        var headers = {"Accept": "application/json", "Content-Type": "application/json"};
-        var params = {withCredentials: true, headers: headers};
-        var updateUrl = appService.getAppDescriptor().formatUrl(Bahmni.Appointments.Constants.updateAppointmentUrl, {appointmentUuid: appointment.uuid})
-        expect(mockHttp.put).toHaveBeenCalledWith(updateUrl, appointment, params);
-    });
-
     it('should search for appointments with given info', function () {
         var appointmentInfo = {};
         appointmentsService.search(appointmentInfo);
         var headers = {"Accept": "application/json", "Content-Type": "application/json"};
         var params = {withCredentials: true, headers: headers};
         expect(mockHttp.post).toHaveBeenCalledWith(Bahmni.Appointments.Constants.searchAppointmentUrl, appointmentInfo, params);
+    });
+
+    it('should search for appointments with given start date and end date', function () {
+        var data = {startDate:"2018-09-07T18:30:00.000Z" , endDate:"2018-09-13T18:30:00.000Z"};
+        appointmentsService.searchAppointments(data);
+        var headers = {"Accept": "application/json", "Content-Type": "application/json"};
+        var params = {withCredentials: true, headers: headers};
+        expect(mockHttp.post).toHaveBeenCalledWith(Bahmni.Appointments.Constants.searchAppointmentsUrl, data, params);
     });
 
     it('should get all the appointments summary for all the service types', function () {
@@ -78,20 +76,13 @@ describe('AppointmentsService', function () {
         var appointment = {status: 'Scheduled', uuid: "7d162c29-3f12-11e4-adec-0800271c1b75"};
         var toStatus = "CheckedIn";
         var onDate = new Date();
-        var applyForAll = "true";
-        var timeZone = moment.tz.guess();
         var changeStatusUrl = Bahmni.Appointments.Constants.changeAppointmentStatusUrl;
         changeStatusUrl.replace('{{appointmentUuid}}', appointment.uuid);
         appDescriptor.formatUrl.and.returnValue(changeStatusUrl);
-        appointmentsService.changeStatus(appointment, toStatus, onDate, applyForAll);
+        appointmentsService.changeStatus(appointment, toStatus, onDate);
         var headers = {"Accept": "application/json", "Content-Type": "application/json"};
         var params = {withCredentials: true, headers: headers};
-        expect(mockHttp.post).toHaveBeenCalledWith(changeStatusUrl, {
-            'toStatus': toStatus,
-            'onDate': onDate,
-            'applyForAll': applyForAll,
-            'timeZone': timeZone
-        }, params);
+        expect(mockHttp.post).toHaveBeenCalledWith(changeStatusUrl, {'toStatus': toStatus, 'onDate': onDate},  params);
     });
 });
 
