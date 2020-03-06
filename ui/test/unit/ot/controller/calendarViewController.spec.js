@@ -340,10 +340,19 @@ describe("calendarViewController", function () {
     });
 
     it('should go to calendar view on click of calendar button', function () {
-       createController();
-       scope.calendarView();
-       expect(scope.weekOrDay).toEqual('day');
-       expect(scope.view).toEqual('Calendar');
+        createController();
+        scope.calendarView();
+        expect(scope.view).toEqual('Calendar');
+    });
+
+
+    it('should go to calender view on click of calendar button and weekly view should be displayed on click of weekly' +
+        ' button', function () {
+        createController();
+        scope.calendarView();
+        scope.goToCurrentWeek();
+        expect(scope.view).toEqual('Calendar');
+        expect(scope.weekOrDay).toEqual('week');
     });
 
     it('should go to list view on click of list view button', function () {

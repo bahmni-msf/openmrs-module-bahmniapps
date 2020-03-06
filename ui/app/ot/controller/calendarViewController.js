@@ -69,8 +69,6 @@ angular.module('bahmni.ot')
             };
 
             $scope.calendarView = function () {
-                $scope.weekOrDay = 'day';
-                $state.weekOrDay = $scope.weekOrDay;
                 $scope.view = 'Calendar';
                 $state.view = $scope.view;
             };
