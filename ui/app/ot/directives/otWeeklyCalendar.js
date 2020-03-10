@@ -7,7 +7,10 @@ angular.module('bahmni.ot')
             controller: "otCalendarController",
             scope: {
                 weekStartDate: "=",
-                viewDate: "="
+                viewDate: "=",
+                dayViewStart: "=",
+                dayViewEnd: "=",
+                dayViewSplit: "="
             },
             templateUrl: "../ot/views/otWeeklyCalendar.html"
         };
