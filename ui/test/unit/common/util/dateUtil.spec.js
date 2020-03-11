@@ -342,4 +342,26 @@ describe('DateUtil', function () {
         })
 
     });
+
+    describe("subtractISOWeekdays", function () {
+        it("should return weekday 1(Monday) when given weekday(Tuesday) subtracted to 1 weekday", function () {
+            expect(dateUtil.subtractISOWeekDays('2020-03-10T10:36:21.310', 1)).toBe(1);
+        });
+        it("should return weekday 3(Wednesday) when given weekday(Tuesday) subtracted to 6 weekdays", function () {
+            expect(dateUtil.subtractISOWeekDays('2020-03-10T10:36:21.310', 6)).toBe(3);
+        });
+        it("should return same weekday when number of days to subtract is undefined", function () {
+            expect(dateUtil.subtractISOWeekDays('2020-03-10T10:36:21.310', undefined)).toBe(2);
+        });
+    });
+    describe("getWeekStartDate", function () {
+        it("should return 2020-03-09(Monday)  when 1 weekday is subtracted from 2020-03-10 (Tuesday)", function () {
+            expect(dateUtil.getWeekStartDate('2020-03-10T10:36:21.310', 1).getDay()).toBe(1);
+        })
+    });
+    describe("getWeekEndDate", function () {
+        it("should return the end date for the given date", function () {
+            expect(dateUtil.getWeekEndDate('2020-03-10T10:36:21.310').getDate()).toBe(16);
+        });
+    });
 });

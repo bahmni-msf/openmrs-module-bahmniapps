@@ -6,7 +6,8 @@ angular.module('bahmni.ot')
             $scope.viewDate = $stateParams.viewDate || $state.viewDate || (moment().startOf('day')).toDate();
             $state.viewDate = $scope.viewDate;
             $scope.calendarConfig = appService.getAppDescriptor().getConfigValue("calendarView");
-
+            var weekStartDay = appService.getAppDescriptor().getConfigValue('startOfWeek') || Bahmni.OT.Constants.defaultWeekStartDayName;
+            $scope.startOfWeekCode = Bahmni.OT.Constants.weekDays[weekStartDay];
             var addLocationsForFilters = function () {
                 var locations = {};
                 _.each($scope.locations, function (location) {
@@ -14,7 +15,6 @@ angular.module('bahmni.ot')
                 });
                 $scope.filters.locations = locations;
             };
-
             var init = function () {
                 $scope.filterParams = $state.filterParams;
                 $scope.filters = {};
@@ -152,11 +152,10 @@ angular.module('bahmni.ot')
                 $scope.viewDate = Bahmni.Common.Util.DateUtil.addDays(date, 1);
                 $state.viewDate = $scope.viewDate;
             };
-
             $scope.goToCurrentWeek = function () {
-                $scope.weekStartDate = new Date(moment().startOf('week'));
+                $scope.weekStartDate = Bahmni.Common.Util.DateUtil.getWeekStartDate(moment().startOf('day').toDate(), $scope.startOfWeekCode);
                 $state.weekStartDate = $scope.weekStartDate;
-                $scope.weekEndDate = new Date(moment().endOf('week').endOf('day'));
+                $scope.weekEndDate = Bahmni.Common.Util.DateUtil.getWeekEndDate($scope.weekStartDate);
                 $state.weekEndDate = $scope.weekEndDate;
                 $scope.weekOrDay = 'week';
                 $state.weekOrDay = $scope.weekOrDay;
