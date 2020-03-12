@@ -289,7 +289,7 @@ Bahmni.Common.Util.DateUtil = {
         var daysToBeSubtracted = this.subtractISOWeekDays(date, startOfWeek);
         return moment(date).subtract(daysToBeSubtracted, 'days').toDate();
     },
-    getWeekEndDate: function (date) {
-        return moment(date).add(6, 'days').toDate();
+    getWeekEndDate: function (weekStartDate) {
+        return moment(weekStartDate).add(6, 'days').toDate();
     }
 };

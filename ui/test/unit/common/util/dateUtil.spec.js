@@ -360,7 +360,7 @@ describe('DateUtil', function () {
         })
     });
     describe("getWeekEndDate", function () {
-        it("should return the week end date for the given date", function () {
+        it("should return the week end date for the given week start date", function () {
             expect(dateUtil.getWeekEndDate('2020-03-10T10:36:21.310').getDate()).toBe(16);
         });
     });
