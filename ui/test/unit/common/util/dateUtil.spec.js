@@ -355,12 +355,12 @@ describe('DateUtil', function () {
         });
     });
     describe("getWeekStartDate", function () {
-        it("should return 2020-03-09(Monday)  when 1 weekday is subtracted from 2020-03-10 (Tuesday)", function () {
+        it("should return day code as 1 when start of week is passed as 1 (Monday) for given date 2020-03-10 (Tuesday)", function () {
             expect(dateUtil.getWeekStartDate('2020-03-10T10:36:21.310', 1).getDay()).toBe(1);
         })
     });
     describe("getWeekEndDate", function () {
-        it("should return the end date for the given date", function () {
+        it("should return the week end date for the given date", function () {
             expect(dateUtil.getWeekEndDate('2020-03-10T10:36:21.310').getDate()).toBe(16);
         });
     });
