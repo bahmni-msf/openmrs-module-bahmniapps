@@ -207,9 +207,8 @@ angular.module('bahmni.ot')
             };
 
             $scope.addNewSurgicalAppointment = function (surgicalAppointment) {
-                const surgicalAppointmentUrl = appService.getAppDescriptor().getConfigValue("surgicalAppointmentUrl") || "views/surgicalAppointment.html";
                 ngDialog.open({
-                    template: surgicalAppointmentUrl,
+                    template: "views/surgicalAppointment.html",
                     controller: "NewSurgicalAppointmentController",
                     closeByDocument: false,
                     className: 'ngdialog-theme-default surgical-appointment-dialog',
