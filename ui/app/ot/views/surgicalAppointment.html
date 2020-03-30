@@ -25,7 +25,7 @@
             </span>
         </p>
 
-        <div ng-repeat="attribute in attributes">
+        <div ng-repeat="attribute in isSurgeryAttributesConfigurationAvailableAndValid() ? getConfiguredAttributes() : attributes">
 
             <div ng-switch="attributeTypeName" ng-init="attributeTypeName = attribute.surgicalAppointmentAttributeType.name">
                 <p ng-switch-when="procedure">
