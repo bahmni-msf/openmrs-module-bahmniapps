@@ -26,13 +26,15 @@
         </p>
 
         <div ng-repeat="attribute in isSurgeryAttributesConfigurationAvailableAndValid() ? getConfiguredAttributes() : attributes">
-
+            <!--TODO Translations need to be revisited once dynamic translation key generation feature for attributes added by product -->
             <div ng-switch="attributeTypeName" ng-init="attributeTypeName = attribute.surgicalAppointmentAttributeType.name">
                 <p ng-switch-when="procedure">
                     <label class="surgeon-block surgeon-text">{{defaultAttributeTranslations.get(attributeTypeName) | translate}}</label>
                     <textarea class="text-section" id="procedureID" ng-model="attributes.procedure.value" msd-elastic> </textarea>
                 </p>
                 <p ng-switch-when="estTimeHours">
+                    <!--Since time and hours are displayed as one single attribute in UI, OT_SURGICAL_APPOINTMENT_MINUTES and
+                    OT_SURGICAL_APPOINTMENT_ESTIMATED_TIME have to be hard-coded-->
                     <label class="surgeon-block surgeon-text">{{'OT_SURGICAL_APPOINTMENT_ESTIMATED_TIME' | translate}}</label>
                     <input type="number" id="estTimeHoursID" required ng-model="attributes.estTimeHours.value" string-to-number min="0" max="23" step="1">
                     {{defaultAttributeTranslations.get(attributeTypeName) | translate}} :
