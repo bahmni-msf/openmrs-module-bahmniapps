@@ -203,9 +203,6 @@ describe("surgicalBlockController", function () {
         if (value === 'calendarView') {
             return {dayViewStart: '08:00', dayViewEnd: '18:00', dayViewSplit: '60'}
         }
-        if (value === 'surgicalAppointmentUrl') {
-            return undefined;
-        }
         return value;
     });
 
@@ -286,7 +283,7 @@ describe("surgicalBlockController", function () {
         return moment(dateValue,"YYYY-MM-DD HH:mm:ss").toDate();
     };
 
-    var createController = function (customAppService, customNgDialog) {
+    var createController = function () {
         controller('surgicalBlockController', {
             $scope: scope,
             $q: q,
@@ -295,10 +292,10 @@ describe("surgicalBlockController", function () {
             spinner: spinner,
             surgicalAppointmentService: surgicalAppointmentService,
             locationService: locationService,
-            appService: customAppService || appService,
+            appService: appService,
             messagingService: messagingService,
             surgicalAppointmentHelper: surgicalAppointmentHelper,
-            ngDialog: customNgDialog || ngDialog
+            ngDialog: ngDialog
         });
     };
 
@@ -462,43 +459,6 @@ describe("surgicalBlockController", function () {
 
         expect(ngDialog.open).toHaveBeenCalledWith(jasmine.objectContaining({
             template: "views/surgicalAppointment.html",
-            controller: "NewSurgicalAppointmentController",
-            closeByDocument: false,
-            className: 'ngdialog-theme-default surgical-appointment-dialog',
-            showClose: true,
-            scope: scope,
-            data: surgicalAppointment
-        }));
-    });
-
-    it("should open an ngDialog with data of given surgical appointment and with custom surgical appointment template" +
-        " url", function () {
-
-        var appService = jasmine.createSpyObj('appService', ['getAppDescriptor']);
-        var appDescriptor = jasmine.createSpyObj('appDescriptor', ['getConfigValue']);
-        var ngDialog = jasmine.createSpyObj('ngDialog', ['open', 'close']);
-        appService.getAppDescriptor.and.returnValue(appDescriptor);
-
-        appDescriptor.getConfigValue.and.callFake(function (value) {
-            if (value === 'surgicalAppointmentUrl') {
-                return 'implementation-specific-surgicalAppointment.html';
-            }
-            return value;
-        });
-
-        createController(appService, ngDialog);
-
-        var surgicalAppointment = {
-            id: "11",
-            patient: {uuid: "patientUuid"},
-            notes: "need more assistants",
-            sortWeight: 0,
-            surgicalAppointmentAttributes: uiSurgicalAppointmentAttributes
-        };
-        scope.addNewSurgicalAppointment(surgicalAppointment);
-
-        expect(ngDialog.open).toHaveBeenCalledWith(jasmine.objectContaining({
-            template: 'implementation-specific-surgicalAppointment.html',
             controller: "NewSurgicalAppointmentController",
             closeByDocument: false,
             className: 'ngdialog-theme-default surgical-appointment-dialog',
