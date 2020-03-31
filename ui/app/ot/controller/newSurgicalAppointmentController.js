@@ -126,7 +126,7 @@ angular.module('bahmni.ot')
             };
 
             $scope.getConfiguredAttributes = function () {
-                let configuredAttributes = [];
+                const configuredAttributes = [];
                 _.each($scope.configuredSurgeryAttributeNames, function (configuredAttributeName) {
                     configuredAttributes.push($scope.attributes[configuredAttributeName]);
                 });
