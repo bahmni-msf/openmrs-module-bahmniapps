@@ -7,6 +7,7 @@ angular.module('bahmni.ot')
                 $scope.surgicalForm = {
                     surgicalAppointments: []
                 };
+                $scope.configuredSurgeryAttributeNames = appService.getAppDescriptor().getConfigValue("surgeryAttributes");
                 $scope.defaultAttributeTranslations = new Map([['procedure', "OT_SURGICAL_APPOINTMENT_PROCEDURE"],
                     ['estTimeHours', "OT_SURGICAL_APPOINTMENT_HOURS"], ['estTimeMinutes', "OT_SURGICAL_APPOINTMENT_MINUTES"],
                     ['cleaningTime', "OT_SURGICAL_APPOINTMENT_CLEANING_TIME"], ['otherSurgeon', "OT_SURGICAL_APPOINTMENT_OTHER_SURGEON"],
@@ -229,6 +230,14 @@ angular.module('bahmni.ot')
                     var dayViewEnd = (calendarConfig.dayViewEnd || Bahmni.OT.Constants.defaultCalendarEndTime).split(':');
                     $scope.surgicalForm.endDatetime = Bahmni.Common.Util.DateUtil.addMinutes(moment($scope.surgicalForm.startDatetime).startOf('day').toDate(), (dayViewEnd[0] * 60 + parseInt(dayViewEnd[1])));
                 }
+            };
+
+            $scope.getConfiguredAttributes = function (attributes) {
+                return surgicalAppointmentHelper.getAttributesFromConfiguredNames(attributes, $scope.configuredSurgeryAttributeNames);
+            };
+
+            $scope.isSurgeryAttributesConfigurationAvailableAndValid = function () {
+                return $scope.configuredSurgeryAttributeNames && $scope.configuredSurgeryAttributeNames.length > 0;
             };
 
             spinner.forPromise(init());

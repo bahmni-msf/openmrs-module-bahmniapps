@@ -52,4 +52,14 @@ angular.module('bahmni.ot')
                 return appointment.patient.uuid === patient.uuid;
             });
         };
+
+        this.getAttributesFromConfiguredNames = function (attributes, configuredSurgeryAttributeNames) {
+            const configuredAttributes = [];
+            if (attributes != null) {
+                _.each(configuredSurgeryAttributeNames, function (configuredAttributeName) {
+                    configuredAttributes.push(attributes[configuredAttributeName]);
+                });
+            }
+            return configuredAttributes;
+        };
     }]);

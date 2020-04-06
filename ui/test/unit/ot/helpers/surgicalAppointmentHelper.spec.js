@@ -191,7 +191,7 @@ describe('surgicalAppointmentHelper', function () {
         expect(filteredAppointments.length).toEqual(1);
         expect(filteredAppointments[0].id).toEqual(108);
     });
-    
+
     it('should calculate the duration of the appointment when some fields are empty', function () {
         var estTimInHours = "";
         var estTimInMinutes = "";
@@ -199,5 +199,38 @@ describe('surgicalAppointmentHelper', function () {
         var appointmentDuration = surgicalAppointmentHelper.getAppointmentDuration(estTimInHours, estTimInMinutes, cleaningTime);
 
         expect(appointmentDuration).toEqual(0);
-    })
+    });
+
+    describe('getAttributesFromConfiguredNames', function () {
+        it('should return configured surgery attributes along with the order', function () {
+
+            var configuredSurgeryAttributeNames = ["surgicalAssistant", "procedure"];
+            var attributes = {
+                procedure: {surgicalAppointmentAttributeType: {name: 'procedure'}},
+                surgicalAssistant: {surgicalAppointmentAttributeType: {name: 'surgicalAssistant'}},
+                cleaningTime: {surgicalAppointmentAttributeType: {name: 'cleaningTime'}}
+            };
+            var configuredAttributes = surgicalAppointmentHelper.getAttributesFromConfiguredNames(attributes, configuredSurgeryAttributeNames);
+            expect(configuredAttributes.length).toBe(2);
+            expect(configuredAttributes[0].surgicalAppointmentAttributeType.name).toBe('surgicalAssistant');
+            expect(configuredAttributes[1].surgicalAppointmentAttributeType.name).toBe('procedure');
+        });
+
+        it('should return empty array when "configuredSurgeryAttributeNames" is undefined', function () {
+            var attributes = {
+                procedure: {surgicalAppointmentAttributeType: {name: 'procedure'}},
+                surgicalAssistant: {surgicalAppointmentAttributeType: {name: 'surgicalAssistant'}},
+                cleaningTime: {surgicalAppointmentAttributeType: {name: 'cleaningTime'}}
+            };
+            var configuredAttributes = surgicalAppointmentHelper.getAttributesFromConfiguredNames(attributes, undefined);
+            expect(configuredAttributes.length).toBe(0);
+        });
+
+        it('should return empty array when "attributes" is undefined', function () {
+            var configuredSurgeryAttributeNames = ["surgicalAssistant", "procedure"];
+            var configuredAttributes = surgicalAppointmentHelper.getAttributesFromConfiguredNames(undefined, configuredSurgeryAttributeNames);
+            expect(configuredAttributes.length).toBe(0);
+        });
+    });
+
 });
