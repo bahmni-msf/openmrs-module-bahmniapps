@@ -62,4 +62,13 @@ angular.module('bahmni.ot')
             }
             return configuredAttributes;
         };
+
+        this.getAttributeTypesByRemovingAttributeNames = function (defaultAttributeTypes, attributeNames) {
+            if (!attributeNames) {
+                return defaultAttributeTypes;
+            }
+            return _.filter(defaultAttributeTypes, function (attributeType) {
+                return !attributeNames.includes(attributeType.name);
+            });
+        };
     }]);
