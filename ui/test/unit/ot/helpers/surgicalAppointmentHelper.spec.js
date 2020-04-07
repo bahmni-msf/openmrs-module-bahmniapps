@@ -231,6 +231,31 @@ describe('surgicalAppointmentHelper', function () {
             var configuredAttributes = surgicalAppointmentHelper.getAttributesFromConfiguredNames(undefined, configuredSurgeryAttributeNames);
             expect(configuredAttributes.length).toBe(0);
         });
+
+        describe('getAttributeTypesByRemovingAttributeNames', function () {
+            it('should return surgical attributes types by removing given "attributeNames"', function () {
+                var attributeNamesToBeRemoved = ['estTimeHours', 'estTimeMinutes', 'cleaningTime'];
+                var attributesTypes = [{"uuid": "34c1cace-7367-11e7-a46a-000c29e530d2", "name": "procedure"},
+                    {"uuid": "34c1e03b-7367-11e7-a46a-000c29e530d2", "name": "Notes"},
+                    {"uuid": "34c26d4b-7367-11e7-a46a-000c29e530d5", "name": "estTimeHours"},
+                    {"uuid": "34c26d4b-7367-11e7-a46a-000c29e530d3", "name": "estTimeMinutes"},
+                    {"uuid": "34c26d4b-7367-11e7-a46a-000c29e530d8", "name": "cleaningTime"}];
+                var finalAttributeTypes = surgicalAppointmentHelper.getAttributeTypesByRemovingAttributeNames(attributesTypes, attributeNamesToBeRemoved);
+                expect(finalAttributeTypes.length).toBe(2);
+                expect(finalAttributeTypes[0].name).toBe('procedure');
+                expect(finalAttributeTypes[1].name).toBe('Notes');
+            });
+
+            it('should return same surgical attributes types when given "attributeNames" is undefined', function () {
+                var attributesTypes = [{"uuid": "34c1cace-7367-11e7-a46a-000c29e530d2", "name": "procedure"},
+                    {"uuid": "34c1e03b-7367-11e7-a46a-000c29e530d2", "name": "Notes"}];
+                var finalAttributeTypes = surgicalAppointmentHelper.getAttributeTypesByRemovingAttributeNames(attributesTypes, undefined);
+                expect(finalAttributeTypes.length).toBe(2);
+                expect(finalAttributeTypes[0].name).toBe('procedure');
+                expect(finalAttributeTypes[1].name).toBe('Notes');
+            });
+        });
+
     });
 
 });
