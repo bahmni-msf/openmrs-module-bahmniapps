@@ -201,7 +201,7 @@ describe('surgicalAppointmentHelper', function () {
         expect(appointmentDuration).toEqual(0);
     });
 
-    describe('getAttributesFromConfiguredNames', function () {
+    describe('getAttributesFromAttributeNames', function () {
         it('should return configured surgery attributes along with the order', function () {
 
             var configuredSurgeryAttributeNames = ["surgicalAssistant", "procedure"];
@@ -210,26 +210,31 @@ describe('surgicalAppointmentHelper', function () {
                 surgicalAssistant: {surgicalAppointmentAttributeType: {name: 'surgicalAssistant'}},
                 cleaningTime: {surgicalAppointmentAttributeType: {name: 'cleaningTime'}}
             };
-            var configuredAttributes = surgicalAppointmentHelper.getAttributesFromConfiguredNames(attributes, configuredSurgeryAttributeNames);
-            expect(configuredAttributes.length).toBe(2);
-            expect(configuredAttributes[0].surgicalAppointmentAttributeType.name).toBe('surgicalAssistant');
-            expect(configuredAttributes[1].surgicalAppointmentAttributeType.name).toBe('procedure');
+
+            var expectedAttributes = {
+                surgicalAssistant: {surgicalAppointmentAttributeType: {name: 'surgicalAssistant'}},
+                procedure: {surgicalAppointmentAttributeType: {name: 'procedure'}}
+            };
+
+            var configuredAttributes = surgicalAppointmentHelper.getAttributesFromAttributeNames(attributes, configuredSurgeryAttributeNames);
+
+            expect(_.isEqual(expectedAttributes, configuredAttributes)).toBeTruthy();
         });
 
-        it('should return empty array when "configuredSurgeryAttributeNames" is undefined', function () {
+        it('should return empty object when "configuredSurgeryAttributeNames" is undefined', function () {
             var attributes = {
                 procedure: {surgicalAppointmentAttributeType: {name: 'procedure'}},
                 surgicalAssistant: {surgicalAppointmentAttributeType: {name: 'surgicalAssistant'}},
                 cleaningTime: {surgicalAppointmentAttributeType: {name: 'cleaningTime'}}
             };
-            var configuredAttributes = surgicalAppointmentHelper.getAttributesFromConfiguredNames(attributes, undefined);
-            expect(configuredAttributes.length).toBe(0);
+            var configuredAttributes = surgicalAppointmentHelper.getAttributesFromAttributeNames(attributes, undefined);
+            expect(_.isEmpty(configuredAttributes)).toBeTruthy();
         });
 
-        it('should return empty array when "attributes" is undefined', function () {
+        it('should return empty object when "attributes" is undefined', function () {
             var configuredSurgeryAttributeNames = ["surgicalAssistant", "procedure"];
-            var configuredAttributes = surgicalAppointmentHelper.getAttributesFromConfiguredNames(undefined, configuredSurgeryAttributeNames);
-            expect(configuredAttributes.length).toBe(0);
+            var configuredAttributes = surgicalAppointmentHelper.getAttributesFromAttributeNames(undefined, configuredSurgeryAttributeNames);
+            expect(_.isEmpty(configuredAttributes)).toBeTruthy();
         });
 
         describe('getAttributeTypesByRemovingAttributeNames', function () {
@@ -253,6 +258,47 @@ describe('surgicalAppointmentHelper', function () {
                 expect(finalAttributeTypes.length).toBe(2);
                 expect(finalAttributeTypes[0].name).toBe('procedure');
                 expect(finalAttributeTypes[1].name).toBe('Notes');
+            });
+        });
+
+        describe('getAttributesFromAttributeTypes', function () {
+            it('should sort and filter attributes by given "attributeTypes"', function () {
+                var attributes = {
+                    procedure: {surgicalAppointmentAttributeType: {name: 'procedure'}},
+                    surgicalAssistant: {surgicalAppointmentAttributeType: {name: 'surgicalAssistant'}},
+                    cleaningTime: {surgicalAppointmentAttributeType: {name: 'cleaningTime'}},
+                    estTimeHours: {surgicalAppointmentAttributeType: {name: 'estTimeHours'}},
+                    estTimeMinutes: {surgicalAppointmentAttributeType: {name: 'estTimeMinutes'}},
+                    Notes: {surgicalAppointmentAttributeType: {name: 'Notes'}}
+                };
+                var attributesTypes = [{"uuid": "34c1cace-7367-11e7-a46a-000c29e530d2", "name": "procedure"},
+                    {"uuid": "34c1e03b-7367-11e7-a46a-000c29e530d2", "name": "Notes"},
+                    {"uuid": "34c26d4b-7367-11e7-a46a-000c29e530d5", "name": "estTimeHours"},
+                    {"uuid": "34c26d4b-7367-11e7-a46a-000c29e530d3", "name": "estTimeMinutes"},
+                    {"uuid": "34c26d4b-7367-11e7-a46a-000c29e530d8", "name": "cleaningTime"}];
+
+                var expectedAttributes = {
+                    procedure: {surgicalAppointmentAttributeType: {name: 'procedure'}},
+                    Notes: {surgicalAppointmentAttributeType: {name: 'Notes'}},
+                    estTimeHours: {surgicalAppointmentAttributeType: {name: 'estTimeHours'}},
+                    estTimeMinutes: {surgicalAppointmentAttributeType: {name: 'estTimeMinutes'}},
+                    cleaningTime: {surgicalAppointmentAttributeType: {name: 'cleaningTime'}}
+                };
+
+                var finalAttributes = surgicalAppointmentHelper.getAttributesFromAttributeTypes(attributes, attributesTypes);
+
+                expect(_.isEqual(expectedAttributes, finalAttributes)).toBeTruthy();
+            });
+
+            it('should return empty attributes when "attributeTypes" is undefined', function () {
+                var attributes = {procedure: {surgicalAppointmentAttributeType: {name: 'procedure'}}};
+                var finalAttributes = surgicalAppointmentHelper.getAttributesFromAttributeTypes(attributes);
+                expect(_.isEmpty(finalAttributes)).toBeTruthy();
+            });
+
+            it('should return empty attributes when "attributes" is undefined', function () {
+                var finalAttributes = surgicalAppointmentHelper.getAttributesFromAttributeTypes(undefined, {});
+                expect(_.isEmpty(finalAttributes)).toBeTruthy();
             });
         });
 

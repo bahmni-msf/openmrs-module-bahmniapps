@@ -229,11 +229,15 @@ angular.module('bahmni.ot')
             };
 
             $scope.getConfiguredAttributes = function (attributes) {
-                return surgicalAppointmentHelper.getAttributesFromConfiguredNames(attributes, $scope.configuredSurgeryAttributeNames);
+                return surgicalAppointmentHelper.getAttributesFromAttributeNames(attributes, $scope.configuredSurgeryAttributeNames);
             };
 
             $scope.isSurgeryAttributesConfigurationAvailableAndValid = function () {
                 return $scope.configuredSurgeryAttributeNames && $scope.configuredSurgeryAttributeNames.length > 0;
+            };
+
+            $scope.sort = function (attributes) {
+                return surgicalAppointmentHelper.getAttributesFromAttributeTypes(attributes, $scope.attributeTypes);
             };
 
             spinner.forPromise(init());

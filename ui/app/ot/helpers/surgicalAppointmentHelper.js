@@ -53,11 +53,21 @@ angular.module('bahmni.ot')
             });
         };
 
-        this.getAttributesFromConfiguredNames = function (attributes, configuredSurgeryAttributeNames) {
-            const configuredAttributes = [];
-            if (attributes != null) {
-                _.each(configuredSurgeryAttributeNames, function (configuredAttributeName) {
-                    configuredAttributes.push(attributes[configuredAttributeName]);
+        this.getAttributesFromAttributeNames = function (attributes, attributeNames) {
+            const configuredAttributes = {};
+            if (attributes) {
+                _.each(attributeNames, function (attributeName) {
+                    configuredAttributes[attributeName] = attributes[attributeName];
+                });
+            }
+            return configuredAttributes;
+        };
+
+        this.getAttributesFromAttributeTypes = function (attributes, attributeTypes) {
+            const configuredAttributes = {};
+            if (attributes) {
+                _.each(attributeTypes, function (attributeType) {
+                    configuredAttributes[attributeType.name] = attributes[attributeType.name];
                 });
             }
             return configuredAttributes;
