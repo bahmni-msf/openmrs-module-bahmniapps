@@ -6,6 +6,8 @@ angular.module('bahmni.ot')
             var startDatetime = moment($scope.viewDate).toDate();
             var surgicalBlockMapper = new Bahmni.OT.SurgicalBlockMapper();
             var endDatetime = moment(startDatetime).endOf('day').toDate();
+            $scope.defaultAttributeTranslations = surgicalAppointmentHelper.getDefaultAttributeTranslations();
+            $scope.filteredSurgicalAttributeTypes = getFilteredSurgicalAttributeTypes();
             $scope.tableInfo = [
                 {heading: 'Status', sortInfo: 'status'},
                 {heading: 'Day', sortInfo: 'derivedAttributes.expectedStartDate'},
@@ -17,17 +19,26 @@ angular.module('bahmni.ot')
                 {heading: 'Est Time', sortInfo: 'derivedAttributes.duration'},
                 {heading: 'Actual Time', sortInfo: 'actualStartDatetime'},
                 {heading: 'OT#', sortInfo: 'surgicalBlock.location.name'},
-                {heading: 'Procedure(s)', sortInfo: 'surgicalAppointmentAttributes.procedure.value'},
-                {heading: 'Notes', sortInfo: 'surgicalAppointmentAttributes.notes.value'},
                 {heading: 'Surgeon', sortInfo: 'surgicalBlock.provider.person.display'},
-                {heading: 'Other Surgeon', sortInfo: 'surgicalAppointmentAttributes.otherSurgeon.value.person.display'},
-                {heading: 'Surgical Assistant', sortInfo: 'surgicalAppointmentAttributes.surgicalAssistant.value'},
-                {heading: 'Anaesthetist', sortInfo: 'surgicalAppointmentAttributes.anaesthetist.value'},
-                {heading: 'Scrub Nurse', sortInfo: 'surgicalAppointmentAttributes.scrubNurse.value'},
-                {heading: 'Circulating Nurse', sortInfo: 'surgicalAppointmentAttributes.circulatingNurse.value'},
+                ...getSurgicalAttributesTableInfo(),
                 {heading: 'Status Change Notes', sortInfo: 'notes'},
                 {heading: 'Bed Location', sortInfo: 'bedLocation'},
                 {heading: 'Bed ID', sortInfo: 'bedNumber'}];
+
+            function getFilteredSurgicalAttributeTypes () {
+                let derivedSurgicalAttributes = ['estTimeHours', 'estTimeMinutes', 'cleaningTime'];
+                return surgicalAppointmentHelper.getAttributeTypesByRemovingAttributeNames($rootScope.attributeTypes, derivedSurgicalAttributes);
+            }
+
+            function getSurgicalAttributesTableInfo () {
+                return _.map($scope.filteredSurgicalAttributeTypes, function (attributeType) {
+                    let attributeName = `surgicalAppointmentAttributes.${attributeType.name}.value`;
+                    return {
+                        heading: attributeType.name,
+                        sortInfo: attributeType.format === Bahmni.OT.Constants.providerSurgicalAttributeFormat ? `${attributeName}.person.display` : attributeName
+                    };
+                });
+            }
 
             var filterSurgicalBlocksAndMapAppointmentsForDisplay = function (surgicalBlocks) {
                 var clonedSurgicalBlocks = _.cloneDeep(surgicalBlocks);

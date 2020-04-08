@@ -71,4 +71,13 @@ angular.module('bahmni.ot')
                 return !attributeNames.includes(attributeType.name);
             });
         };
+
+        this.getDefaultAttributeTranslations = function () {
+            return new Map([['procedure', "OT_SURGICAL_APPOINTMENT_PROCEDURE"],
+                ['estTimeHours', "OT_SURGICAL_APPOINTMENT_HOURS"], ['estTimeMinutes', "OT_SURGICAL_APPOINTMENT_MINUTES"],
+                ['cleaningTime', "OT_SURGICAL_APPOINTMENT_CLEANING_TIME"], ['otherSurgeon', "OT_SURGICAL_APPOINTMENT_OTHER_SURGEON"],
+                ['surgicalAssistant', "OT_SURGICAL_APPOINTMENT_SURGICAL_ASSISTANT"], ['anaesthetist', "OT_SURGICAL_APPOINTMENT_ANAESTHETIST"],
+                ['scrubNurse', "OT_SURGICAL_APPOINTMENT_SCRUB_NURSE"], ['circulatingNurse', "OT_SURGICAL_APPOINTMENT_CIRCULATING_NURSE"],
+                ['notes', "OT_SURGICAL_APPOINTMENT_NOTES"]]);
+        };
     }]);
