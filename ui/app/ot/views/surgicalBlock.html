@@ -83,11 +83,20 @@
                                 <h4>{{getPatientName(surgicalAppointment)}} <i ng-show="surgicalAppointment.status === 'COMPLETED'" class="fa fa-check" aria-hidden="true"></i> </h4>
                                 <!--TODO Translations need to be revisited once dynamic translation key generation feature for attributes added by product -->
                                 <p ng-init="attributes=isSurgeryAttributesConfigurationAvailableAndValid() ? getConfiguredAttributes(surgicalAppointment.surgicalAppointmentAttributes) : surgicalAppointment.surgicalAppointmentAttributes">
-                                        <span ng-repeat="attribute in attributes" ng-switch on="attribute.surgicalAppointmentAttributeType.name">
-                                            <span ng-switch-when="estTimeHours" ng-if="attribute.value >= 0 || surgicalAppointment.surgicalAppointmentAttributes.estTimeMinutes.value >= 0"><b>{{'OT_SURGICAL_APPOINTMENT_ESTIMATED_TIME' | translate}}</b> - {{attribute.value}} {{defaultAttributeTranslations.get(attribute.surgicalAppointmentAttributeType.name) | translate}} : {{surgicalAppointment.surgicalAppointmentAttributes.estTimeMinutes.value}} {{'OT_SURGICAL_APPOINTMENT_MINUTES' | translate}}, </span>
-                                            <span ng-switch-when="cleaningTime" ng-if="attribute.value >= 0"><b>{{(defaultAttributeTranslations.get(attribute.surgicalAppointmentAttributeType.name) | translate)}}</b> - {{attribute.value}} {{'OT_SURGICAL_APPOINTMENT_MINUTES' | translate}}, </span>
-                                            <span ng-switch-when="otherSurgeon" ng-if="attribute.value.person.display"><b>{{(defaultAttributeTranslations.get(attribute.surgicalAppointmentAttributeType.name) | translate)}}</b> - {{attribute.value.person.display}}, </span>
-                                            <span ng-switch-default ng-if="attribute.value && attribute.surgicalAppointmentAttributeType.name != 'estTimeMinutes'"><b>{{(defaultAttributeTranslations.get(attribute.surgicalAppointmentAttributeType.name) | translate) || attribute.surgicalAppointmentAttributeType.name}}</b> - {{attribute.value}}<span ng-if="$index < attributes.length - 1">,</span> </span>
+                                        <span ng-repeat="attribute in attributes" ng-switch
+                                              on="attribute.surgicalAppointmentAttributeType.name">
+                                            <span ng-switch-when="estTimeHours"
+                                                  ng-if="attribute.value >= 0 || surgicalAppointment.surgicalAppointmentAttributes.estTimeMinutes.value >= 0">
+                                                    <b>{{'OT_SURGICAL_APPOINTMENT_ESTIMATED_TIME' | translate}}</b> - {{attribute.value}} {{defaultAttributeTranslations.get(attribute.surgicalAppointmentAttributeType.name) | translate}}
+                                                        : {{surgicalAppointment.surgicalAppointmentAttributes.estTimeMinutes.value}} {{'OT_SURGICAL_APPOINTMENT_MINUTES' | translate}}, </span>
+                                            <span ng-switch-when="cleaningTime" ng-if="attribute.value >= 0"><b>{{(defaultAttributeTranslations.get(attribute.surgicalAppointmentAttributeType.name) | translate)}}
+                                                    </b> - {{attribute.value}} {{'OT_SURGICAL_APPOINTMENT_MINUTES' | translate}}, </span>
+                                            <span ng-switch-when="otherSurgeon"
+                                                  ng-if="attribute.value.person.display"><b>{{(defaultAttributeTranslations.get(attribute.surgicalAppointmentAttributeType.name) | translate)}}</b> - {{attribute.value.person.display}}, </span>
+                                            <span ng-switch-default
+                                                  ng-if="attribute.value && attribute.surgicalAppointmentAttributeType.name != 'estTimeMinutes'"><b>{{(defaultAttributeTranslations.get(attribute.surgicalAppointmentAttributeType.name) | translate)
+                                                        || attribute.surgicalAppointmentAttributeType.name}}</b> - {{attribute.value}}<span
+                                                    ng-if="!$last">,</span> </span>
                                         </span>
                                 </p>
                             </div>
