@@ -548,4 +548,36 @@ describe("newSurgicalAppointmentController", function () {
         expect(scope.ngDialogData.isBeingEdited).toBeUndefined();
     });
 
+    it('should sort attributes by "attributeTypes"', function () {
+        var attributes = {
+            procedure: {surgicalAppointmentAttributeType: {name: 'procedure'}},
+            surgicalAssistant: {surgicalAppointmentAttributeType: {name: 'surgicalAssistant'}},
+            cleaningTime: {surgicalAppointmentAttributeType: {name: 'cleaningTime'}},
+            estTimeHours: {surgicalAppointmentAttributeType: {name: 'estTimeHours'}},
+            estTimeMinutes: {surgicalAppointmentAttributeType: {name: 'estTimeMinutes'}},
+            Notes: {surgicalAppointmentAttributeType: {name: 'Notes'}}
+        };
+        var attributesTypes = [{"uuid": "34c1cace-7367-11e7-a46a-000c29e530d2", "name": "procedure"},
+            {"uuid": "34c1e03b-7367-11e7-a46a-000c29e530d2", "name": "Notes"},
+            {"uuid": "34c26d4b-7367-11e7-a46a-000c29e530d5", "name": "estTimeHours"},
+            {"uuid": "34c26d4b-7367-11e7-a46a-000c29e530d3", "name": "estTimeMinutes"},
+            {"uuid": "34c26d4b-7367-11e7-a46a-000c29e530d8", "name": "cleaningTime"}];
+
+        var expectedAttributes = {
+            procedure: {surgicalAppointmentAttributeType: {name: 'procedure'}},
+            Notes: {surgicalAppointmentAttributeType: {name: 'Notes'}},
+            estTimeHours: {surgicalAppointmentAttributeType: {name: 'estTimeHours'}},
+            estTimeMinutes: {surgicalAppointmentAttributeType: {name: 'estTimeMinutes'}},
+            cleaningTime: {surgicalAppointmentAttributeType: {name: 'cleaningTime'}}
+        };
+
+        createController();
+
+        scope.attributeTypes = attributesTypes;
+
+        var finalAttributes = scope.sort(attributes);
+
+        expect(_.isEqual(expectedAttributes, finalAttributes)).toBeTruthy();
+    });
+
 });
