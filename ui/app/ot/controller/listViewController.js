@@ -8,34 +8,41 @@ angular.module('bahmni.ot')
             var endDatetime = moment(startDatetime).endOf('day').toDate();
             $scope.defaultAttributeTranslations = surgicalAppointmentHelper.getDefaultAttributeTranslations();
             $scope.filteredSurgicalAttributeTypes = getFilteredSurgicalAttributeTypes();
-            $scope.tableInfo = [
-                {heading: 'Status', sortInfo: 'status'},
-                {heading: 'Day', sortInfo: 'derivedAttributes.expectedStartDate'},
-                {heading: 'Date', sortInfo: 'derivedAttributes.expectedStartDate'},
-                {heading: 'Identifier', sortInfo: 'derivedAttributes.patientIdentifier'},
-                {heading: 'Patient Name', sortInfo: 'derivedAttributes.patientName'},
-                {heading: 'Patient Age', sortInfo: 'derivedAttributes.patientAge'},
-                {heading: 'Start Time', sortInfo: 'derivedAttributes.expectedStartTime'},
-                {heading: 'Est Time', sortInfo: 'derivedAttributes.duration'},
-                {heading: 'Actual Time', sortInfo: 'actualStartDatetime'},
-                {heading: 'OT#', sortInfo: 'surgicalBlock.location.name'},
-                {heading: 'Surgeon', sortInfo: 'surgicalBlock.provider.person.display'},
-                ...getSurgicalAttributesTableInfo(),
-                {heading: 'Status Change Notes', sortInfo: 'notes'},
-                {heading: 'Bed Location', sortInfo: 'bedLocation'},
-                {heading: 'Bed ID', sortInfo: 'bedNumber'}];
+            $scope.tableInfo = getTableInfo();
+
+            function getTableInfo () {
+                var listViewAttributes = [
+                    {heading: 'Status', sortInfo: 'status'},
+                    {heading: 'Day', sortInfo: 'derivedAttributes.expectedStartDate'},
+                    {heading: 'Date', sortInfo: 'derivedAttributes.expectedStartDate'},
+                    {heading: 'Identifier', sortInfo: 'derivedAttributes.patientIdentifier'},
+                    {heading: 'Patient Name', sortInfo: 'derivedAttributes.patientName'},
+                    {heading: 'Patient Age', sortInfo: 'derivedAttributes.patientAge'},
+                    {heading: 'Start Time', sortInfo: 'derivedAttributes.expectedStartTime'},
+                    {heading: 'Est Time', sortInfo: 'derivedAttributes.duration'},
+                    {heading: 'Actual Time', sortInfo: 'actualStartDatetime'},
+                    {heading: 'OT#', sortInfo: 'surgicalBlock.location.name'},
+                    {heading: 'Surgeon', sortInfo: 'surgicalBlock.provider.person.display'}];
+
+                var attributesRelatedToBed = [{heading: 'Status Change Notes', sortInfo: 'notes'},
+                    {heading: 'Bed Location', sortInfo: 'bedLocation'},
+                    {heading: 'Bed ID', sortInfo: 'bedNumber'}];
+
+                return listViewAttributes.concat(getSurgicalAttributesTableInfo(), attributesRelatedToBed);
+            }
 
             function getFilteredSurgicalAttributeTypes () {
-                let derivedSurgicalAttributes = ['estTimeHours', 'estTimeMinutes', 'cleaningTime'];
+                var derivedSurgicalAttributes = ['estTimeHours', 'estTimeMinutes', 'cleaningTime'];
                 return surgicalAppointmentHelper.getAttributeTypesByRemovingAttributeNames($rootScope.attributeTypes, derivedSurgicalAttributes);
             }
 
             function getSurgicalAttributesTableInfo () {
                 return _.map($scope.filteredSurgicalAttributeTypes, function (attributeType) {
-                    let attributeName = `surgicalAppointmentAttributes.${attributeType.name}.value`;
+                    var attributeName = 'surgicalAppointmentAttributes.'.concat(attributeType.name, '.value');
                     return {
                         heading: attributeType.name,
-                        sortInfo: attributeType.format === Bahmni.OT.Constants.providerSurgicalAttributeFormat ? `${attributeName}.person.display` : attributeName
+                        sortInfo: attributeType.format === Bahmni.OT.Constants.providerSurgicalAttributeFormat ?
+                            attributeName.concat('.person.display') : attributeName
                     };
                 });
             }
