@@ -39,9 +39,17 @@ angular.module('bahmni.ot')
 
             var getTopForSurgicalBlock = function () {
                 return Bahmni.Common.Util.DateUtil.diffInMinutes(
-                        $scope.calendarStartDatetime, $scope.surgicalBlock.startDatetime) * surgicalBlockHeightPerMin;
+                    getCalendarStartDateTime($scope.surgicalBlock.startDatetime), $scope.surgicalBlock.startDatetime) * surgicalBlockHeightPerMin;
+            };
+            var getCalendarStartDateTime = function (date) {
+                var dayStart = ($scope.dayViewStart || Bahmni.OT.Constants.defaultCalendarStartTime).split(':');
+                return Bahmni.Common.Util.DateUtil.addMinutes(moment(date).startOf('day'), (dayStart[0] * 60 + parseInt(dayStart[1])));
             };
 
+            var getCalendarEndDateTime = function (date) {
+                var dayEnd = ($scope.dayViewEnd || Bahmni.OT.Constants.defaultCalendarEndTime).split(':');
+                return Bahmni.Common.Util.DateUtil.addMinutes(moment(date).startOf('day'), (dayEnd[0] * 60 + parseInt(dayEnd[1])));
+            };
             var calculateEstimatedAppointmentDuration = function () {
                 var surgicalAppointments = _.filter($scope.surgicalBlock.surgicalAppointments, function (surgicalAppointment) {
                     return $scope.isValidSurgicalAppointment(surgicalAppointment);
@@ -74,7 +82,7 @@ angular.module('bahmni.ot')
             };
 
             $scope.surgicalBlockExceedsCalendar = function () {
-                return moment($scope.surgicalBlock.endDatetime).toDate() > $scope.calendarEndDatetime;
+                return moment($scope.surgicalBlock.endDatetime).toDate() > getCalendarEndDateTime($scope.surgicalBlock.endDatetime);
             };
 
             getViewPropertiesForSurgicalBlock();
@@ -85,8 +93,6 @@ angular.module('bahmni.ot')
             link: link,
             scope: {
                 surgicalBlock: "=",
-                calendarStartDatetime: "=",
-                calendarEndDatetime: "=",
                 dayViewSplit: "=",
                 filterParams: "="
             },
