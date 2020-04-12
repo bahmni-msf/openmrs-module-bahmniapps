@@ -53,6 +53,8 @@ angular.module('bahmni.ot')
             link: link,
             scope: {
                 surgicalAppointment: "=",
+                weekOrDay: "=",
+                operationTheatre: "=",
                 heightPerMin: "=",
                 backgroundColor: "=",
                 filterParams: "="
