@@ -8,7 +8,7 @@ describe("calendarViewController", function () {
     var locationService = jasmine.createSpyObj('locationService', ['getAllByTag']);
     var appService = jasmine.createSpyObj('appService', ['getAppDescriptor']);
     var appDescriptor = jasmine.createSpyObj('appDescriptor', ['getConfigValue']);
-    var ngDialog = jasmine.createSpyObj('ngDialog', ['open']);
+    var ngDialog = jasmine.createSpyObj('ngDialog', ['open', 'close']);
     appService.getAppDescriptor.and.returnValue(appDescriptor);
 
     appDescriptor.getConfigValue.and.callFake(function (value) {
@@ -16,6 +16,14 @@ describe("calendarViewController", function () {
             return {dayViewStart: "09:00",
                 dayViewEnd: "17:00",
                 dayViewSplit: "60"};
+        }
+    });
+
+    ngDialog.open.and.returnValue({
+        closePromise: {
+            then: function (callback) {
+                callback();
+            }
         }
     });
 
@@ -284,7 +292,6 @@ describe("calendarViewController", function () {
             }
         }));
     });
-
     it('should go to the current week on click of week', function () {
         createController();
         scope.goToCurrentWeek();
@@ -482,4 +489,43 @@ describe("calendarViewController", function () {
         expect(scope.appointmentStatusList).toEqual([{name: Bahmni.OT.Constants.scheduled}, {name: Bahmni.OT.Constants.completed},
             {name: Bahmni.OT.Constants.postponed}, {name: Bahmni.OT.Constants.cancelled}]);
     });
+
+    it('should set startOfWeekCode as 2 when startOfWeek is Tuesday in configuration', function () {
+        createController();
+        expect(scope.startOfWeekCode).toEqual(2);
+    });
+
+    it('should open surgical block details dialog when surgical block is selected', function () {
+        createController();
+        var surgicalBlock = {provider: {person: {display: 'Surgeon Name'}}};
+        scope.$emit("event:surgicalBlockSelect", surgicalBlock);
+
+        expect(ngDialog.open).toHaveBeenCalledWith(jasmine.objectContaining(
+            {
+                template: 'views/surgicalBlockDialog.html',
+                className: 'ngdialog-theme-default ng-dialog-adt-popUp ot-dialog',
+                scope: scope,
+                data: surgicalBlock
+            }
+        ));
+    });
+
+    it('should close "surgicalBlockDialog" when "cacelSurgicalBlock" dialog is closed', function () {
+        createController();
+        scope.surgicalBlockSelected = surgicalBlocks[0];
+        scope.surgicalBlockSelected.provider = {person: {display:"something"}};
+        scope.cancelSurgicalBlockOrSurgicalAppointment();
+
+        expect(ngDialog.close).toHaveBeenCalled();
+    });
+
+    xit('should set surgical block data to empty object when surgical block details dialog is closed', function () {
+        createController();
+        scope.$emit("event:surgicalBlockSelect", {surgicalAppointments: []});
+
+        ngDialog.open.calls.argsFor(0)[0].preCloseCallback();
+
+        expect(_.isEmpty(scope.surgicalBlockSelected)).toBeTruthy();
+    });
+
 });
