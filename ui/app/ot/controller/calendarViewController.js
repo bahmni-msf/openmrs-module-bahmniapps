@@ -191,6 +191,7 @@ angular.module('bahmni.ot')
                 $scope.editDisabled = false;
                 $scope.moveButtonDisabled = true;
                 $scope.addActualTimeDisabled = true;
+                $scope.cancelDisabled = true;
                 $scope.surgicalBlockSelected = surgicalBlock;
                 $scope.surgicalAppointmentSelected = {};
 
