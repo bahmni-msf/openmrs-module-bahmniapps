@@ -490,6 +490,7 @@ describe("calendarViewController", function () {
 
     it("should open surgical appointment dialog on clicking surgical appointment", function () {
         createController();
+        scope.view = 'Calendar';
         let surgicalAppointment = {status: Bahmni.OT.Constants.scheduled};
         scope.$emit("event:surgicalAppointmentSelect", surgicalAppointment, {surgicalAppointments: []});
 

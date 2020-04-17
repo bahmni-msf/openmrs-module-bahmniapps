@@ -3,6 +3,7 @@
 angular.module('bahmni.ot')
     .controller('calendarViewController', ['$scope', '$rootScope', '$state', '$stateParams', 'appService', 'patientService', 'locationService', 'ngDialog',
         function ($scope, $rootScope, $state, $stateParams, appService, patientService, locationService, ngDialog) {
+            var CALENDAR_VIEW = 'Calendar';
             $scope.viewDate = $stateParams.viewDate || $state.viewDate || (moment().startOf('day')).toDate();
             $state.viewDate = $scope.viewDate;
             $scope.calendarConfig = appService.getAppDescriptor().getConfigValue("calendarView");
@@ -19,7 +20,7 @@ angular.module('bahmni.ot')
                 $scope.filterParams = $state.filterParams;
                 $scope.filters = {};
                 $scope.filters.providers = [];
-                $scope.view = $state.view || 'Calendar';
+                $scope.view = $state.view || CALENDAR_VIEW;
                 $state.view = $scope.view;
                 $scope.weekOrDay = $state.weekOrDay || 'day';
                 $state.weekOrDay = $scope.weekOrDay;
@@ -60,7 +61,7 @@ angular.module('bahmni.ot')
             };
 
             var setAppointmentStatusList = function (view) {
-                if (view === 'Calendar') {
+                if (view === CALENDAR_VIEW) {
                     $scope.appointmentStatusList = [{name: Bahmni.OT.Constants.scheduled}, {name: Bahmni.OT.Constants.completed}];
                 } else {
                     $scope.appointmentStatusList = [{name: Bahmni.OT.Constants.scheduled}, {name: Bahmni.OT.Constants.completed},
@@ -69,7 +70,7 @@ angular.module('bahmni.ot')
             };
 
             $scope.calendarView = function () {
-                $scope.view = 'Calendar';
+                $scope.view = CALENDAR_VIEW;
                 $state.view = $scope.view;
             };
 
@@ -112,7 +113,7 @@ angular.module('bahmni.ot')
 
             $scope.onSelectPatient = function (data) {
                 $scope.filters.patient = data;
-                if ($scope.view === 'Calendar') {
+                if ($scope.view === CALENDAR_VIEW) {
                     if (_.isEmpty($scope.filters.statusList)) {
                         $scope.filters.statusList = [{name: Bahmni.OT.Constants.scheduled}, {name: Bahmni.OT.Constants.completed}];
                     }
@@ -182,7 +183,7 @@ angular.module('bahmni.ot')
                 $scope.addActualTimeDisabled = !((surgicalAppointment.status === Bahmni.OT.Constants.scheduled) || (surgicalAppointment.status === Bahmni.OT.Constants.completed));
                 $scope.surgicalAppointmentSelected = surgicalAppointment;
                 $scope.surgicalBlockSelected = surgicalBlock;
-                ngDialog.open({
+                isCalendarView() && ngDialog.open({
                     template: 'views/surgicalAppointmentDialog.html',
                     className: 'ngdialog-theme-default ng-dialog-adt-popUp ot-dialog',
                     closeByNavigation: true,
@@ -191,6 +192,10 @@ angular.module('bahmni.ot')
                     data: surgicalAppointment
                 });
             });
+
+            var isCalendarView = function () {
+                return $scope.view === CALENDAR_VIEW;
+            };
 
             $scope.$on("event:surgicalBlockSelect", function (event, surgicalBlock) {
                 $scope.editDisabled = false;
@@ -317,7 +322,7 @@ angular.module('bahmni.ot')
 
             $scope.$watch('view', function (newValue, oldValue) {
                 if (oldValue !== newValue) {
-                    if (newValue === 'Calendar') {
+                    if (newValue === CALENDAR_VIEW) {
                         setAppointmentStatusList(newValue);
                         $scope.filters.statusList = _.filter($scope.filters.statusList, function (status) {
                             return status.name === Bahmni.OT.Constants.scheduled || status.name === Bahmni.OT.Constants.completed;
