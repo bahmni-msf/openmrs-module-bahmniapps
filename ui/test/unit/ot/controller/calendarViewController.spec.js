@@ -488,6 +488,22 @@ describe("calendarViewController", function () {
        expect(scope.cancelDisabled).toBeFalsy();
     });
 
+    it("should open surgical appointment dialog on clicking surgical appointment", function () {
+        createController();
+        let surgicalAppointment = {status: Bahmni.OT.Constants.scheduled};
+        scope.$emit("event:surgicalAppointmentSelect", surgicalAppointment, {surgicalAppointments: []});
+
+        expect(ngDialog.open).toHaveBeenCalledWith(jasmine.objectContaining(
+            {
+                template: 'views/surgicalAppointmentDialog.html',
+                className: 'ngdialog-theme-default ng-dialog-adt-popUp ot-dialog',
+                closeByNavigation: true,
+                scope: scope,
+                data: surgicalAppointment
+            }
+        ))
+    });
+
     it("should take stateParams viewDate when it is present", function () {
         stateParams.viewDate = new Date();
         createController();

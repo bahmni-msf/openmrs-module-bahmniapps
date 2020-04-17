@@ -182,6 +182,14 @@ angular.module('bahmni.ot')
                 $scope.addActualTimeDisabled = !((surgicalAppointment.status === Bahmni.OT.Constants.scheduled) || (surgicalAppointment.status === Bahmni.OT.Constants.completed));
                 $scope.surgicalAppointmentSelected = surgicalAppointment;
                 $scope.surgicalBlockSelected = surgicalBlock;
+                ngDialog.open({
+                    template: 'views/surgicalAppointmentDialog.html',
+                    className: 'ngdialog-theme-default ng-dialog-adt-popUp ot-dialog',
+                    closeByNavigation: true,
+                    preCloseCallback: nullifySurgicalBlockData,
+                    scope: $scope,
+                    data: surgicalAppointment
+                });
             });
 
             $scope.$on("event:surgicalBlockSelect", function (event, surgicalBlock) {
