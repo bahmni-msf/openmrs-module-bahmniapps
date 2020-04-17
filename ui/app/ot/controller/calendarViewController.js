@@ -225,13 +225,16 @@ angular.module('bahmni.ot')
             });
 
             var nullifySurgicalBlockData = function () {
+                $scope.editDisabled = true;
+                $scope.cancelDisabled = true;
+                $scope.moveButtonDisabled = true;
+                $scope.addActualTimeDisabled = true;
                 $scope.surgicalBlockSelected = {};
                 $scope.surgicalAppointmentSelected = {};
             };
 
-            // todo: should be removed after enabling pop-up for surigical appointment
             $scope.$on("event:surgicalBlockDeselect", function (event) {
-
+                nullifySurgicalBlockData();
             });
 
             $scope.goToEdit = function ($event) {
