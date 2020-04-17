@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('bahmni.ot')
-    .controller('otCalendarController', ['$scope', '$q', '$interval', 'spinner', 'locationService', 'surgicalAppointmentService', '$timeout',
-        function ($scope, $q, $interval, spinner, locationService, surgicalAppointmentService, $timeout) {
+    .controller('otCalendarController', ['$scope', '$q', '$interval', 'spinner', 'locationService', 'surgicalAppointmentService',
+        function ($scope, $q, $interval, spinner, locationService, surgicalAppointmentService) {
             var updateCurrentDayTimeline = function () {
                 $scope.currentTimeLineHeight = heightPerMin * Bahmni.Common.Util.DateUtil.diffInMinutes($scope.calendarStartDatetime, new Date());
             };
@@ -41,7 +41,8 @@ angular.module('bahmni.ot')
                             });
                         });
                         $scope.blockedOtsOfTheWeek = getBlockedOtsOfTheWeek();
-                    });
+                        $scope.viewchanged = false;
+                });
             };
 
             $scope.intervals = function () {
@@ -123,19 +124,22 @@ angular.module('bahmni.ot')
                 $interval.cancel(timer);
             });
 
+            $scope.$watch("weekOrDay", function (   ) {
+                    $scope.viewchanged = true;
+            });
             $scope.$watch("viewDate", function (newValue, oldValue) {
                 if ($scope.weekOrDay === 'day') {
                     if (!Bahmni.Common.Util.DateUtil.isSameDate(oldValue, newValue)) {
-                        $timeout(function () { spinner.forPromise(init()); }, 500);
+                        !$scope.viewchanged && spinner.forPromise(init());
                     }
                 }
             });
             $scope.$watch("weekStartDate", function (newValue, oldValue) {
                 if ($scope.weekOrDay === 'week') {
                     if (!Bahmni.Common.Util.DateUtil.isSameDate(moment(oldValue).toDate(), moment(newValue).toDate())) {
-                        $timeout(function () { spinner.forPromise(init()); }, 500);
+                        !$scope.viewchanged && spinner.forPromise(init());
                     }
                 }
             });
-            spinner.forPromise(init());
+            spinner.forPromise(init()).then (function () {spinner.forPromise(init())});
         }]);
