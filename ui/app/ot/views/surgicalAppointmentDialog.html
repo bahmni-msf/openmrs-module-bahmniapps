@@ -3,8 +3,14 @@
     <h4>{{'OT_SURGICAL_APPOINTMENT_DIALOG_DETAILS' | translate}}</h4>
     <p>{{'OT_PATIENT' | translate}}: {{ngDialogData.patient.display}}</p>
     <div class="center">
+        <button show-if-privilege="app:ot:write" ng-disabled="addActualTimeDisabled" ng-mousedown="addActualTime()">
+            {{'OT_ADD_ACTUAL_TIME_KEY' | translate}}
+        </button>
         <button show-if-privilege="app:ot:write" ng-mousedown="goToEdit($event)">
             {{'OT_EDIT_KEY' | translate}}
+        </button>
+        <button show-if-privilege="app:ot:write" ng-disabled="moveButtonDisabled" ng-mousedown="gotoMove()">
+            {{'OT_MOVE_KEY' | translate}}
         </button>
         <button show-if-privilege="app:ot:write" ng-disabled="cancelDisabled"
                 ng-mousedown="cancelSurgicalBlockOrSurgicalAppointment()">{{'OT_CANCEL_KEY' | translate}}
