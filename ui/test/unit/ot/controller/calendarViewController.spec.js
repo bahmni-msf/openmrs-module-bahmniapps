@@ -558,4 +558,50 @@ describe("calendarViewController", function () {
         expect(_.isEmpty(scope.surgicalBlockSelected)).toBeTruthy();
     });
 
+    it('should return existing attributes from surgical appointment', function () {
+        var surgicalAppointment = {
+            id: 1,
+            patient: {uuid: "patientUuid"},
+            actualStartDateTime: null,
+            actualEndDateTime: null,
+            status: null,
+            surgicalAppointmentAttributes: [{
+                id: 88,
+                value: "Physiotherapy",
+                surgicalAppointmentAttributeType: {name: "procedure"}
+            }, {id: 89, value: "1", surgicalAppointmentAttributeType: {name: "estTimeHours"}}, {
+                id: 90,
+                value: "15",
+                surgicalAppointmentAttributeType: {name: "estTimeMinutes"}
+            }, {id: 91, value: "30", surgicalAppointmentAttributeType: {name: "cleaningTime"}}]
+        };
+        var expectedAttributes = {
+            procedure: 'Physiotherapy',
+            estTimeHours: '1',
+            estTimeMinutes: '15',
+            cleaningTime: '30'
+        };
+
+        createController();
+        scope.surgicalAppointmentSelected = surgicalAppointment;
+
+        var surgicalAttributes = scope.getAttributes();
+
+        expect(_.isEqual(expectedAttributes, surgicalAttributes)).toBeTruthy()
+    });
+
+    it('should return patient display label in desired format', function () {
+        var surgicalAppointment = {
+            id: 1,
+            patient: {uuid: "patientUuid", display: 'IQ1144 - Patient Name'},
+            actualStartDateTime: null,
+            actualEndDateTime: null,
+            status: null,
+        };
+        createController();
+        scope.surgicalAppointmentSelected = surgicalAppointment;
+
+        expect(scope.getPatientDisplayLabel()).toBe('Patient Name ( IQ1144 )');
+    });
+
 });

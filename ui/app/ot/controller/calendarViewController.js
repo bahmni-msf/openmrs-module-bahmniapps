@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('bahmni.ot')
-    .controller('calendarViewController', ['$scope', '$rootScope', '$state', '$stateParams', 'appService', 'patientService', 'locationService', 'ngDialog',
-        function ($scope, $rootScope, $state, $stateParams, appService, patientService, locationService, ngDialog) {
+    .controller('calendarViewController', ['$scope', '$rootScope', '$state', '$stateParams', 'appService', 'patientService', 'locationService', 'ngDialog', 'surgicalAppointmentHelper',
+        function ($scope, $rootScope, $state, $stateParams, appService, patientService, locationService, ngDialog, surgicalAppointmentHelper) {
             var CALENDAR_VIEW = 'Calendar';
             $scope.viewDate = $stateParams.viewDate || $state.viewDate || (moment().startOf('day')).toDate();
             $state.viewDate = $scope.viewDate;
@@ -321,6 +321,15 @@ angular.module('bahmni.ot')
                     cancelSurgicalBlock();
                 }
             };
+
+            $scope.getAttributes = function () {
+                return surgicalAppointmentHelper.getSurgicalAttributes($scope.surgicalAppointmentSelected);
+            };
+
+            $scope.getPatientDisplayLabel = function () {
+                return surgicalAppointmentHelper.getPatientDisplayLabel($scope.surgicalAppointmentSelected.patient.display);
+            };
+
             init();
 
             $scope.$watch('view', function (newValue, oldValue) {
