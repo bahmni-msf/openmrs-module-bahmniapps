@@ -185,7 +185,7 @@ angular.module('bahmni.ot')
                 $scope.surgicalBlockSelected = surgicalBlock;
                 isCalendarView() && ngDialog.open({
                     template: 'views/surgicalAppointmentDialog.html',
-                    className: 'ngdialog-theme-default ng-dialog-adt-popUp ot-dialog',
+                    className: 'ngdialog-theme-default',
                     closeByNavigation: true,
                     preCloseCallback: nullifySurgicalBlockData,
                     scope: $scope,
@@ -216,7 +216,7 @@ angular.module('bahmni.ot')
                 }
                 ngDialog.open({
                     template: 'views/surgicalBlockDialog.html',
-                    className: 'ngdialog-theme-default ng-dialog-adt-popUp ot-dialog',
+                    className: 'ngdialog-theme-default',
                     closeByNavigation: true,
                     preCloseCallback: nullifySurgicalBlockData,
                     scope: $scope,
@@ -252,17 +252,18 @@ angular.module('bahmni.ot')
             };
 
             $scope.gotoMove = function () {
-                ngDialog.open({
+                var cancelSurgicalBlockDialog = ngDialog.open({
                     template: "views/moveAppointment.html",
                     closeByDocument: false,
                     controller: "moveSurgicalAppointmentController",
-                    className: "ngdialog-theme-default ng-dialog-adt-popUp ot-dialog",
+                    className: "ngdialog-theme-default",
                     showClose: true,
                     data: {
                         surgicalBlock: $scope.surgicalBlockSelected,
                         surgicalAppointment: $scope.surgicalAppointmentSelected
                     }
                 });
+                closeSubsequentActiveDialogs(cancelSurgicalBlockDialog);
             };
 
             $scope.addActualTime = function () {
