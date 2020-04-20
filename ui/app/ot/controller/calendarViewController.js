@@ -23,6 +23,7 @@ angular.module('bahmni.ot')
                 $state.view = $scope.view;
                 $scope.weekOrDay = $state.weekOrDay || 'day';
                 $state.weekOrDay = $scope.weekOrDay;
+                $scope.isFilterOpen = true;
                 if ($scope.weekOrDay === 'week') {
                     $scope.weekStartDate = $state.weekStartDate || new Date(moment().startOf('week'));
                     $state.weekStartDate = $scope.weekStartDate;
@@ -296,6 +297,14 @@ angular.module('bahmni.ot')
                 currentDialog.closePromise.then(function () {
                     ngDialog.close();
                 });
+            };
+
+            $scope.minimizeFilter = function () {
+                $scope.isFilterOpen = false;
+            };
+
+            $scope.expandFilter = function () {
+                $scope.isFilterOpen = true;
             };
 
             $scope.cancelSurgicalBlockOrSurgicalAppointment = function () {
