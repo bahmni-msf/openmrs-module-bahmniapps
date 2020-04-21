@@ -2,6 +2,7 @@
 <div class="ot-surgical-appointment-dialog" ng-init="attributes=getAttributes(ngDialogData)">
     <h4>{{'OT_SURGICAL_APPOINTMENT_DIALOG_DETAILS' | translate}}</h4>
     <p>{{'OT_PATIENT' | translate}}: {{getPatientDisplayLabel(ngDialogData)}}</p>
+    <p>{{'OT_SURGICAL_BLOCK_DIALOG_LOCATION' | translate}}: {{surgicalBlockSelected.location.name}}</p>
     <p ng-if="ngDialogData.derivedAttributes.expectedStartDatetime"> {{'OT_SURGICAL_APPOINTMENT_ESTIMATED_TIME' |
         translate}}: {{ngDialogData.derivedAttributes.expectedStartDatetime | bahmniTime}} -
         {{ngDialogData.derivedAttributes.expectedEndDatetime | bahmniTime}}</p>
