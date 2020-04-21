@@ -323,12 +323,12 @@ angular.module('bahmni.ot')
                 }
             };
 
-            $scope.getAttributes = function () {
-                return surgicalAppointmentHelper.getSurgicalAttributes($scope.surgicalAppointmentSelected);
+            $scope.getAttributes = function (surgicalAppointment) {
+                return surgicalAppointmentHelper.getSurgicalAttributes(surgicalAppointment);
             };
 
-            $scope.getPatientDisplayLabel = function () {
-                return surgicalAppointmentHelper.getPatientDisplayLabel($scope.surgicalAppointmentSelected.patient.display);
+            $scope.getPatientDisplayLabel = function (surgicalAppointment) {
+                return surgicalAppointmentHelper.getPatientDisplayLabel(surgicalAppointment.patient.display);
             };
 
             init();

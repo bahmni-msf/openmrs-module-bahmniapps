@@ -1,7 +1,7 @@
 <div class="ngdialog-close clearfix"></div>
-<div class="ot-surgical-appointment-dialog" ng-init="attributes=getAttributes()">
+<div class="ot-surgical-appointment-dialog" ng-init="attributes=getAttributes(ngDialogData)">
     <h4>{{'OT_SURGICAL_APPOINTMENT_DIALOG_DETAILS' | translate}}</h4>
-    <p>{{'OT_PATIENT' | translate}}: {{getPatientDisplayLabel()}}</p>
+    <p>{{'OT_PATIENT' | translate}}: {{getPatientDisplayLabel(ngDialogData)}}</p>
     <p ng-if="ngDialogData.derivedAttributes.expectedStartDatetime"> {{'OT_SURGICAL_APPOINTMENT_ESTIMATED_TIME' |
         translate}}: {{ngDialogData.derivedAttributes.expectedStartDatetime | bahmniTime}} -
         {{ngDialogData.derivedAttributes.expectedEndDatetime | bahmniTime}}</p>

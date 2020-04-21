@@ -583,9 +583,8 @@ describe("calendarViewController", function () {
         };
 
         createController();
-        scope.surgicalAppointmentSelected = surgicalAppointment;
 
-        var surgicalAttributes = scope.getAttributes();
+        var surgicalAttributes = scope.getAttributes(surgicalAppointment);
 
         expect(_.isEqual(expectedAttributes, surgicalAttributes)).toBeTruthy()
     });
@@ -599,9 +598,10 @@ describe("calendarViewController", function () {
             status: null,
         };
         createController();
-        scope.surgicalAppointmentSelected = surgicalAppointment;
 
-        expect(scope.getPatientDisplayLabel()).toBe('Patient Name ( IQ1144 )');
+        var actualPatientDisplayName = scope.getPatientDisplayLabel(surgicalAppointment);
+
+        expect(actualPatientDisplayName).toBe('Patient Name ( IQ1144 )');
     });
 
 });
