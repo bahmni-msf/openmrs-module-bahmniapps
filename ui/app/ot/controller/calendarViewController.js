@@ -307,6 +307,29 @@ angular.module('bahmni.ot')
                 $scope.isFilterOpen = true;
             };
 
+            function getLocationNames () {
+                return _.map($scope.locations, function (location) {
+                    return location.name;
+                });
+            }
+
+            function notAllLocationsSelected () {
+                var locationNames = getLocationNames();
+                if ($scope.filters.locations) {
+                    return _.some(locationNames, function (loc) {
+                        return !$scope.filters.locations[loc];
+                    });
+                }
+            }
+
+            function isAnyFilterOtherThanLocationsSelected () {
+                return !(_.isEmpty($scope.filters.providers) && _.isEmpty($scope.filters.patient) && _.isEmpty($scope.filters.statusList));
+            }
+
+            $scope.isFilterApplied = function () {
+                return isAnyFilterOtherThanLocationsSelected() || notAllLocationsSelected();
+            };
+
             $scope.cancelSurgicalBlockOrSurgicalAppointment = function () {
                 if (!_.isEmpty($scope.surgicalAppointmentSelected)) {
                     cancelSurgicalAppointment();
