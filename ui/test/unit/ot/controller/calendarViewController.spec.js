@@ -583,4 +583,18 @@ describe("calendarViewController", function () {
         expect(filterApplied).toBeTruthy();
     });
 
+    it('should set isFilterOpen flag to true when filter is expanded', function () {
+        createController();
+        scope.isFilterOpen = false;
+        scope.expandFilter();
+        expect(scope.isFilterOpen).toBeTruthy();
+    });
+
+    it('should set isFilterOpen flag to false when filter is minimized', function () {
+        createController();
+        scope.isFilterOpen = true;
+        scope.minimizeFilter();
+        expect(scope.isFilterOpen).toBeFalsy();
+    });
+    
 });
