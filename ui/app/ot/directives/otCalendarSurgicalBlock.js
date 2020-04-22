@@ -3,7 +3,7 @@
 angular.module('bahmni.ot')
     .directive('otCalendarSurgicalBlock', ['surgicalAppointmentHelper', function (surgicalAppointmentHelper) {
         var link = function ($scope) {
-            var totalWidth = 175;
+            var totalWidth = 96;
             var gridCellHeight = 120;
             var heightForSurgeonName = 21;
             var surgicalBlockHeightPerMin = gridCellHeight / $scope.dayViewSplit;
@@ -13,7 +13,7 @@ angular.module('bahmni.ot')
                 var surgicalBlockHeight = getHeightForSurgicalBlock();
                 $scope.blockDimensions = {
                     height: surgicalBlockHeight,
-                    width: $scope.weekOrDay === 'week' ? getWidthForSurgicalBlock() : 290,
+                    width: $scope.weekOrDay === 'week' ? getWidthForSurgicalBlock() : totalWidth,
                     top: getTopForSurgicalBlock(),
                     left: $scope.weekOrDay === 'week' ? getLeftPositionForSurgicalBlock() : 0,
                     color: getColorForProvider(),
