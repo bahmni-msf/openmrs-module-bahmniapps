@@ -146,6 +146,9 @@ angular.module('bahmni.ot')
                 $state.viewDate = $scope.viewDate;
                 $scope.weekOrDay = 'day';
                 $state.weekOrDay = $scope.weekOrDay;
+
+                $scope.weekStartDate = undefined;
+                $state.weekStartDate = undefined;
             };
 
             $scope.goToNextDate = function (date) {
@@ -159,6 +162,9 @@ angular.module('bahmni.ot')
                 $state.weekEndDate = $scope.weekEndDate;
                 $scope.weekOrDay = 'week';
                 $state.weekOrDay = $scope.weekOrDay;
+
+                $scope.viewDate = undefined;
+                $state.viewDate = $scope.viewDate;
             };
 
             $scope.goToNextWeek = function () {
