@@ -10,6 +10,8 @@ angular.module('bahmni.ot')
             var weekStartDay = appService.getAppDescriptor().getConfigValue('startOfWeek') || Bahmni.OT.Constants.defaultWeekStartDayName;
             var currentDate = moment().startOf('day').toDate();
             $scope.startOfWeekCode = Bahmni.OT.Constants.weekDays[weekStartDay];
+            $scope.weekStartDate = $state.weekStartDate || Bahmni.Common.Util.DateUtil.getWeekStartDate(currentDate, $scope.startOfWeekCode);
+            $state.weekStartDate = $scope.weekStartDate;
             var addLocationsForFilters = function () {
                 var locations = {};
                 _.each($scope.locations, function (location) {
