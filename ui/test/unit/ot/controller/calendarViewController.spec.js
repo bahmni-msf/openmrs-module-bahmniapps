@@ -268,7 +268,7 @@ describe("calendarViewController", function () {
             template: "views/cancelAppointment.html",
             closeByDocument: false,
             controller: "calendarViewCancelAppointmentController",
-            className: 'ngdialog-theme-default ng-dialog-adt-popUp ot-dialog',
+            className: 'ngdialog-theme-default ot-dialog',
             showClose: true,
             data: {
                 surgicalBlock: scope.surgicalBlockSelected,
@@ -287,7 +287,7 @@ describe("calendarViewController", function () {
             template: "views/cancelSurgicalBlock.html",
             closeByDocument: false,
             controller: "cancelSurgicalBlockController",
-            className: 'ngdialog-theme-default ng-dialog-adt-popUp ot-dialog',
+            className: 'ngdialog-theme-default ot-dialog',
             showClose: true,
             data: {
                 surgicalBlock: scope.surgicalBlockSelected,
@@ -443,7 +443,7 @@ describe("calendarViewController", function () {
             template: "views/moveAppointment.html",
             closeByDocument: false,
             controller: "moveSurgicalAppointmentController",
-            className: 'ngdialog-theme-default ng-dialog-adt-popUp ot-dialog',
+            className: 'ngdialog-theme-default ot-dialog',
             showClose: true,
             data: {
                 surgicalBlock: scope.surgicalBlockSelected,
@@ -497,7 +497,7 @@ describe("calendarViewController", function () {
         expect(ngDialog.open).toHaveBeenCalledWith(jasmine.objectContaining(
             {
                 template: 'views/surgicalAppointmentDialog.html',
-                className: 'ngdialog-theme-default ng-dialog-adt-popUp ot-dialog',
+                className: 'ngdialog-theme-default',
                 closeByNavigation: true,
                 scope: scope,
                 data: surgicalAppointment
@@ -532,7 +532,7 @@ describe("calendarViewController", function () {
         expect(ngDialog.open).toHaveBeenCalledWith(jasmine.objectContaining(
             {
                 template: 'views/surgicalBlockDialog.html',
-                className: 'ngdialog-theme-default ng-dialog-adt-popUp ot-dialog',
+                className: 'ngdialog-theme-default',
                 scope: scope,
                 data: surgicalBlock
             }
