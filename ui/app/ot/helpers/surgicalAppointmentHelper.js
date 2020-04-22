@@ -90,4 +90,11 @@ angular.module('bahmni.ot')
                 ['scrubNurse', "OT_SURGICAL_APPOINTMENT_SCRUB_NURSE"], ['circulatingNurse', "OT_SURGICAL_APPOINTMENT_CIRCULATING_NURSE"],
                 ['notes', "OT_SURGICAL_APPOINTMENT_NOTES"]]);
         };
+
+        this.getSurgicalAttributes = function (surgicalAppointment) {
+            return _.reduce(surgicalAppointment.surgicalAppointmentAttributes, function (attributes, attribute) {
+                attributes[attribute.surgicalAppointmentAttributeType.name] = attribute.value;
+                return attributes;
+            }, {});
+        };
     }]);

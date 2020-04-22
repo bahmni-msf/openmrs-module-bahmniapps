@@ -1,8 +1,9 @@
 'use strict';
 
 angular.module('bahmni.ot')
-    .controller('calendarViewController', ['$scope', '$rootScope', '$state', '$stateParams', 'appService', 'patientService', 'locationService', 'ngDialog',
-        function ($scope, $rootScope, $state, $stateParams, appService, patientService, locationService, ngDialog) {
+    .controller('calendarViewController', ['$scope', '$rootScope', '$state', '$stateParams', 'appService', 'patientService', 'locationService', 'ngDialog', 'surgicalAppointmentHelper',
+        function ($scope, $rootScope, $state, $stateParams, appService, patientService, locationService, ngDialog, surgicalAppointmentHelper) {
+            var CALENDAR_VIEW = 'Calendar';
             $scope.viewDate = $stateParams.viewDate || $state.viewDate || (moment().startOf('day')).toDate();
             $state.viewDate = $scope.viewDate;
             $scope.calendarConfig = appService.getAppDescriptor().getConfigValue("calendarView");
@@ -19,7 +20,7 @@ angular.module('bahmni.ot')
                 $scope.filterParams = $state.filterParams;
                 $scope.filters = {};
                 $scope.filters.providers = [];
-                $scope.view = $state.view || 'Calendar';
+                $scope.view = $state.view || CALENDAR_VIEW;
                 $state.view = $scope.view;
                 $scope.weekOrDay = $state.weekOrDay || 'day';
                 $state.weekOrDay = $scope.weekOrDay;
@@ -60,7 +61,7 @@ angular.module('bahmni.ot')
             };
 
             var setAppointmentStatusList = function (view) {
-                if (view === 'Calendar') {
+                if (view === CALENDAR_VIEW) {
                     $scope.appointmentStatusList = [{name: Bahmni.OT.Constants.scheduled}, {name: Bahmni.OT.Constants.completed}];
                 } else {
                     $scope.appointmentStatusList = [{name: Bahmni.OT.Constants.scheduled}, {name: Bahmni.OT.Constants.completed},
@@ -69,7 +70,7 @@ angular.module('bahmni.ot')
             };
 
             $scope.calendarView = function () {
-                $scope.view = 'Calendar';
+                $scope.view = CALENDAR_VIEW;
                 $state.view = $scope.view;
             };
 
@@ -112,7 +113,7 @@ angular.module('bahmni.ot')
 
             $scope.onSelectPatient = function (data) {
                 $scope.filters.patient = data;
-                if ($scope.view === 'Calendar') {
+                if ($scope.view === CALENDAR_VIEW) {
                     if (_.isEmpty($scope.filters.statusList)) {
                         $scope.filters.statusList = [{name: Bahmni.OT.Constants.scheduled}, {name: Bahmni.OT.Constants.completed}];
                     }
@@ -182,7 +183,19 @@ angular.module('bahmni.ot')
                 $scope.addActualTimeDisabled = !((surgicalAppointment.status === Bahmni.OT.Constants.scheduled) || (surgicalAppointment.status === Bahmni.OT.Constants.completed));
                 $scope.surgicalAppointmentSelected = surgicalAppointment;
                 $scope.surgicalBlockSelected = surgicalBlock;
+                isCalendarView() && ngDialog.open({
+                    template: 'views/surgicalAppointmentDialog.html',
+                    className: 'ngdialog-theme-default',
+                    closeByNavigation: true,
+                    preCloseCallback: nullifySurgicalBlockData,
+                    scope: $scope,
+                    data: surgicalAppointment
+                });
             });
+
+            var isCalendarView = function () {
+                return $scope.view === CALENDAR_VIEW;
+            };
 
             $scope.$on("event:surgicalBlockSelect", function (event, surgicalBlock) {
                 $scope.editDisabled = false;
@@ -203,7 +216,7 @@ angular.module('bahmni.ot')
                 }
                 ngDialog.open({
                     template: 'views/surgicalBlockDialog.html',
-                    className: 'ngdialog-theme-default ng-dialog-adt-popUp ot-dialog',
+                    className: 'ngdialog-theme-default',
                     closeByNavigation: true,
                     preCloseCallback: nullifySurgicalBlockData,
                     scope: $scope,
@@ -212,13 +225,16 @@ angular.module('bahmni.ot')
             });
 
             var nullifySurgicalBlockData = function () {
+                $scope.editDisabled = true;
+                $scope.cancelDisabled = true;
+                $scope.moveButtonDisabled = true;
+                $scope.addActualTimeDisabled = true;
                 $scope.surgicalBlockSelected = {};
                 $scope.surgicalAppointmentSelected = {};
             };
 
-            // todo: should be removed after enabling pop-up for surigical appointment
             $scope.$on("event:surgicalBlockDeselect", function (event) {
-
+                nullifySurgicalBlockData();
             });
 
             $scope.goToEdit = function ($event) {
@@ -236,17 +252,18 @@ angular.module('bahmni.ot')
             };
 
             $scope.gotoMove = function () {
-                ngDialog.open({
+                var cancelSurgicalBlockDialog = ngDialog.open({
                     template: "views/moveAppointment.html",
                     closeByDocument: false,
                     controller: "moveSurgicalAppointmentController",
-                    className: "ngdialog-theme-default ng-dialog-adt-popUp ot-dialog",
+                    className: "ngdialog-theme-default ot-dialog",
                     showClose: true,
                     data: {
                         surgicalBlock: $scope.surgicalBlockSelected,
                         surgicalAppointment: $scope.surgicalAppointmentSelected
                     }
                 });
+                closeSubsequentActiveDialogs(cancelSurgicalBlockDialog);
             };
 
             $scope.addActualTime = function () {
@@ -254,7 +271,7 @@ angular.module('bahmni.ot')
                     template: "views/addActualTimeDialog.html",
                     closeByDocument: false,
                     controller: "surgicalAppointmentActualTimeController",
-                    className: 'ngdialog-theme-default ng-dialog-adt-popUp ot-dialog',
+                    className: 'ngdialog-theme-default ot-dialog',
                     showClose: true,
                     data: {
                         surgicalBlock: $scope.surgicalBlockSelected,
@@ -268,7 +285,7 @@ angular.module('bahmni.ot')
                     template: "views/cancelAppointment.html",
                     closeByDocument: false,
                     controller: "calendarViewCancelAppointmentController",
-                    className: 'ngdialog-theme-default ng-dialog-adt-popUp ot-dialog',
+                    className: 'ngdialog-theme-default ot-dialog',
                     showClose: true,
                     data: {
                         surgicalBlock: $scope.surgicalBlockSelected,
@@ -282,7 +299,7 @@ angular.module('bahmni.ot')
                     template: "views/cancelSurgicalBlock.html",
                     closeByDocument: false,
                     controller: "cancelSurgicalBlockController",
-                    className: 'ngdialog-theme-default ng-dialog-adt-popUp ot-dialog',
+                    className: 'ngdialog-theme-default ot-dialog',
                     showClose: true,
                     data: {
                         surgicalBlock: $scope.surgicalBlockSelected,
@@ -305,11 +322,20 @@ angular.module('bahmni.ot')
                     cancelSurgicalBlock();
                 }
             };
+
+            $scope.getAttributes = function (surgicalAppointment) {
+                return surgicalAppointmentHelper.getSurgicalAttributes(surgicalAppointment);
+            };
+
+            $scope.getPatientDisplayLabel = function (surgicalAppointment) {
+                return surgicalAppointmentHelper.getPatientDisplayLabel(surgicalAppointment.patient.display);
+            };
+
             init();
 
             $scope.$watch('view', function (newValue, oldValue) {
                 if (oldValue !== newValue) {
-                    if (newValue === 'Calendar') {
+                    if (newValue === CALENDAR_VIEW) {
                         setAppointmentStatusList(newValue);
                         $scope.filters.statusList = _.filter($scope.filters.statusList, function (status) {
                             return status.name === Bahmni.OT.Constants.scheduled || status.name === Bahmni.OT.Constants.completed;
