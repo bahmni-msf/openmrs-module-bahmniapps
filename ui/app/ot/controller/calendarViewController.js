@@ -146,7 +146,7 @@ angular.module('bahmni.ot')
             };
 
             $scope.goToCurrentDate = function () {
-                $scope.viewDate = currentDate;
+                $scope.viewDate = moment().startOf('day').toDate();
                 $state.viewDate = $scope.viewDate;
                 $scope.weekOrDay = 'day';
                 $state.weekOrDay = $scope.weekOrDay;
@@ -167,7 +167,7 @@ angular.module('bahmni.ot')
                 $scope.weekOrDay = 'week';
                 $state.weekOrDay = $scope.weekOrDay;
 
-                $scope.viewDate = currentDate;
+                $scope.viewDate = moment().startOf('day').toDate();
                 $state.viewDate = $scope.viewDate;
             };
 
