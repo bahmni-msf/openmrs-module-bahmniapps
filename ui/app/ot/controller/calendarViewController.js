@@ -313,7 +313,7 @@ angular.module('bahmni.ot')
                 });
             }
 
-            function notAllLocationsSelected () {
+            function isAnyLocationDeselected () {
                 var locationNames = getLocationNames();
                 if ($scope.filters.locations) {
                     return _.some(locationNames, function (loc) {
@@ -327,7 +327,7 @@ angular.module('bahmni.ot')
             }
 
             $scope.isFilterApplied = function () {
-                return isAnyFilterOtherThanLocationsSelected() || notAllLocationsSelected();
+                return isAnyFilterOtherThanLocationsSelected() || isAnyLocationDeselected();
             };
 
             $scope.cancelSurgicalBlockOrSurgicalAppointment = function () {
