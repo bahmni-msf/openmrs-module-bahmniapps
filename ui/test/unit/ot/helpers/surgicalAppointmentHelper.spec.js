@@ -302,6 +302,35 @@ describe('surgicalAppointmentHelper', function () {
             });
         });
 
+        describe('getSurgicalAttributes', function () {
+            it('should return existing attributes from surgical appointment', function () {
+                var surgicalAppointment = {
+                    id: 1,
+                    patient: {uuid: "patientUuid"},
+                    actualStartDateTime: null,
+                    actualEndDateTime: null,
+                    status: null,
+                    surgicalAppointmentAttributes: [{
+                        id: 88,
+                        value: "Physiotherapy",
+                        surgicalAppointmentAttributeType: {name: "procedure"}
+                    }, {id: 89, value: "1", surgicalAppointmentAttributeType: {name: "estTimeHours"}}, {
+                        id: 90,
+                        value: "15",
+                        surgicalAppointmentAttributeType: {name: "estTimeMinutes"}
+                    }, {id: 91, value: "30", surgicalAppointmentAttributeType: {name: "cleaningTime"}}]
+                };
+                var expectedAttributes = {
+                    procedure: 'Physiotherapy',
+                    estTimeHours: '1',
+                    estTimeMinutes: '15',
+                    cleaningTime: '30'
+                };
+                var surgicalAttributes = surgicalAppointmentHelper.getSurgicalAttributes(surgicalAppointment);
+                expect(_.isEqual(expectedAttributes, surgicalAttributes)).toBeTruthy()
+            })
+        });
+
     });
 
 });
