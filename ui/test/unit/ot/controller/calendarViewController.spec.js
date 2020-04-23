@@ -97,6 +97,8 @@ describe("calendarViewController", function () {
         scope.goToCurrentDate();
         expect(scope.viewDate).toEqual((moment().startOf('day')).toDate());
         expect(state.viewDate).toEqual((moment().startOf('day')).toDate());
+        expect(scope.weekStartDate).toEqual(Bahmni.Common.Util.DateUtil.getWeekStartDate(moment().startOf('day').toDate(), scope.startOfWeekCode));
+        expect(state.weekStartDate).toEqual(Bahmni.Common.Util.DateUtil.getWeekStartDate(moment().startOf('day').toDate(), scope.startOfWeekCode));
     });
 
     it('Should search the patient with the given search string', function () {
@@ -304,6 +306,8 @@ describe("calendarViewController", function () {
         expect(state.weekStartDate).toEqual(Bahmni.Common.Util.DateUtil.getWeekStartDate(new Date(moment().startOf('day').toDate()), scope.startOfWeekCode));
         expect(scope.weekEndDate).toEqual(Bahmni.Common.Util.DateUtil.getWeekEndDate(scope.weekStartDate));
         expect(state.weekEndDate).toEqual(Bahmni.Common.Util.DateUtil.getWeekEndDate(scope.weekStartDate));
+        expect(scope.viewDate).toEqual((moment().startOf('day')).toDate());
+        expect(state.viewDate).toEqual((moment().startOf('day')).toDate());
     });
 
     it('should go to next week on click of right arrow in week view', function() {

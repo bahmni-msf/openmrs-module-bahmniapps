@@ -8,7 +8,10 @@ angular.module('bahmni.ot')
             $state.viewDate = $scope.viewDate;
             $scope.calendarConfig = appService.getAppDescriptor().getConfigValue("calendarView");
             var weekStartDay = appService.getAppDescriptor().getConfigValue('startOfWeek') || Bahmni.OT.Constants.defaultWeekStartDayName;
+            var currentDate = moment().startOf('day').toDate();
             $scope.startOfWeekCode = Bahmni.OT.Constants.weekDays[weekStartDay];
+            $scope.weekStartDate = $state.weekStartDate || Bahmni.Common.Util.DateUtil.getWeekStartDate(currentDate, $scope.startOfWeekCode);
+            $state.weekStartDate = $scope.weekStartDate;
             var addLocationsForFilters = function () {
                 var locations = {};
                 _.each($scope.locations, function (location) {
@@ -144,10 +147,13 @@ angular.module('bahmni.ot')
             };
 
             $scope.goToCurrentDate = function () {
-                $scope.viewDate = new Date(moment().startOf('day'));
+                $scope.viewDate = moment().startOf('day').toDate();
                 $state.viewDate = $scope.viewDate;
                 $scope.weekOrDay = 'day';
                 $state.weekOrDay = $scope.weekOrDay;
+
+                $scope.weekStartDate = Bahmni.Common.Util.DateUtil.getWeekStartDate(currentDate, $scope.startOfWeekCode);
+                $state.weekStartDate = $scope.weekStartDate;
             };
 
             $scope.goToNextDate = function (date) {
@@ -155,12 +161,15 @@ angular.module('bahmni.ot')
                 $state.viewDate = $scope.viewDate;
             };
             $scope.goToCurrentWeek = function () {
-                $scope.weekStartDate = Bahmni.Common.Util.DateUtil.getWeekStartDate(moment().startOf('day').toDate(), $scope.startOfWeekCode);
+                $scope.weekStartDate = Bahmni.Common.Util.DateUtil.getWeekStartDate(currentDate, $scope.startOfWeekCode);
                 $state.weekStartDate = $scope.weekStartDate;
                 $scope.weekEndDate = Bahmni.Common.Util.DateUtil.getWeekEndDate($scope.weekStartDate);
                 $state.weekEndDate = $scope.weekEndDate;
                 $scope.weekOrDay = 'week';
                 $state.weekOrDay = $scope.weekOrDay;
+
+                $scope.viewDate = moment().startOf('day').toDate();
+                $state.viewDate = $scope.viewDate;
             };
 
             $scope.goToNextWeek = function () {
