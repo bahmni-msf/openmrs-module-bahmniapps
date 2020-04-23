@@ -541,9 +541,9 @@ describe("calendarViewController", function () {
         expect(_.isEmpty(scope.surgicalBlockSelected)).toBeTruthy();
     });
 
-    it('should return true when filters are empty including locations', function () {
+    it('should return false when filters are empty including locations', function () {
         createController();
-        scope.locations = [{uuid: "uuid1", name: "location1"}, {uuid: "uuid2", name: "location2"}];
+        scope.locations = [];
         scope.filters = {};
         var filterApplied = scope.isFilterApplied();
         expect(filterApplied).toBeFalsy();
@@ -596,5 +596,5 @@ describe("calendarViewController", function () {
         scope.minimizeFilter();
         expect(scope.isFilterOpen).toBeFalsy();
     });
-    
+
 });

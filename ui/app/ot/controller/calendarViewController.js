@@ -314,12 +314,12 @@ angular.module('bahmni.ot')
             }
 
             function isAnyLocationDeselected () {
-                var locationNames = getLocationNames();
                 if ($scope.filters.locations) {
+                    var locationNames = getLocationNames();
                     return _.some(locationNames, function (loc) {
                         return !$scope.filters.locations[loc];
                     });
-                }
+                } return false;
             }
 
             function isAnyFilterOtherThanLocationsSelected () {
