@@ -195,7 +195,7 @@ angular.module('bahmni.ot')
                 $scope.surgicalBlockSelected = surgicalBlock;
                 isCalendarView() && ngDialog.open({
                     template: 'views/surgicalAppointmentDialog.html',
-                    className: 'ngdialog-theme-default',
+                    className: 'ngdialog-theme-default popup',
                     closeByNavigation: true,
                     preCloseCallback: nullifySurgicalBlockData,
                     scope: $scope,
@@ -226,7 +226,7 @@ angular.module('bahmni.ot')
                 }
                 ngDialog.open({
                     template: 'views/surgicalBlockDialog.html',
-                    className: 'ngdialog-theme-default',
+                    className: 'ngdialog-theme-default popup',
                     closeByNavigation: true,
                     preCloseCallback: nullifySurgicalBlockData,
                     scope: $scope,
@@ -266,7 +266,7 @@ angular.module('bahmni.ot')
                     template: "views/moveAppointment.html",
                     closeByDocument: false,
                     controller: "moveSurgicalAppointmentController",
-                    className: "ngdialog-theme-default ot-dialog",
+                    className: "ngdialog-theme-default ot-dialog popup",
                     showClose: true,
                     data: {
                         surgicalBlock: $scope.surgicalBlockSelected,
@@ -281,7 +281,7 @@ angular.module('bahmni.ot')
                     template: "views/addActualTimeDialog.html",
                     closeByDocument: false,
                     controller: "surgicalAppointmentActualTimeController",
-                    className: 'ngdialog-theme-default ot-dialog',
+                    className: 'ngdialog-theme-default ot-dialog popup',
                     showClose: true,
                     data: {
                         surgicalBlock: $scope.surgicalBlockSelected,
@@ -295,7 +295,7 @@ angular.module('bahmni.ot')
                     template: "views/cancelAppointment.html",
                     closeByDocument: false,
                     controller: "calendarViewCancelAppointmentController",
-                    className: 'ngdialog-theme-default ot-dialog',
+                    className: 'ngdialog-theme-default ot-dialog popup',
                     showClose: true,
                     data: {
                         surgicalBlock: $scope.surgicalBlockSelected,
@@ -309,7 +309,7 @@ angular.module('bahmni.ot')
                     template: "views/cancelSurgicalBlock.html",
                     closeByDocument: false,
                     controller: "cancelSurgicalBlockController",
-                    className: 'ngdialog-theme-default ot-dialog',
+                    className: 'ngdialog-theme-default ot-dialog popup',
                     showClose: true,
                     data: {
                         surgicalBlock: $scope.surgicalBlockSelected,
