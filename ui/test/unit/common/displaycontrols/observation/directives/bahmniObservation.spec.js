@@ -113,7 +113,35 @@ describe("BahmniObservation", function () {
             expect(compiledElementScope).not.toBeUndefined();
             expect(compiledElementScope.config).not.toBeUndefined();
             expect(observationsService.fetch).toHaveBeenCalledWith(scope.patient.uuid, scope.config.conceptNames, scope.config.scope,
-                scope.config.numberOfVisits, undefined, undefined, null);
+                scope.config.numberOfVisits, undefined, undefined, null, null, null, undefined);
+            expect(observationsService.fetch.calls.count()).toEqual(1);
+            expect(observationsService.fetchForEncounter.calls.count()).toEqual(0);
+            expect(observationsService.fetchForPatientProgram.calls.count()).toEqual(0);
+        });
+
+        it("should fetch observations for patient if the numberofEncounters is provided", function () {
+            scope.patient = {uuid: '123'};
+            scope.config = {
+                showGroupDateTime: false,
+                conceptNames: ["Concept Name"],
+                scope: "latest",
+                numberOfVisits: 1,
+                numberOfEncounters: 2
+            };
+            scope.section = {};
+            observationsService.fetch.and.returnValue(specUtil.respondWithPromise(q, {data: {}}));
+
+            mockBackend.expectGET('../common/displaycontrols/observation/views/observationDisplayControl.html').respond("<div>dummy</div>");
+
+            var element = $compile(simpleHtml)(scope);
+            scope.$digest();
+            var compiledElementScope = element.isolateScope();
+            scope.$digest();
+
+            expect(compiledElementScope).not.toBeUndefined();
+            expect(compiledElementScope.config).not.toBeUndefined();
+            expect(observationsService.fetch).toHaveBeenCalledWith(scope.patient.uuid, scope.config.conceptNames, scope.config.scope,
+                scope.config.numberOfVisits, undefined, undefined, null, null, null, 2);
             expect(observationsService.fetch.calls.count()).toEqual(1);
             expect(observationsService.fetchForEncounter.calls.count()).toEqual(0);
             expect(observationsService.fetchForPatientProgram.calls.count()).toEqual(0);
@@ -149,7 +177,7 @@ describe("BahmniObservation", function () {
             expect(compiledElementScope).not.toBeUndefined();
             expect(compiledElementScope.config).not.toBeUndefined();
             expect(observationsService.fetch).toHaveBeenCalledWith(scope.patient.uuid, scope.config.conceptNames,
-                scope.config.scope, scope.config.numberOfVisits, undefined, undefined, null);
+                scope.config.scope, scope.config.numberOfVisits, undefined, undefined, null,  null, null, undefined);
             expect(observationsService.fetch.calls.count()).toEqual(1);
             expect(observationsService.fetchForEncounter.calls.count()).toEqual(0);
             expect(observationsService.fetchForPatientProgram.calls.count()).toEqual(0);
@@ -189,7 +217,29 @@ describe("BahmniObservation", function () {
             expect(compiledElementScope).not.toBeUndefined();
             expect(compiledElementScope.config).not.toBeUndefined();
 
-            expect(observationsService.fetchForPatientProgram).toHaveBeenCalledWith(scope.enrollment, scope.config.conceptNames, scope.config.scope, scope.config.obsIgnoreList);
+            expect(observationsService.fetchForPatientProgram).toHaveBeenCalledWith(scope.enrollment, scope.config.conceptNames, scope.config.scope, scope.config.obsIgnoreList, null, undefined);
+            expect(observationsService.fetchForPatientProgram.calls.count()).toEqual(1);
+            expect(observationsService.fetch.calls.count()).toEqual(0);
+            expect(observationsService.fetchForEncounter.calls.count()).toEqual(0);
+        });
+
+        it("should fetch observations for patient if the patientProgramUuid and numberOfEncounters is provided", function () {
+            scope.config = {conceptNames: ["Concept Name"], scope: "latest", obsIgnoreList: ["obsIgnoreList"], numberOfEncounters: 2};
+            scope.section = {};
+            scope.enrollment = 'patientProgramUuid';
+            observationsService.fetchForPatientProgram.and.returnValue(specUtil.respondWithPromise(q, {data: {}}));
+
+            mockBackend.expectGET('../common/displaycontrols/observation/views/observationDisplayControl.html').respond("<div>dummy</div>");
+
+            var element = $compile(simpleHtml)(scope);
+            scope.$digest();
+            var compiledElementScope = element.isolateScope();
+            scope.$digest();
+
+            expect(compiledElementScope).not.toBeUndefined();
+            expect(compiledElementScope.config).not.toBeUndefined();
+
+            expect(observationsService.fetchForPatientProgram).toHaveBeenCalledWith(scope.enrollment, scope.config.conceptNames, scope.config.scope, scope.config.obsIgnoreList, null, 2);
             expect(observationsService.fetchForPatientProgram.calls.count()).toEqual(1);
             expect(observationsService.fetch.calls.count()).toEqual(0);
             expect(observationsService.fetchForEncounter.calls.count()).toEqual(0);

@@ -26,9 +26,9 @@ describe("observationsService", function () {
 
     describe("fetchForPatientProgram", function () {
         it("should fetch observations for patient program", function () {
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations?concept=conceptName1&concept=conceptName2&loadComplexData=loadComplexData&patientProgramUuid=patientProgramUuid&scope=latest').respond({results: ["latest Observation"]});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations?concept=conceptName1&concept=conceptName2&loadComplexData=loadComplexData&numberOfEncounters=2&patientProgramUuid=patientProgramUuid&scope=latest').respond({results: ["latest Observation"]});
 
-            observationsService.fetchForPatientProgram("patientProgramUuid", ["conceptName1", "conceptName2"],"latest", null , "loadComplexData").then(function (response) {
+            observationsService.fetchForPatientProgram("patientProgramUuid", ["conceptName1", "conceptName2"],"latest", null , "loadComplexData", 2).then(function (response) {
                 expect(response.data.results.length).toBe(1);
                 expect(response.data.results[0]).toBe("latest Observation");
             });
@@ -94,6 +94,14 @@ describe("observationsService", function () {
             mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations?concept=conceptName1&concept=conceptName2&loadComplexData=false&numberOfVisits=3&patientProgramUuid=patientprogramUuid&patientUuid=patientUuid&scope=latest').respond({results: ['Some data']});
 
             observationsService.fetch("patientUuid", ["conceptName1", "conceptName2"], "latest", 3, undefined, undefined, null, "patientprogramUuid", false);
+
+            mockBackend.flush();
+        });
+
+        it("should send parameters specified in call to the server when numberOfEncounters is present", function () {
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations?concept=conceptName1&concept=conceptName2&loadComplexData=false&numberOfEncounters=2&numberOfVisits=3&patientProgramUuid=patientprogramUuid&patientUuid=patientUuid&scope=latest').respond({results: ['Some data']});
+
+            observationsService.fetch("patientUuid", ["conceptName1", "conceptName2"], "latest", 3, undefined, undefined, null, "patientprogramUuid", false, 2);
 
             mockBackend.flush();
         });

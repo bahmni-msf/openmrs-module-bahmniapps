@@ -82,13 +82,13 @@ angular.module('bahmni.common.displaycontrol.observation')
                                     mapObservation(response.data, $scope.config);
                                 });
                             } else if ($scope.enrollment) {
-                                $scope.initialization = observationsService.fetchForPatientProgram($scope.enrollment, $scope.config.conceptNames, $scope.config.scope, $scope.config.obsIgnoreList).then(function (response) {
+                                $scope.initialization = observationsService.fetchForPatientProgram($scope.enrollment, $scope.config.conceptNames, $scope.config.scope, $scope.config.obsIgnoreList, null, $scope.config.numberOfEncounters).then(function (response) {
                                     mapObservation(response.data, $scope.config);
                                 });
                             } else {
                                 $scope.initialization = observationsService.fetch($scope.patient.uuid, $scope.config.conceptNames,
                                     $scope.config.scope, $scope.config.numberOfVisits, $scope.visitUuid,
-                                    $scope.config.obsIgnoreList, null).then(function (response) {
+                                    $scope.config.obsIgnoreList, null, null, null, $scope.config.numberOfEncounters).then(function (response) {
                                         mapObservation(response.data, $scope.config);
                                     });
                             }
