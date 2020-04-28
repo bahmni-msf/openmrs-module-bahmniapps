@@ -420,18 +420,4 @@ describe('EncounterService', function () {
             done();
         });
     });
-
-    it('should find observations with given params', inject(['encounterService', function (encounterService) {
-        var requestParams = {
-            loadComplexData: true
-        };
-
-        var results = encounterService.find({loadComplexData: true});
-
-        expect(mockHttp.post).toHaveBeenCalled();
-        expect(mockHttp.post.calls.mostRecent().args[0]).toBe(Bahmni.Common.Constants.bahmniEncounterUrl + "/find");
-        expect(mockHttp.post.calls.mostRecent().args[1]).toEqual(requestParams);
-        expect(mockHttp.post.calls.mostRecent().args[2]).toEqual({withCredentials: true});
-        expect(results).toBe('success');
-    }]));
 });
