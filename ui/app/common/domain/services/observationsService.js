@@ -36,7 +36,7 @@ angular.module('bahmni.common.domain')
 
         this.getRevisedObsByUuid = function (observationUuid, loadComplexData) {
             return $http.get(Bahmni.Common.Constants.observationsUrl, {
-                params: {observationUuid: observationUuid, revision: "latest", loadComplexData: loadComplexData ? loadComplexData : false},
+                params: {observationUuid: observationUuid, revision: "latest", loadComplexData: loadComplexData ? loadComplexData :false},
                 withCredentials: true
             });
         };
@@ -66,7 +66,7 @@ angular.module('bahmni.common.domain')
 
         this.getObsInFlowSheet = function (patientUuid, conceptSet, groupByConcept, orderByConcept, conceptNames,
                                            numberOfVisits, initialCount, latestCount, groovyExtension,
-                                           startDate, endDate, patientProgramUuid, formNames, loadComplexData) {
+                                           startDate, endDate, patientProgramUuid, formNames) {
             var params = {
                 patientUuid: patientUuid,
                 conceptSet: conceptSet,
@@ -80,8 +80,7 @@ angular.module('bahmni.common.domain')
                 startDate: Bahmni.Common.Util.DateUtil.parseLongDateToServerFormat(startDate),
                 endDate: Bahmni.Common.Util.DateUtil.parseLongDateToServerFormat(endDate),
                 enrollment: patientProgramUuid,
-                formNames: formNames,
-                loadComplexData: loadComplexData ? loadComplexData : false
+                formNames: formNames
             };
             return $http.get(Bahmni.Common.Constants.observationsUrl + "/flowSheet", {
                 params: params,

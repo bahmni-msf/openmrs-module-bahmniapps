@@ -41,7 +41,7 @@ describe("observationsService", function () {
         it("should send parameters specified in call to the server when conceptSet is passed", function () {
             mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?' +
             'conceptNames=conceptNames&conceptSet=conceptSet&enrollment=patientProgramUuid' +
-            '&groupByConcept=groupByConcept&initialCount=initialCount&latestCount=latestCount&loadComplexData=false' +
+            '&groupByConcept=groupByConcept&initialCount=initialCount&latestCount=latestCount' +
             '&name=groovyExtension&numberOfVisits=numberOfVisits&orderByConcept=orderByConcept&patientUuid=patientUuid')
                 .respond({results: ["Some data"]});
 
@@ -57,7 +57,7 @@ describe("observationsService", function () {
         it("should send parameters specified in call to the server when formNames is passed", function () {
             mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations/flowSheet?' +
                 'conceptNames=conceptNames&enrollment=patientProgramUuid&formNames=formNames' +
-                '&groupByConcept=groupByConcept&initialCount=initialCount&latestCount=latestCount&loadComplexData=false' +
+                '&groupByConcept=groupByConcept&initialCount=initialCount&latestCount=latestCount' +
                 '&name=groovyExtension&numberOfVisits=numberOfVisits&orderByConcept=orderByConcept&patientUuid=patientUuid')
                 .respond({results: ["Some data"]});
 
