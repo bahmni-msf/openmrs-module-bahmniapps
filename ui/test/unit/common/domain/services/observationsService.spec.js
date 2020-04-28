@@ -97,6 +97,14 @@ describe("observationsService", function () {
 
             mockBackend.flush();
         });
+
+        it("should send parameters specified in call to the server when numberOfEncounters is present", function () {
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations?concept=conceptName1&concept=conceptName2&numberOfEncounters=2&numberOfVisits=3&patientProgramUuid=patientprogramUuid&patientUuid=patientUuid&scope=latest').respond({results: ['Some data']});
+
+            observationsService.fetch("patientUuid", ["conceptName1", "conceptName2"], "latest", 3, undefined, undefined, null, "patientprogramUuid", 2);
+
+            mockBackend.flush();
+        });
     });
 
 });

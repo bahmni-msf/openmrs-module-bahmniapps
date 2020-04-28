@@ -2,7 +2,7 @@
 
 angular.module('bahmni.common.domain')
     .service('observationsService', ['$http', function ($http) {
-        this.fetch = function (patientUuid, conceptNames, scope, numberOfVisits, visitUuid, obsIgnoreList, filterObsWithOrders, patientProgramUuid) {
+        this.fetch = function (patientUuid, conceptNames, scope, numberOfVisits, visitUuid, obsIgnoreList, filterObsWithOrders, patientProgramUuid, numberOfEncounters) {
             var params = {concept: conceptNames};
             if (obsIgnoreList) {
                 params.obsIgnoreList = obsIgnoreList;
@@ -17,6 +17,7 @@ angular.module('bahmni.common.domain')
             } else {
                 params.patientUuid = patientUuid;
                 params.numberOfVisits = numberOfVisits;
+                params.numberOfEncounters = numberOfEncounters;
                 params.scope = scope;
                 params.patientProgramUuid = patientProgramUuid;
             }
