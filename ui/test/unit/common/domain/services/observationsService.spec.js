@@ -13,9 +13,9 @@ describe("observationsService", function () {
 
     describe("fetchForEncounter", function () {
         it("should fetch observations for encounter", function () {
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations?concept=concept+name&encounterUuid=encounterUuid&loadComplexData=loadComplexData').respond({results: ["Some data"]});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations?concept=concept+name&encounterUuid=encounterUuid').respond({results: ["Some data"]});
 
-            observationsService.fetchForEncounter("encounterUuid", ["concept name"], "loadComplexData").then(function (response) {
+            observationsService.fetchForEncounter("encounterUuid", ["concept name"]).then(function (response) {
                 expect(response.data.results.length).toBe(1);
                 expect(response.data.results[0]).toBe("Some data");
             });
@@ -26,9 +26,9 @@ describe("observationsService", function () {
 
     describe("fetchForPatientProgram", function () {
         it("should fetch observations for patient program", function () {
-            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations?concept=conceptName1&concept=conceptName2&loadComplexData=loadComplexData&patientProgramUuid=patientProgramUuid&scope=latest').respond({results: ["latest Observation"]});
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations?concept=conceptName1&concept=conceptName2&patientProgramUuid=patientProgramUuid&scope=latest').respond({results: ["latest Observation"]});
 
-            observationsService.fetchForPatientProgram("patientProgramUuid", ["conceptName1", "conceptName2"],"latest", null , "loadComplexData").then(function (response) {
+            observationsService.fetchForPatientProgram("patientProgramUuid", ["conceptName1", "conceptName2"],"latest").then(function (response) {
                 expect(response.data.results.length).toBe(1);
                 expect(response.data.results[0]).toBe("latest Observation");
             });
@@ -71,9 +71,9 @@ describe("observationsService", function () {
 
     describe("fetch By Observation Uuid", function() {
        it ("should fetch bahmni observation by uuid", function() {
-           mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations?loadComplexData=loadComplexData&observationUuid=observationUuid').respond({results: {uuid : "observationUuid"}});
+           mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations?observationUuid=observationUuid').respond({results: {uuid : "observationUuid"}});
 
-           observationsService.getByUuid("observationUuid","loadComplexData").then(function (response) {
+           observationsService.getByUuid("observationUuid").then(function (response) {
                expect(response.data.results.uuid).toEqual("observationUuid");
            });
 
