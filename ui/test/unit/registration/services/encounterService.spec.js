@@ -384,40 +384,4 @@ describe('EncounterService', function () {
         expect(mockHttp.delete).not.toHaveBeenCalled();
         mockHttp.delete.calls.reset();
     });
-
-    it('should find observations by encounterUuid',  function (done) {
-        var encounterUuid = "encounterUuid";
-        var requestParams = {
-            params: {
-                includeAll: true,
-                loadComplexData: false
-            },
-            withCredentials: true
-        };
-
-        encounterService.findByEncounterUuid(encounterUuid).then(function (response) {
-            expect(mockHttp.get).toHaveBeenCalled();
-            expect(mockHttp.get.calls.mostRecent().args[0]).toBe(Bahmni.Common.Constants.bahmniEncounterUrl  + "/encounterUuid");
-            expect(mockHttp.get.calls.mostRecent().args[1]).toEqual(requestParams);
-            done();
-        });
-    });
-
-    it('should find observations by encounterUuid with given params',  function (done) {
-        var encounterUuid = "encounterUuid";
-        var requestParams = {
-            params: {
-                includeAll: false,
-                loadComplexData: true
-            },
-            withCredentials: true
-        };
-
-        encounterService.findByEncounterUuid(encounterUuid, {includeAll: false}, true).then(function (response) {
-            expect(mockHttp.get).toHaveBeenCalled();
-            expect(mockHttp.get.calls.mostRecent().args[0]).toBe(Bahmni.Common.Constants.bahmniEncounterUrl  + "/encounterUuid");
-            expect(mockHttp.get.calls.mostRecent().args[1]).toEqual(requestParams);
-            done();
-        });
-    });
 });
