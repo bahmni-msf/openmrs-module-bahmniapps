@@ -81,4 +81,30 @@ describe("observationsService", function () {
        });
     });
 
+    describe("fetch", function () {
+        it("should send parameters specified in call to the server when obsIgnoreList, filterObsWithOrders and visitUuid are present", function () {
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations?concept=conceptName1&concept=conceptName2&filterObsWithOrders=filterObsWithOrders&obsIgnoreList=conceptName1&scope=latest&visitUuid=visitUuid').respond({results: ['Some data']});
+
+            observationsService.fetch(undefined, ["conceptName1", "conceptName2"], "latest", undefined, "visitUuid", ["conceptName1"], "filterObsWithOrders", undefined);
+
+            mockBackend.flush();
+        });
+
+        it("should send parameters specified in call to the server when obsIgnoreList, filterObsWithOrders and visitUuid are absent", function () {
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations?concept=conceptName1&concept=conceptName2&numberOfVisits=3&patientProgramUuid=patientprogramUuid&patientUuid=patientUuid&scope=latest').respond({results: ['Some data']});
+
+            observationsService.fetch("patientUuid", ["conceptName1", "conceptName2"], "latest", 3, undefined, undefined, null, "patientprogramUuid");
+
+            mockBackend.flush();
+        });
+
+        it("should send parameters specified in call to the server when numberOfEncounters is present", function () {
+            mockBackend.expectGET('/openmrs/ws/rest/v1/bahmnicore/observations?concept=conceptName1&concept=conceptName2&numberOfEncounters=2&numberOfVisits=3&patientProgramUuid=patientprogramUuid&patientUuid=patientUuid&scope=latest').respond({results: ['Some data']});
+
+            observationsService.fetch("patientUuid", ["conceptName1", "conceptName2"], "latest", 3, undefined, undefined, null, "patientprogramUuid", 2);
+
+            mockBackend.flush();
+        });
+    });
+
 });
