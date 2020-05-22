@@ -40,18 +40,6 @@
 .surgical-block {
   margin: 0 1px;
   .surgical-block-appointment {
-    i {
-      position: absolute;
-      right: 5px;
-      top: 5px;
-      background: transparent;
-      border: none;
-      outline: none;
-      padding: 0;
-      &:hover {
-        opacity: 1;
-      }
-    }
     .surgicalblock-patientname {
       word-break: break-word;
       padding-right: 10px;
