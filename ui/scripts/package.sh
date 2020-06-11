@@ -28,7 +28,15 @@ Xvfb :99 &
 XVFB_PID=$!
 echo "Starting Xvfb process $XVFB_PID"
 
+echo "Starting tests..."
 grunt web
+
+retVal=$?
+if [ $retVal -ne 0 ]; then
+    echo "Error: Exiting with error code 1"
+    exit 1
+fi
+
 cd dist && zip -r ../target/${ZIP_FILE_NAME}.zip *
 
 
