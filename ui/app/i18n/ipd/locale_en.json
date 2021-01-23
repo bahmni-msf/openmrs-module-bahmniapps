@@ -64,5 +64,7 @@
     "MOVEMENT_FROM_KEY": "Movement From",
     "MOVEMENT_TO_KEY": "Movement To",
     "MOVE_KEY": "Move",
-    "ADMIT_TO_KEY": "Admit To:"
+    "ADMIT_TO_KEY": "Admit To:",
+    "SELECT_BED_TO_ADMIT_PATIENT_DEFAULT_MESSAGE": "Please select a bed to admit patient",
+    "BED_IS_ASSIGNED_SUCCESSFULLY": "{{bed}} Bed is assigned successfully"
 }

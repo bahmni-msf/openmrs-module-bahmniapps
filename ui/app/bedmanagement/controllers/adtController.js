@@ -3,10 +3,10 @@
 angular.module('bahmni.ipd')
     .controller('AdtController', ['$scope', '$q', '$rootScope', 'spinner', 'dispositionService',
         'encounterService', 'bedService', 'appService', 'visitService', '$location', '$window', 'sessionService',
-        'messagingService', '$anchorScroll', '$stateParams', 'ngDialog', '$filter', '$state',
+        'messagingService', '$anchorScroll', '$stateParams', 'ngDialog', '$filter', '$state', '$translate',
         function ($scope, $q, $rootScope, spinner, dispositionService, encounterService, bedService,
                   appService, visitService, $location, $window, sessionService, messagingService, $anchorScroll,
-                  $stateParams, ngDialog, $filter, $state) {
+                  $stateParams, ngDialog, $filter, $state, $translate) {
             var actionConfigs = {};
             var encounterConfig = $rootScope.encounterConfig;
             var locationUuid = sessionService.getLoginLocationUuid();
@@ -186,13 +186,13 @@ angular.module('bahmni.ipd')
                 spinner.forPromise(bedService.assignBed(bed.bedId, patientUuid, encounterUuid).then(function () {
                     bed.status = "OCCUPIED";
                     $scope.$emit("event:patientAssignedToBed", $rootScope.selectedBedInfo.bed);
-                    messagingService.showMessage('info', "Bed " + bed.bedNumber + " is assigned successfully");
+                    messagingService.showMessage("info", $translate.instant("BED_IS_ASSIGNED_SUCCESSFULLY", {bed: bed.bedNumber}));
                 }));
             };
 
             $scope.admit = function () {
                 if (angular.isUndefined($rootScope.selectedBedInfo.bed)) {
-                    messagingService.showMessage("error", "Please select a bed to admit patient");
+                    messagingService.showMessage("error", "SELECT_BED_TO_ADMIT_PATIENT_DEFAULT_MESSAGE");
                 } else if ($scope.visitSummary && $scope.visitSummary.visitType !== $scope.defaultVisitTypeName && !hideStartNewVisitPopUp) {
                     ngDialog.openConfirm({
                         template: 'views/visitChangeConfirmation.html',

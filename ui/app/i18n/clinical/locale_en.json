@@ -327,5 +327,6 @@
     "INVESTIGATIONS_PANELS_HEADER_LABEL": "Panels",
     "INVESTIGATIONS_SELECTIONS_HEADER_LABEL": "Selection",
     "CLINICAL_GO_TO_DASHBOARD_LABEL": "Go to IPD dashboard",
-    "NO_FORM_FOUND_FOR_PATIENT": "No Form found for this patient"
+    "NO_FORM_FOUND_FOR_PATIENT": "No Form found for this patient",
+    "ENTER_IMPRESSION_ON_IMAGE": "Enter Impression on Image"
 }
