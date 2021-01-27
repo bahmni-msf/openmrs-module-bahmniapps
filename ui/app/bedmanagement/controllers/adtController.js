@@ -186,7 +186,7 @@ angular.module('bahmni.ipd')
                 spinner.forPromise(bedService.assignBed(bed.bedId, patientUuid, encounterUuid).then(function () {
                     bed.status = "OCCUPIED";
                     $scope.$emit("event:patientAssignedToBed", $rootScope.selectedBedInfo.bed);
-                    messagingService.showMessage("info", $translate.instant("BED_IS_ASSIGNED_SUCCESSFULLY", {bed: bed.bedNumber}));
+                    messagingService.showMessage("info", $translate.instant("BED_IS_ASSIGNED_SUCCESSFULLY_MESSAGE", {bed: bed.bedNumber}));
                 }));
             };
 
@@ -260,7 +260,7 @@ angular.module('bahmni.ipd')
 
             $scope.transfer = function () {
                 if (angular.isUndefined($rootScope.selectedBedInfo.bed) || $rootScope.selectedBedInfo.bed.bedId === $rootScope.bedDetails.bedId) {
-                    messagingService.showMessage("error", "Please select a bed to transfer the patient");
+                    messagingService.showMessage("error", "SELECT_BED_TO_TRANSFER_MESSAGE");
                 } else {
                     ngDialog.openConfirm({
                         template: 'views/transferConfirmation.html',
@@ -313,12 +313,12 @@ angular.module('bahmni.ipd')
 
             $scope.discharge = function () {
                 if (!$rootScope.bedDetails.bedNumber) {
-                    messagingService.showMessage("error", "Please select a bed to discharge the patient");
+                    messagingService.showMessage("error", "SELECT_BED_TO_DISCHARGE_MESSAGE");
                 } else {
                     visitService.search({patient: $scope.patient.uuid, v: customVisitParams, includeInactive: false}).then(function (visitResponse) {
                         var visitUuid = getPatientSpecificActiveVisits(visitResponse);
                         if (!visitUuid) {
-                            messagingService.showMessage("error", "No active visit found for this patient");
+                            messagingService.showMessage("error", "NO_ACTIVE_VISIT_MESSAGE");
                         } else {
                             ngDialog.openConfirm({
                                 template: 'views/dischargeConfirmation.html',
@@ -337,7 +337,9 @@ angular.module('bahmni.ipd')
                     ngDialog.close();
                     forwardUrl(response.data, "onDischargeForwardTo");
                     var bedNumber = _.get($rootScope.bedDetails, 'bedNumber') || _.get($rootScope.selectedBedInfo, 'bed.bedNumber');
-                    messagingService.showMessage('info', "Successfully discharged from " + bedNumber);
+
+
+                    messagingService.showMessage('info', $translate.instant("SUCCESSFULLY_DISCHARGED_MESSAGE", {bed: bedNumber}));
                 }));
             };
 
@@ -345,7 +347,7 @@ angular.module('bahmni.ipd')
                 var patient = bedDetails.patients[0];
                 var identifier = patient.display && patient.display.split(" - ")[0];
                 patient.identifiers[0].identifier = identifier;
-                messagingService.showMessage('error', "Please select an available bed. This bed is already assigned to " + identifier);
+                messagingService.showMessage('error', $translate.instant("SELECT_AVAILABLE_BED_DEFAULT_MESSAGE", {identifier: identifier}));
                 $scope.cancelConfirmationDialog();
             };
 

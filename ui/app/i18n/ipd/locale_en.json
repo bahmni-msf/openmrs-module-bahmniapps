@@ -66,5 +66,10 @@
     "MOVE_KEY": "Move",
     "ADMIT_TO_KEY": "Admit To:",
     "SELECT_BED_TO_ADMIT_PATIENT_DEFAULT_MESSAGE": "Please select a bed to admit patient",
-    "BED_IS_ASSIGNED_SUCCESSFULLY": "{{bed}} Bed is assigned successfully"
+    "BED_IS_ASSIGNED_SUCCESSFULLY_MESSAGE": "{{bed}} Bed is assigned successfully",
+    "SELECT_AVAILABLE_BED_DEFAULT_MESSAGE": "Please select an available bed. This bed is already assigned to {{identifier}} ",
+    "SUCCESSFULLY_DISCHARGED_MESSAGE": "Successfully discharged from {{bedNumber}}",
+    "SELECT_BED_TO_TRANSFER_MESSAGE": "Please select a bed to transfer the patient",
+    "SELECT_BED_TO_DISCHARGE_MESSAGE": "Please select a bed to discharge the patient",
+    "NO_ACTIVE_VISIT_MESSAGE": "No active visit found for this patient"
 }
