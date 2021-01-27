@@ -337,8 +337,6 @@ angular.module('bahmni.ipd')
                     ngDialog.close();
                     forwardUrl(response.data, "onDischargeForwardTo");
                     var bedNumber = _.get($rootScope.bedDetails, 'bedNumber') || _.get($rootScope.selectedBedInfo, 'bed.bedNumber');
-
-
                     messagingService.showMessage('info', $translate.instant("SUCCESSFULLY_DISCHARGED_MESSAGE", {bed: bedNumber}));
                 }));
             };
