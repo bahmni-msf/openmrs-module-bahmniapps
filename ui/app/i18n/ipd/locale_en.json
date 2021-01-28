@@ -71,5 +71,7 @@
     "SUCCESSFULLY_DISCHARGED_MESSAGE": "Successfully discharged from {{bedNumber}}",
     "SELECT_BED_TO_TRANSFER_MESSAGE": "Please select a bed to transfer the patient",
     "SELECT_BED_TO_DISCHARGE_MESSAGE": "Please select a bed to discharge the patient",
-    "NO_ACTIVE_VISIT_MESSAGE": "No active visit found for this patient"
+    "NO_ACTIVE_VISIT_MESSAGE": "No active visit found for this patient",
+    "TAGS_UPDATED_SUCCESSFULLY_MESSAGE": "Tags Updated Successfully",
+    "DATE_OF_DISCHARGE_AND_REASON_FOR_DISCHARGE_CANNOT_BE_EMPTY_MESSAGE": "Date of Discharge and Reason for discharge cannot be empty."
 }
