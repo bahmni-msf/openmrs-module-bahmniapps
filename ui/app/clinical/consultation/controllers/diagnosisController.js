@@ -298,7 +298,7 @@ angular.module('bahmni.clinical')
 
                 spinner.forPromise(
                     diagnosisService.deleteDiagnosis(obsUUid).then(function () {
-                        messagingService.showMessage('info', 'Deleted');
+                        messagingService.showMessage('info', 'DELETED_MESSAGE');
                         var currentUuid = $scope.consultation.savedDiagnosesFromCurrentEncounter.length > 0 ?
                                           $scope.consultation.savedDiagnosesFromCurrentEncounter[0].encounterUuid : "";
                         return reloadDiagnosesSection(currentUuid);
