@@ -208,10 +208,7 @@ angular.module('bahmni.ipd')
                         template: 'views/visitChangeConfirmation.html',
                         scope: $scope,
                         closeByEscape: true,
-                        preCloseCallback: function () {
-                            unsetButtonClicked();
-                            return true;
-                        }
+                        preCloseCallback: unsetButtonClicked
                     });
                 } else {
                     ngDialog.openConfirm({
@@ -219,10 +216,7 @@ angular.module('bahmni.ipd')
                         scope: $scope,
                         closeByEscape: true,
                         className: "ngdialog-theme-default ng-dialog-adt-popUp",
-                        preCloseCallback: function () {
-                            unsetButtonClicked();
-                            return true;
-                        }
+                        preCloseCallback: unsetButtonClicked
                     });
                 }
                 return $q.when({});
@@ -286,10 +280,7 @@ angular.module('bahmni.ipd')
                         scope: $scope,
                         closeByEscape: true,
                         className: "ngdialog-theme-default ng-dialog-adt-popUp",
-                        preCloseCallback: function () {
-                            unsetButtonClicked();
-                            return true;
-                        }
+                        preCloseCallback: unsetButtonClicked
                     });
                 }
             };
@@ -349,10 +340,7 @@ angular.module('bahmni.ipd')
                                 scope: $scope,
                                 closeByEscape: true,
                                 className: "ngdialog-theme-default ng-dialog-adt-popUp",
-                                preCloseCallback: function () {
-                                    unsetButtonClicked();
-                                    return true;
-                                }
+                                preCloseCallback: unsetButtonClicked
                             });
                         }
                     });
