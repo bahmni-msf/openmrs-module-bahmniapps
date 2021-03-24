@@ -50,12 +50,16 @@ angular.module('bahmni.ot')
             };
             var getHeightForSurgicalBlock = function () {
                 return Bahmni.Common.Util.DateUtil.diffInMinutes(
-                        $scope.surgicalBlock.startDatetime, $scope.surgicalBlock.endDatetime) * surgicalBlockHeightPerMin;
+                    $scope.weekOrDay === 'day' && moment($scope.surgicalBlock.startDatetime).toDate() < getCalendarStartDateTime($scope.viewDate)
+                        ? getCalendarStartDateTime($scope.viewDate) : $scope.surgicalBlock.startDatetime,
+                    $scope.weekOrDay === 'day' && getCalendarEndDateTime($scope.viewDate) < moment($scope.surgicalBlock.endDatetime).toDate()
+                        ? getCalendarEndDateTime($scope.viewDate) : $scope.surgicalBlock.endDatetime) * surgicalBlockHeightPerMin;
             };
 
             var getTopForSurgicalBlock = function () {
-                return Bahmni.Common.Util.DateUtil.diffInMinutes(
-                    getCalendarStartDateTime($scope.surgicalBlock.startDatetime), $scope.surgicalBlock.startDatetime) * surgicalBlockHeightPerMin;
+                var top = Bahmni.Common.Util.DateUtil.diffInMinutes(
+                    getCalendarStartDateTime($scope.weekOrDay === 'day' ? $scope.viewDate : $scope.surgicalBlock.startDatetime), $scope.surgicalBlock.startDatetime) * surgicalBlockHeightPerMin;
+                return top > 0 ? top : 0;
             };
             var getCalendarStartDateTime = function (date) {
                 var dayStart = ($scope.dayViewStart || Bahmni.OT.Constants.defaultCalendarStartTime).split(':');
@@ -119,7 +123,8 @@ angular.module('bahmni.ot')
                 dayViewEnd: "=",
                 dayViewSplit: "=",
                 filterParams: "=",
-                weekOrDay: "="
+                weekOrDay: "=",
+                viewDate: "="
             },
             templateUrl: "../ot/views/calendarSurgicalBlock.html"
         };

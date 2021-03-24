@@ -27,7 +27,7 @@ angular.module('bahmni.ot')
                 updateBlocksStartDatetimeAndBlocksEndDatetime();
                 $scope.rows = $scope.getRowsForCalendar();
                 return $q.all([locationService.getAllByTag('Operation Theater'),
-                    surgicalAppointmentService.getSurgicalBlocksInDateRange($scope.blocksStartDatetime, $scope.blocksEndDatetime)]).then(function (response) {
+                    surgicalAppointmentService.getSurgicalBlocksInDateRange($scope.blocksStartDatetime, $scope.blocksEndDatetime, false, true)]).then(function (response) {
                         $scope.locations = response[0].data.results;
                         $scope.weekDates = $scope.getAllWeekDates();
                         $scope.surgicalBlocksByLocation = _.map($scope.locations, function (location) {
