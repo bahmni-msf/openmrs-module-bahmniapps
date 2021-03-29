@@ -18,7 +18,10 @@ angular.module('bahmni.ot')
                     left: $scope.weekOrDay === 'week' ? getLeftPositionForSurgicalBlock() : 0,
                     color: getColorForProvider(),
                     appointmentHeightPerMin: (surgicalBlockHeight - heightForSurgeonName) / Bahmni.Common.Util.DateUtil.diffInMinutes(
-                        $scope.surgicalBlock.startDatetime, $scope.surgicalBlock.endDatetime)
+                        moment($scope.surgicalBlock.startDatetime).toDate() < getCalendarStartDateTime($scope.viewDate)
+                            ? getCalendarStartDateTime($scope.viewDate) : $scope.surgicalBlock.startDatetime,
+                        getCalendarEndDateTime($scope.viewDate) < moment($scope.surgicalBlock.endDatetime).toDate()
+                            ? getCalendarEndDateTime($scope.viewDate) : $scope.surgicalBlock.endDatetime)
                 };
             };
 
@@ -50,15 +53,15 @@ angular.module('bahmni.ot')
             };
             var getHeightForSurgicalBlock = function () {
                 return Bahmni.Common.Util.DateUtil.diffInMinutes(
-                    $scope.weekOrDay === 'day' && moment($scope.surgicalBlock.startDatetime).toDate() < getCalendarStartDateTime($scope.viewDate)
+                    moment($scope.surgicalBlock.startDatetime).toDate() < getCalendarStartDateTime($scope.viewDate)
                         ? getCalendarStartDateTime($scope.viewDate) : $scope.surgicalBlock.startDatetime,
-                    $scope.weekOrDay === 'day' && getCalendarEndDateTime($scope.viewDate) < moment($scope.surgicalBlock.endDatetime).toDate()
+                    getCalendarEndDateTime($scope.viewDate) < moment($scope.surgicalBlock.endDatetime).toDate()
                         ? getCalendarEndDateTime($scope.viewDate) : $scope.surgicalBlock.endDatetime) * surgicalBlockHeightPerMin;
             };
 
             var getTopForSurgicalBlock = function () {
                 var top = Bahmni.Common.Util.DateUtil.diffInMinutes(
-                    getCalendarStartDateTime($scope.weekOrDay === 'day' ? $scope.viewDate : $scope.surgicalBlock.startDatetime), $scope.surgicalBlock.startDatetime) * surgicalBlockHeightPerMin;
+                    getCalendarStartDateTime($scope.viewDate), $scope.surgicalBlock.startDatetime) * surgicalBlockHeightPerMin;
                 return top > 0 ? top : 0;
             };
             var getCalendarStartDateTime = function (date) {
@@ -82,6 +85,12 @@ angular.module('bahmni.ot')
                     surgicalAppointment.derivedAttributes.expectedStartDatetime = nextAppointmentStartDatetime;
                     surgicalAppointment.derivedAttributes.expectedEndDatetime = Bahmni.Common.Util.DateUtil.addMinutes(nextAppointmentStartDatetime,
                         surgicalAppointment.derivedAttributes.duration);
+                    surgicalAppointment.derivedAttributes.height = Bahmni.Common.Util.DateUtil.diffInMinutes(
+                        surgicalAppointment.derivedAttributes.expectedStartDatetime < getCalendarStartDateTime($scope.viewDate)
+                            ? getCalendarStartDateTime($scope.viewDate) : surgicalAppointment.derivedAttributes.expectedStartDatetime,
+                        getCalendarEndDateTime($scope.viewDate) < surgicalAppointment.derivedAttributes.expectedEndDatetime
+                            ? getCalendarEndDateTime($scope.viewDate) : surgicalAppointment.derivedAttributes.expectedEndDatetime
+                    );
                     nextAppointmentStartDatetime = surgicalAppointment.derivedAttributes.expectedEndDatetime;
                     return surgicalAppointment;
                 });
@@ -89,6 +98,12 @@ angular.module('bahmni.ot')
 
             $scope.isValidSurgicalAppointment = function (surgicalAppointment) {
                 return surgicalAppointment.status !== Bahmni.OT.Constants.cancelled && surgicalAppointment.status !== Bahmni.OT.Constants.postponed;
+            };
+
+            $scope.canShowInCalendarView = function (surgicalAppointment) {
+                return $scope.isValidSurgicalAppointment(surgicalAppointment)
+                    && surgicalAppointment.derivedAttributes.expectedStartDatetime < getCalendarEndDateTime($scope.viewDate)
+                    && surgicalAppointment.derivedAttributes.expectedEndDatetime > getCalendarStartDateTime($scope.viewDate);
             };
 
             $scope.selectSurgicalBlock = function ($event) {
