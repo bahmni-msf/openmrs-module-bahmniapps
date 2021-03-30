@@ -387,6 +387,7 @@ describe('listViewController', function () {
     });
 
     it("should set the derived attributes for appointments", function () {
+        scope.viewDate = moment('2017-06-22').toDate();
         scope.filterParams = {
             providers: [],
             locations: {"OT 1": true, "OT 2": false, "OT 3": false},
@@ -455,6 +456,7 @@ describe('listViewController', function () {
     });
 
     it("should sort appointments by the sort column", function () {
+        scope.viewDate = moment('2017-06-22').toDate();
         scope.filterParams = {
             providers: [],
             locations: {"OT 1": true, "OT 2": true, "OT 3": true},
@@ -523,6 +525,7 @@ describe('listViewController', function () {
     });
 
     it("should reverse sort appointments if sorted on the same column consecutively", function () {
+        scope.viewDate = moment('2017-06-22').toDate();
         scope.filterParams = {
             providers: [],
             locations: {"OT 1": true, "OT 2": true, "OT 3": true},
