@@ -95,6 +95,6 @@
     "OT_FILTER_KEY": "Filter",
     "OT_SURGICAL_APPOINTMENT_DIALOG_DETAILS": "Surgical Appointment Details",
     "OT_SURGICAL_APPOINTMENT_ACTUAL_TIME": "Actual Time",
-    "OT_SAVEANYWAYS_KEY": "Save Anyways",
+    "OT_SAVEANYWAY_KEY": "Save Anyway",
     "OT_SURGICAL_BLOCK_MULTIPLE_DAYS_DIALOG_TITLE": "Warning - Creating Surgical Block"
 }
