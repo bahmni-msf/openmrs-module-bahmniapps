@@ -18,10 +18,7 @@ angular.module('bahmni.ot')
                     left: $scope.weekOrDay === 'week' ? getLeftPositionForSurgicalBlock() : 0,
                     color: getColorForProvider(),
                     appointmentHeightPerMin: (surgicalBlockHeight - heightForSurgeonName) / Bahmni.Common.Util.DateUtil.diffInMinutes(
-                        moment($scope.surgicalBlock.startDatetime).toDate() < getCalendarStartDateTime($scope.viewDate)
-                            ? getCalendarStartDateTime($scope.viewDate) : $scope.surgicalBlock.startDatetime,
-                        getCalendarEndDateTime($scope.viewDate) < moment($scope.surgicalBlock.endDatetime).toDate()
-                            ? getCalendarEndDateTime($scope.viewDate) : $scope.surgicalBlock.endDatetime)
+                        getSurgicalBlockStartDateTimeBasedOnCalendarStartDateTime(), getSurgicalBlockEndDateTimeBasedOnCalendarEndDateTime())
                 };
             };
 
@@ -53,10 +50,7 @@ angular.module('bahmni.ot')
             };
             var getHeightForSurgicalBlock = function () {
                 return Bahmni.Common.Util.DateUtil.diffInMinutes(
-                    moment($scope.surgicalBlock.startDatetime).toDate() < getCalendarStartDateTime($scope.viewDate)
-                        ? getCalendarStartDateTime($scope.viewDate) : $scope.surgicalBlock.startDatetime,
-                    getCalendarEndDateTime($scope.viewDate) < moment($scope.surgicalBlock.endDatetime).toDate()
-                        ? getCalendarEndDateTime($scope.viewDate) : $scope.surgicalBlock.endDatetime) * surgicalBlockHeightPerMin;
+                    getSurgicalBlockStartDateTimeBasedOnCalendarStartDateTime(), getSurgicalBlockEndDateTimeBasedOnCalendarEndDateTime()) * surgicalBlockHeightPerMin;
             };
 
             var getTopForSurgicalBlock = function () {
@@ -73,6 +67,17 @@ angular.module('bahmni.ot')
                 var dayEnd = ($scope.dayViewEnd || Bahmni.OT.Constants.defaultCalendarEndTime).split(':');
                 return Bahmni.Common.Util.DateUtil.addMinutes(moment(date).startOf('day'), (dayEnd[0] * 60 + parseInt(dayEnd[1])));
             };
+
+            var getSurgicalBlockStartDateTimeBasedOnCalendarStartDateTime = function () {
+                return moment($scope.surgicalBlock.startDatetime).toDate() < getCalendarStartDateTime($scope.viewDate)
+                    ? getCalendarStartDateTime($scope.viewDate) : $scope.surgicalBlock.startDatetime;
+            };
+
+            var getSurgicalBlockEndDateTimeBasedOnCalendarEndDateTime = function () {
+                return getCalendarEndDateTime($scope.viewDate) < moment($scope.surgicalBlock.endDatetime).toDate()
+                    ? getCalendarEndDateTime($scope.viewDate) : $scope.surgicalBlock.endDatetime;
+            };
+
             var calculateEstimatedAppointmentDuration = function () {
                 var surgicalAppointments = _.filter($scope.surgicalBlock.surgicalAppointments, function (surgicalAppointment) {
                     return $scope.isValidSurgicalAppointment(surgicalAppointment);
