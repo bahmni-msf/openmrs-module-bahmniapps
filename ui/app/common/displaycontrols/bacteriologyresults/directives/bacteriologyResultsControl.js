@@ -120,6 +120,9 @@ angular.module('bahmni.common.displaycontrol.bacteriologyresults')
                                         encounterType: savedResponse.data.encounterType
                                     };
                                     auditLogService.log($scope.patient.uuid, "EDIT_ENCOUNTER", messageParams, "MODULE_LABEL_CLINICAL_KEY");
+                                    if (!$rootScope.hasVisitedConsultation) {
+                                        window.onbeforeunload = null;
+                                    }
                                     $rootScope.hasVisitedConsultation = false;
                                     $state.go($state.current, {}, {reload: true});
                                     ngDialog.close();
