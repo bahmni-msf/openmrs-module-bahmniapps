@@ -8,6 +8,8 @@ angular.module('bahmni.registration')
             $scope.extraIdentifierTypes = _.filter($rootScope.patientConfiguration.identifierTypes, function (identifierType) {
                 return !identifierType.primary;
             });
+            $scope.showFullNameInLocalLanguage = false;
+
             var searching = false;
             var maxAttributesFromConfig = 5;
             var allSearchConfigs = appService.getAppDescriptor().getConfigValue("patientSearch") || {};
@@ -203,6 +205,7 @@ angular.module('bahmni.registration')
                 }
                 if (!resultsConfigNotFound) sliceExtraColumns();
                 $scope.personSearchResultsConfig = patientSearchResultConfigs.personAttributes;
+                $scope.showFullNameInLocalLanguage = !(_.isEmpty($scope.personSearchResultsConfig.localLanguageFullNameFields));
                 $scope.addressSearchResultsConfig = patientSearchResultConfigs.address;
             };
 
@@ -387,5 +390,15 @@ angular.module('bahmni.registration')
 
             $scope.isExtraIdentifierConfigured = function () {
                 return !_.isEmpty($scope.extraIdentifierTypes);
+            };
+
+            $scope.getFullNameInLocalLanguage = function (result) {
+                var fullName = "";
+                _.each(patientSearchResultConfigs.personAttributes.localLanguageFullNameFields, function (nameLevel) {
+                    if (result.customAttribute[nameLevel] !== undefined) {
+                        fullName += result.customAttribute[nameLevel];
+                    }
+                });
+                return fullName;
             };
         }]);
