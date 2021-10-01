@@ -392,10 +392,10 @@ angular.module('bahmni.registration')
             };
 
             $scope.getFullNameInLocalLanguage = function (result) {
-                var fullName = "";
+                var fullName = '';
                 _.each(patientSearchResultConfigs.personAttributes.localLanguageFullNameFields, function (nameLevel) {
                     if (!_.isEmpty(result.customAttribute[nameLevel])) {
-                        fullName += result.customAttribute[nameLevel];
+                        fullName = fullName + ' ' + result.customAttribute[nameLevel];
                     }
                 });
                 return fullName;
