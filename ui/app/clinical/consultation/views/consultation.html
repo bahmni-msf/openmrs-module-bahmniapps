@@ -270,8 +270,15 @@
     </div>
     <section class="block consultation-notes section-grid">
         <h2 class="section-title">{{ 'CONSULTATION_TAB_CONSULTATION_NOTES_LABEL'|translate }}</h2>
+        <h6 id="userid"></h6>
+        <div style="min-height:100px;min-width:100px;">
+            <center>
+                <img src="https://inference.vakyansh.in/mic.png" id="mic_image" onclick="onMicClick()" height="100" width="100" alt="MIC"><br>
+                <p id="status_text" style="display: none;">Starting</p>
+            </center>
+        </div>
         <textarea ng-model="consultation.consultationNote.value" ng-change="onNoteChanged()"
-                  placeholder="{{ 'CLINICAL_ENTER_NOTES_PLACEHOLDER'|translate }} " rows="6" msd-elastic></textarea>
+                  placeholder="{{ 'CLINICAL_ENTER_NOTES_PLACEHOLDER'|translate }} " rows="6" msd-elastic id="output"></textarea>
     </section>
 
 </article>

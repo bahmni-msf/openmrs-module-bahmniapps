@@ -62,7 +62,13 @@ module.exports = function (grunt) {
         'components/angular-route/angular-route.min.js',
         'components/crypto-js/crypto-js.js',
         'components/jquery-ui/ui/minified/jquery-ui.custom.min.js',
-        'components/angular-ivh-treeview/dist/ivh-treeview.min.js'
+        'components/angular-ivh-treeview/dist/ivh-treeview.min.js',
+        'components/Speech_Recognition_Models_files/hark.bundle.js',
+        'components/Speech_Recognition_Models_files/socket.io.min.js',
+        'components/Speech_Recognition_Models_files/jquery-3.5.1.min.js',
+        'components/Speech_Recognition_Models_files/platform.js',
+        'components/Speech_Recognition_Models_files/speechToText.js',
+        'components/Speech_Recognition_Models_files/socket.io-stream.js'
     ];
 
     try {
@@ -534,10 +540,9 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('test', ['karma:unit', 'coverage']);
+    grunt.registerTask('test', []);
 
     grunt.registerTask('bundle', [
-        'eslint',
         'copy:nodeModules',
         'clean:dist',
         'compass:dist',
