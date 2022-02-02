@@ -1,5 +1,7 @@
 'use strict';
 
+var _sections;
+
 Bahmni.Common.DisplayControl.Dashboard = function (config, $filter) {
     if (config.startDate || config.endDate) {
         _.each(config.sections, function (section) {
@@ -8,7 +10,7 @@ Bahmni.Common.DisplayControl.Dashboard = function (config, $filter) {
         });
     }
 
-    var _sections = _.sortBy(_.map(config.sections, function (section) { return Bahmni.Common.DisplayControl.Dashboard.Section.create(section, $filter); }), function (section) {
+    _sections = _.sortBy(_.map(config.sections, function (section) { return Bahmni.Common.DisplayControl.Dashboard.Section.create(section, $filter); }), function (section) {
         return section.displayOrder;
     });
 
