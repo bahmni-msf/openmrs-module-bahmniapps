@@ -167,21 +167,6 @@ describe('Bacteriology Results Control', function () {
             expect(compiledElementScope.specimens[1].uuid).toEqual("some uuid2");
             expect(compiledElementScope.specimens[1].isOpen).toBeTruthy();
          });
-//
-//         it("should show all the specimens when excluded specimens not mentioned", function () {
-//            section = {};
-//            _bacteriologyResultsService.getBacteriologyResults.and.returnValue(specUtil.simplePromise({data: {results: [observation1, observation2, observation3]}}));
-//            var compiledElementScope = compileScope(true);
-//            expect(compiledElementScope.title).toBe("bacteriology results");
-//            expect(compiledElementScope.bacteriologyTabData).toBe(bacteriologyTabData);
-//            expect(compiledElementScope.specimens.length).toBe(3);
-//            expect(compiledElementScope.specimens[0].uuid).toEqual("some uuid");
-//            expect(compiledElementScope.specimens[0].isOpen).toBeTruthy();
-//            expect(compiledElementScope.specimens[1].uuid).toEqual("some uuid2");
-//            expect(compiledElementScope.specimens[1].isOpen).toBeTruthy();
-//            expect(compiledElementScope.specimens[2].uuid).toEqual("some uuid3");
-//            expect(compiledElementScope.specimens[2].isOpen).toBeTruthy();
-//         });
     });
     describe('save specimens', function() {
        it("should validate form before saving and throw error message", function() {
