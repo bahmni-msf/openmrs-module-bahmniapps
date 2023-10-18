@@ -41,6 +41,15 @@ describe('Bacteriology Results Control', function () {
             typeObservation: {type: "Some Type2", dateCollected: "Some date2"},
             sample: {}
         };
+        var observation3 = {
+            type: {name: "specimen type name"},
+            dateCollected: undefined,
+            identifier: undefined,
+            uuid: "some uuid3",
+            specimenSource: 'Some Type3',
+            typeObservation: {type: "Some Type3", dateCollected: "Some date3"},
+            sample: {}
+        };
 
         state = {
             params: {
@@ -146,6 +155,18 @@ describe('Bacteriology Results Control', function () {
             expect(compiledElementScope.specimens[1].uuid).toEqual("some uuid2");
             expect(compiledElementScope.specimens[1].isOpen).toBeTruthy();
         });
+
+         it("should not show the specimens when excluded specimens are mentioned", function () {
+            section = {excludedSpecimenSampleSources: ['Some Type3']};
+            var compiledElementScope = compileScope(true);
+            expect(compiledElementScope.title).toBe("bacteriology results");
+            expect(compiledElementScope.bacteriologyTabData).toBe(bacteriologyTabData);
+            expect(compiledElementScope.specimens.length).toBe(2);
+            expect(compiledElementScope.specimens[0].uuid).toEqual("some uuid");
+            expect(compiledElementScope.specimens[0].isOpen).toBeTruthy();
+            expect(compiledElementScope.specimens[1].uuid).toEqual("some uuid2");
+            expect(compiledElementScope.specimens[1].isOpen).toBeTruthy();
+         });
     });
     describe('save specimens', function() {
        it("should validate form before saving and throw error message", function() {
