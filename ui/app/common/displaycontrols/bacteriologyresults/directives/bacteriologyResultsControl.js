@@ -35,7 +35,9 @@ angular.module('bahmni.common.displaycontrol.bacteriologyresults')
 
                 var handleResponse = function (response) {
                     $scope.observations = response.data.results;
+                    console.log('$scope.observations', $scope.observations);
                     var excludedSpecimenSampleSources = $scope.section.excludedSpecimenSampleSources || [];
+                    console.log('excludedSpecimenSampleSources', excludedSpecimenSampleSources);
                     if ($scope.observations && $scope.observations.length > 0) {
                         $scope.specimens = [];
                         var sampleSource = _.find($scope.bacteriologyTabData.setMembers, function (member) {
@@ -52,8 +54,8 @@ angular.module('bahmni.common.displaycontrol.bacteriologyresults')
                         });
                         if (excludedSpecimenSampleSources.length > 0) {
                             const specimensWithoutExcludedSampleSources = _.filter($scope.specimens, function (specimen) {
-                                const sampleSourcesIncluded = excludedSpecimenSampleSources.find(function (sampleSource) {
-                                    sampleSource === specimen.specimenSource;
+                                const sampleSourcesIncluded = _.find(excludedSpecimenSampleSources, function (sampleSource) {
+                                    return sampleSource === specimen.specimenSource;
                                 });
                                 return !sampleSourcesIncluded;
                             });
