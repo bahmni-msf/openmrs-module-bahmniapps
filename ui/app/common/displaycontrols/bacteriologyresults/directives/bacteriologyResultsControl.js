@@ -52,8 +52,8 @@ angular.module('bahmni.common.displaycontrol.bacteriologyresults')
                         });
                         if (excludedSpecimenSampleSources.length > 0) {
                             const specimensWithoutExcludedSampleSources = _.filter($scope.specimens, function (specimen) {
-                                const sampleSourcesIncluded = excludedSpecimenSampleSources.find(function (sampleSource) {
-                                    sampleSource === specimen.specimenSource;
+                                const sampleSourcesIncluded = _.find(excludedSpecimenSampleSources, function (sampleSource) {
+                                    return sampleSource === specimen.specimenSource;
                                 });
                                 return !sampleSourcesIncluded;
                             });
