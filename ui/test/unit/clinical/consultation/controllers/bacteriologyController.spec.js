@@ -179,13 +179,13 @@ describe("Bacteriology Controller", function () {
 
         });
 
-        it("should set typeFreeText to null if specimen is not of type Other  ", function () {
+        it("should set typeFreeText to empty if specimen is not of type Other  ", function () {
             createController();
             $scope.newSpecimens = [];
             $scope.newSpecimens.push(existingSpecimen);
             $scope.handleUpdate();
 
-            expect($scope.newSpecimens[0].typeFreeText).toBe(null);
+            expect($scope.newSpecimens[0].typeFreeText).toBe("");
 
         });
 
