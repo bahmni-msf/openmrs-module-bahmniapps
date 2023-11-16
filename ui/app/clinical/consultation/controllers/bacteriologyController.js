@@ -133,7 +133,7 @@ angular.module('bahmni.clinical')
                         $scope.newSpecimens[specimen].showTypeFreeText = false;
                         if ($scope.newSpecimens[specimen].type) {
                             $scope.freeText = $scope.newSpecimens[specimen].typeFreeText;
-                            $scope.newSpecimens[specimen].typeFreeText = null;
+                            $scope.newSpecimens[specimen].typeFreeText = "";
                         }
                     }
                 }
