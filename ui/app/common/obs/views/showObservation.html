@@ -23,7 +23,7 @@
             <img src="../images/pdfIcon.png" alt="pdf" />
         </a>
         <div ng-if="::(observation.isVideoConcept())" class="hidden-print obs-video-thumb-container">
-            <img src="{{::observation.value|thumbnail:'jpg'}}">
+            <img ng-src="{{::observation.value|thumbnail:'jpg'}}">
             <button class="obs-play-btn" ng-click="openVideoInPopup(observation)"><i class="fa fa-play-circle" aria-hidden="true"></i>
             </button>
         </div>
