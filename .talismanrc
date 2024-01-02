@@ -1,0 +1,6 @@
+fileignoreconfig:
+- filename: ui/app/registration/controllers/patientCommonController.js
+  checksum: b6f47ba1eaf3279209fae09748c4a5e68fb742df03699731551c5c4ac5f9db7a
+- filename: .github/workflows/build_publish.yml
+  checksum: 940b4d7de3333ec896d1725763f2324a08b9f7aeae1462061f6177b116272fbe
+version: ""
