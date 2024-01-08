@@ -55,7 +55,6 @@ jobs:
           REPOSITORY: bahmni-msf-lite/bahmni-web
           IMAGE_TAG: ${{ env.ARTIFACT_VERSION }}
         run: |
-          echo $APP_VERSION
           docker tag bahmni-web:latest $REGISTRY/$REPOSITORY:latest
           docker tag bahmni-web:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
