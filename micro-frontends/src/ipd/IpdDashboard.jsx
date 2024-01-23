@@ -24,7 +24,7 @@ IpdDashboard.propTypes = {
   }).isRequired,
   hostApi: PropTypes.shape({
     navigation: PropTypes.shape({
-      dischargeSummary: PropTypes.func.isRequired,
+      visitSummary: PropTypes.func.isRequired,
     }).isRequired,
   }).isRequired,
 };
