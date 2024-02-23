@@ -72,9 +72,7 @@ angular.module('bahmni.common.displaycontrol.observation')
                         bahmniObs.value = _.filter(bahmniObs.value, function (observation) {
                             if (observation.formFieldPath) {
                                 obsFormNameAndVersion = getFormNameAndVersion(observation.formFieldPath);
-                                if (formName.toUpperCase() === obsFormNameAndVersion.formName.toUpperCase()) {
-                                    return observation;
-                                }
+                                return formName.toUpperCase() === obsFormNameAndVersion.formName.toUpperCase();
                             }
                         });
                         if (bahmniObs.value.length <= 0) {
