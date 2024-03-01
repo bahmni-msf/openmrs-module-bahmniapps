@@ -8,5 +8,8 @@
   "TAGS_UPDATED_SUCCESSFULLY_MESSAGE": "Balises mises à jour avec succès",
   "DATE_OF_DISCHARGE_AND_REASON_FOR_DISCHARGE_CANNOT_BE_EMPTY_MESSAGE": "La date du congé et la raison du congé ne peuvent pas être vides",
   "IS_SUCCESSFULLY_ASSIGNED_MESSAGE": "est attribué avec succès",
-  "BED_KEY": "Lit"
+  "BED_KEY": "Lit",
+  "GENDER_MALE_KEY": "Male french",
+  "GENDER_FEMALE_KEY": "Female french",
+  "GENDER_OTHER_KEY": "Other french"
 }

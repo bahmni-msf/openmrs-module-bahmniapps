@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - ocp-dev-bahmni-lite
+      - translations-in-lite
 
   workflow_dispatch:
 
