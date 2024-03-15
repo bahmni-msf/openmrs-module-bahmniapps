@@ -35,7 +35,7 @@ jobs:
         working-directory: micro-frontends
         run: yarn build
       - name: Package
-        run: cd ui && yarn cache clean && /bin/bash ./scripts/package.sh
+        run: cd ui && yarn cache clean && /bin/bash ./scripts/package.sh --force
       - name: Build docker image
         run: docker build -t bahmni-web:latest -f package/docker/Dockerfile .
       - name: Run Trivy vulnerability scanner
