@@ -21,6 +21,7 @@ angular.module('bahmni.clinical')
             };
 
             var init = function () {
+                $scope.isSampleIdRequired = appService.getAppDescriptor().getConfigValue("isSampleIdRequired");
                 if (appService.getAppDescriptor().getConfigValue("showSaveConfirmDialog")) {
                     $scope.$broadcast("event:pageUnload");
                 }
@@ -59,12 +60,13 @@ angular.module('bahmni.clinical')
                 $scope.consultation.deletedSpecimens = $scope.deletedSpecimens;
                 $scope.consultation.savedSpecimens = $scope.savedSpecimens;
                 var dirtySpecimens = _.filter($scope.newSpecimens, function (specimen) {
-                    return (specimen.isDirty());
+                    return $scope.isSampleIdRequired ? (specimen.isDirtyRuleForIdentifier() || specimen.isDirty()) : specimen.isDirty();
                 });
                 _.each(dirtySpecimens, function (dirtySpecimen) {
                     dirtySpecimen.hasIllegalDateCollected = !dirtySpecimen.dateCollected;
                     dirtySpecimen.hasIllegalType = !dirtySpecimen.type;
                     dirtySpecimen.hasIllegalTypeFreeText = !dirtySpecimen.typeFreeText;
+                    dirtySpecimen.hasIllegalIdentifier = !dirtySpecimen.identifier;
                 });
                 return {allow: dirtySpecimens[0] === undefined};
             };
