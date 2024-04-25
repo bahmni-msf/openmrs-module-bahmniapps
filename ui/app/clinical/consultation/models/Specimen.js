@@ -30,6 +30,10 @@ Bahmni.Clinical.Specimen = function (specimen, allSamples) {
         (!self.dateCollected && !self.type && self.identifier) || isDirtyRuleForFreeText() ? true : false;
     };
 
+    self.isDirtyRuleForIdentifier = function () {
+        return (!self.identifier && self.dateCollected && self.type) ? true : false;
+    };
+
     self.isEmpty = function () {
         return !self.dateCollected && !self.identifier && !self.type && !self.typeFreeText;
     };
@@ -52,6 +56,10 @@ Bahmni.Clinical.Specimen = function (specimen, allSamples) {
 
     self.isTypeFreeTextDirty = function () {
         return !self.typeFreeText && self.hasIllegalTypeFreeText;
+    };
+
+    self.isIdentifierDirty = function () {
+        return !self.identifier && self.hasIllegalIdentifier;
     };
 
     self.isAdditionalAttriburtesFilled = function () {

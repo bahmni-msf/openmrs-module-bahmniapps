@@ -1,5 +1,4 @@
 <div class="bacteriology-container" focus-on-input-errors>
-<div class="bacteriology-container" focus-on-input-errors>
     <div ng-class="{'disableBacteriologyInRetroMode':isRetrospectiveMode()}">
         <div class="infoMsgRetrospectiveModeEnabled" ng-if="isRetrospectiveMode()">
             <i class="fa fa-info-circle"></i>
@@ -66,11 +65,12 @@
                         <section class="form-field-inline">
                             <article class="form-field">
                                 <div class="field-attribute">
-                                    <label for="sample-id">{{'BACTERIOLOGY_SAMPLE_ID_KEY' | translate}} </label>
-                                    <span class="asterisk" ng-show="isSampleIdRequired">*</span>
+                                    <label for="sample-id">{{'BACTERIOLOGY_SAMPLE_ID_KEY' | translate}}
+                                        <span class="asterick" ng-show="isSampleIdRequired">*</span>
+                                    </label>
                                 </div>
-                                <div class="field-value">
-                                    <input id="sample-id" type="text" ng-model="newSpecimen.identifier" ng-disabled="isRetrospectiveMode()" tabindex="1" ng-required= {{isSampleIdRequired}}>
+                                <div class="field-value"  ng-class="{'illegalValue': newSpecimen.isIdentifierDirty()}">
+                                    <input id="sample-id" type="text" ng-model="newSpecimen.identifier" ng-disabled="isRetrospectiveMode()" tabindex="1">
                                 </div>
                             </article>
                         </section>
