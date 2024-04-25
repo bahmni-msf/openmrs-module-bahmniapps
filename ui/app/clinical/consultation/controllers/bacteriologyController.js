@@ -21,6 +21,7 @@ angular.module('bahmni.clinical')
             };
 
             var init = function () {
+                $scope.isSampleIdRequired = appService.getAppDescriptor().getConfigValue("isSampleIdRequired");
                 if (appService.getAppDescriptor().getConfigValue("showSaveConfirmDialog")) {
                     $scope.$broadcast("event:pageUnload");
                 }
