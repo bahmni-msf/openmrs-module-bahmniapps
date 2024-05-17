@@ -190,7 +190,7 @@ angular.module('bahmni.registration')
             };
 
             function initPatientNameDisplayOrder () {
-                $scope.hideOtherInformationAndEmailAddress = appService.getAppDescriptor.getConfigValue("hideOtherInformationAndEmailAddress");
+                $scope.hideOtherInformationAndEmailAddress = appService.getAppDescriptor().getConfigValue("hideOtherInformationAndEmailAddress");
                 var validNameFields = Bahmni.Registration.Constants.patientNameDisplayOrder;
                 var nameFields = appService.getAppDescriptor().getConfigValue("patientNameDisplayOrder") || [];
                 var valid = _.every(nameFields, function (val) { return validNameFields.indexOf(val) >= 0; });
