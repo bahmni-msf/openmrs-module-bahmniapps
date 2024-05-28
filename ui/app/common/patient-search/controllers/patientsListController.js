@@ -77,10 +77,11 @@ angular.module('bahmni.common.patientSearch')
 
         $scope.getHeadings = function (patients) {
             if (patients && patients.length > 0) {
+                const tabularViewIgnoreHeadingsListFromConfig = appService.getAppDescriptor().getConfigValue("tabularViewIgnoreHeadingsListFromConfig") || [];
                 var headings = _.chain(patients[0])
                     .keys()
                     .filter(function (heading) {
-                        return _.indexOf(Bahmni.Common.PatientSearch.Constants.tabularViewIgnoreHeadingsList, heading) === -1;
+                        return _.indexOf(Bahmni.Common.PatientSearch.Constants.tabularViewIgnoreHeadingsList, heading) === -1 && _.indexOf(tabularViewIgnoreHeadingsListFromConfig, heading) === -1;
                     })
                     .value();
 
