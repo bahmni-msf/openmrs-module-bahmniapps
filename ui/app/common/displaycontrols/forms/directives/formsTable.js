@@ -6,6 +6,7 @@ angular.module('bahmni.common.displaycontrol.forms')
             var defaultController = function ($scope) {
                 $scope.shouldPromptBrowserReload = true;
                 $scope.showFormsDate = appService.getAppDescriptor().getConfigValue("showFormsDate");
+                $scope.selectShortName = appService.getAppDescriptor().getConfigValue("selectShortName");
                 var getAllObservationTemplates = function () {
                     return conceptSetService.getConcept({
                         name: "All Observation Templates",
@@ -80,7 +81,7 @@ angular.module('bahmni.common.displaycontrol.forms')
                     var concept = data.concept;
                     var defaultLocale = $rootScope.currentUser.userProperties.defaultLocale;
                     var displayName;
-                    if(selectShortName ==true){
+                    if($scope.selectShortName ==true){
                         displayName = getLocaleSpecificConceptName(concept, defaultLocale, "SHORT");
                     }
                     else {
