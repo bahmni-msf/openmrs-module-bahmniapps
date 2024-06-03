@@ -78,12 +78,13 @@ angular.module('bahmni.common.displaycontrol.forms')
 
                 $scope.getDisplayName = function (data) {
                     var concept = data.concept;
-                    var displayName = data.concept.displayString;
-                    if (concept.names && concept.names.length === 1 && concept.names[0].name != "") {
-                        displayName = concept.names[0].name;
-                    } else if (concept.names && concept.names.length === 2) {
-                        var shortName = _.find(concept.names, {conceptNameType: "SHORT"});
-                        displayName = shortName && shortName.name ? shortName.name : displayName;
+                    var defaultLocale = $rootScope.currentUser.userProperties.defaultLocale;
+                    var displayName;
+                    if(selectShortName ==true){
+                        displayName = getLocaleSpecificConceptName(concept, defaultLocale, "SHORT");
+                    }
+                    else {
+                        displayName = getLocaleSpecificConceptName(concept, defaultLocale, "FULLY_SPECIFIED");
                     }
                     return displayName;
                 };
