@@ -24,6 +24,7 @@ jobs:
           ruby-version: 2.5
       - run: npm install -g bower
       - run: npm install -g grunt-cli
+      - run: gem install ffi -v 1.17.0
       - run: gem install compass --version 1.0.3
       - run: npm install --global yarn
       - name: Package
