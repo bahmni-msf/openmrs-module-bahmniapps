@@ -23,8 +23,9 @@ jobs:
           ruby-version: 2.5
       - run: npm install -g bower
       - run: npm install -g grunt-cli
-      - run: gem install compass
-      - run: npm install --global yarn
+      - run: gem install ffi -v 1.16.3
+      - run: gem install compass -v 1.0.3
+      - run: npm install --g yarn
       - name: Package
         run: cd ui && yarn cache clean && /bin/bash ./scripts/package.sh
       - name: Build docker image
