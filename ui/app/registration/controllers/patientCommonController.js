@@ -17,6 +17,7 @@ angular.module('bahmni.registration')
             $scope.dobMandatory = appService.getAppDescriptor().getConfigValue("dobMandatory") || false;
             $scope.readOnlyExtraIdentifiers = appService.getAppDescriptor().getConfigValue("readOnlyExtraIdentifiers");
             $scope.showSaveConfirmDialogConfig = appService.getAppDescriptor().getConfigValue("showSaveConfirmDialog");
+            $scope.hideOtherInformationAndEmailAddress = appService.getAppDescriptor().getConfigValue("hideOtherInformationAndEmailAddress");
             $scope.showSaveAndContinueButton = false;
             $scope.regExtPoints = appService.getAppDescriptor().getExtensions("org.bahmni.registration.identifier", "link");
 
