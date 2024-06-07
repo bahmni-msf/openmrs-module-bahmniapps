@@ -73,7 +73,8 @@
                 "showAccessionNotes": true,
                 "numberOfVisits": 10,
                 "showDetailsButton": false,
-                "hideVisitDate": true
+                "hideVisitDate": true,
+                "hideEmptyDisplayControl": true
             }
         },
         "Treatments": {
