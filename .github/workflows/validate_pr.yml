@@ -2,7 +2,7 @@ name: Validate PR
 
 on:
  pull_request:
-    branches: [ ocp-dev-bahmni-lite ]
+    branches: [ master ]
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
           ruby-version: 2.5
       - run: npm install -g bower 
       - run: npm install -g grunt-cli 
-      - run: gem install compass  
+      - run: gem install compass -v 1.0.3
       - run: npm install --global yarn
       - name: Package
         run : cd ui && yarn cache clean && /bin/bash ./scripts/package.sh
