@@ -74,8 +74,8 @@
                 "numberOfVisits": 10,
                 "showDetailsButton": false,
                 "hideVisitDate": true,
-                "hideEmptyDisplayControl": true
-            }
+            },
+            "hideEmptyDisplayControl": true
         },
         "Treatments": {
             "type": "treatment",
