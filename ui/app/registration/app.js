@@ -1,5 +1,7 @@
 'use strict';
 
+import moment from "../lib/chart/d3-3.5.5.min";
+
 angular
     .module('registration', ['ui.router', 'bahmni.registration', 'authentication', 'bahmni.common.config',
         'bahmni.common.appFramework', 'httpErrorInterceptor', 'bahmni.common.photoCapture', 'bahmni.common.obs',
