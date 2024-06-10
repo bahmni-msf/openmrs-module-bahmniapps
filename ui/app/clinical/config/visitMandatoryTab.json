@@ -43,14 +43,16 @@
             }
         },
         "Disposition": {
+            "title": "Disposition",
             "type": "disposition",
             "translationKey": "VISIT_TITLE_DISPOSITIONS_KEY",
             "displayOrder": 3,
             "config": {
                 "translationKey":"VISIT_TITLE_DISPOSITION_KEY",
                 "numberOfVisits": 1,
-                "showDetailsButton": true
-            }
+                "showDetailsButton": true,
+            },
+            "hideEmptyDisplayControl": false
         },
         "Admission Details": {
             "type": "admissionDetails",
