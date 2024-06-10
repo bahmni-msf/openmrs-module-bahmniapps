@@ -22,7 +22,8 @@
                 "showCertainty": true,
                 "showOrder": true,
                 "showDetailsButton": true
-            }
+            },
+            "hideEmptyDisplayControl": false
         },
         "Observations": {
             "type": "observation",
@@ -50,7 +51,7 @@
             "config": {
                 "translationKey":"VISIT_TITLE_DISPOSITION_KEY",
                 "numberOfVisits": 1,
-                "showDetailsButton": true,
+                "showDetailsButton": true
             },
             "hideEmptyDisplayControl": false
         },
@@ -92,14 +93,16 @@
                 "showRoute": true,
                 "showDrugForm": true,
                 "showProvider" : true
-            }
+            },
+            "hideEmptyDisplayControl": false
         },
         "Radiology": {
             "type": "radiology",
             "displayOrder": 7,
             "config": {
                 "translationKey": "VISIT_TITLE_RADIOLOGY_KEY"
-            }
+            },
+            "hideEmptyDisplayControl": false
         },
         "Patient Files": {
             "type": "patientFiles",
