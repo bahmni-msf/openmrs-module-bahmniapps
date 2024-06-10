@@ -68,12 +68,12 @@
             "displayOrder": 5,
             "config": {
                 "translationKey": "VISIT_TITLE_LAB_ORDERS_KEY",
-                "showChart": true,
+                "showChart": false,
                 "showTable": false,
-                "showOrders": true,
+                "showOrders": false,
                 "showNormalLabResults": false,
                 "showCommentsExpanded": false,
-                "showAccessionNotes": true,
+                "showAccessionNotes": false,
                 "numberOfVisits": 10,
                 "showDetailsButton": false,
                 "hideVisitDate": true
