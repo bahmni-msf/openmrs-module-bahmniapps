@@ -65,7 +65,7 @@
             "displayOrder": 5,
             "config": {
                 "translationKey": "VISIT_TITLE_LAB_ORDERS_KEY",
-                "showChart": true,
+                "showChart": false,
                 "showTable": false,
                 "showOrders": true,
                 "showNormalLabResults": false,
