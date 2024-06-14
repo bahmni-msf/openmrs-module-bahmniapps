@@ -20,6 +20,8 @@ angular.module('bahmni.clinical')
             $scope.sharePrescriptions = function (visitStartDate, visitUuid) {
                 $rootScope.$broadcast("event:sharePrescriptionsViaEmail", visitStartDate, visitUuid);
             };
+
+            $scope.showShareForMedicationAdministration = false;
         };
 
         return {
