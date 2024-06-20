@@ -1137,3 +1137,20 @@ h3 {
         }
     }
 }
+
+@media print {
+    padding: 3px 0px 0px !important;
+    body {
+        font-size: 20px;
+    }
+    .provider-info {
+        font-size: medium;
+        float: right;
+        padding: 5px;
+    }
+    .sections-group {
+        div div .section {
+            margin-bottom: 30px;
+        }
+    }
+}
