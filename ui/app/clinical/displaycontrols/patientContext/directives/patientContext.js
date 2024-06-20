@@ -66,8 +66,7 @@ angular.module('bahmni.clinical')
             scope: {
                 patient: "=",
                 showNameAndImage: "=?",
-                isConsultation: "=?",
-                mobileView: "=?"
+                isConsultation: "=?"
             },
             controller: controller,
             link: link
