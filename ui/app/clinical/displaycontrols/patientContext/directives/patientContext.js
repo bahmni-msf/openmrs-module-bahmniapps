@@ -26,6 +26,7 @@ angular.module('bahmni.clinical')
                 }
 
                 $scope.showNameAndImage = $scope.showNameAndImage !== undefined ? $scope.showNameAndImage : true;
+                $scope.mobileView = $scope.mobileView !== undefined ? $scope.mobileView : false;
                 if ($scope.showNameAndImage) {
                     $scope.patientContext.image = Bahmni.Common.Constants.patientImageUrlByPatientUuid + $scope.patientContext.uuid;
                 }
@@ -65,7 +66,8 @@ angular.module('bahmni.clinical')
             scope: {
                 patient: "=",
                 showNameAndImage: "=?",
-                isConsultation: "=?"
+                isConsultation: "=?",
+                mobileView: "=?"
             },
             controller: controller,
             link: link
