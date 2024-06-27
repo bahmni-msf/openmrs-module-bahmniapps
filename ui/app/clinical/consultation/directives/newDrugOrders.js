@@ -1,8 +1,9 @@
 'use strict';
 
 angular.module('bahmni.clinical')
-    .directive('newDrugOrders', ['messagingService', function (messagingService) {
+    .directive('newDrugOrders', ['messagingService', 'appService', function (messagingService, appService) {
         var controller = function ($scope, $rootScope) {
+            $scope.hideAdditionalInstructions = appService.getAppDescriptor().getConfigValue("hideAdditionalInstructions");
             $scope.edit = function (drugOrder, index) {
                 $rootScope.$broadcast("event:editDrugOrder", drugOrder, index);
             };
