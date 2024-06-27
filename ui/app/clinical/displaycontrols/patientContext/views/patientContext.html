@@ -22,7 +22,7 @@
                 {{::value.description |translate}}: {{value.value}}
             </li>
         </ul>
-        <div class="patient-info hidden-tablet-above">
+        <div ng-if="mobileView" class="patient-info hidden-tablet-above">
             <button type="button" class="prev-page" history-back ng-if="!allowNavigation">
                 <i class="fa fa-arrow-left"></i>
             </button>
@@ -31,6 +31,6 @@
             </button>
             <span class="name">{{patientContext.givenName}} {{patientContext.familyName}}</span>
             <span class="gender-age">({{patientContext.birthdate | birthDateToYears}}, {{patientContext.gender.slice(0,1)}})</span>
-        </div> 
+        </div>
     </div>
 </div>

@@ -1019,13 +1019,13 @@ h3 {
                 }
             }
             .value-text-only, .text-only{
-                width: calc(100% - 190px) !important;
+                width: auto !important;
                 padding: 3px 0px 0px !important;
                 display:inline-block;
             }
             .testUnderPanel{
                 //width: 65% !important;
-                width: 180px !important;
+                width: 484px !important;
                 padding: 3px 0px 0px !important;
                 font-weight: normal !important;
                 display: inline-block;
@@ -1139,6 +1139,7 @@ h3 {
 }
 
 @media print {
+    padding: 3px 0px 0px !important;
     body {
         font-size: 20px;
     }
