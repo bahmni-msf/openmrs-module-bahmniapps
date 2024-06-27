@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('bahmni.clinical')
-    .controller('VisitController', ['$scope', '$state', 'encounterService', 'clinicalAppConfigService', 'configurations', 'visitSummary', '$timeout', 'printer', 'visitConfig', 'visitHistory', '$stateParams', 'locationService', 'visitService',
-        function ($scope, $state, encounterService, clinicalAppConfigService, configurations, visitSummary, $timeout, printer, visitConfig, visitHistory, $stateParams, locationService, visitService) {
+    .controller('VisitController', ['$scope', '$state', 'encounterService', 'appService', 'clinicalAppConfigService', 'configurations', 'visitSummary', '$timeout', 'printer', 'visitConfig', 'visitHistory', '$stateParams', 'locationService', 'visitService',
+        function ($scope, $state, encounterService, appService, clinicalAppConfigService, configurations, visitSummary, $timeout, printer, visitConfig, visitHistory, $stateParams, locationService, visitService) {
             var encounterTypeUuid = configurations.encounterConfig().getPatientDocumentEncounterTypeUuid();
             $scope.documentsPromise = encounterService.getEncountersForEncounterType($scope.patient.uuid, encounterTypeUuid).then(function (response) {
                 return new Bahmni.Clinical.PatientFileObservationsMapper().map(response.data.results);
@@ -117,6 +117,7 @@ angular.module('bahmni.clinical')
             };
 
             var init = function () {
+                $scope.hideDoctorName = appService.getAppDescriptor().getConfigValue("hideDoctorName");
                 $scope.visitTabConfig.setVisitUuidsAndPatientUuidToTheSections([$scope.visitUuid], $scope.patientUuid);
                 var tabToOpen = getTab();
                 $scope.visitTabConfig.switchTab(tabToOpen);
