@@ -29,7 +29,7 @@ describe('VisitController', function () {
             }
         }
     };
-
+    var mockAppService = jasmine.createSpyObj("appService", ["getAppDescriptor"]);
     beforeEach(module('bahmni.clinical'));
     beforeEach(module('stateMock'));
     beforeEach(inject(['$injector', '$timeout', '$q', '$rootScope', '$state', function ($injector, timeout, $q, $rootScope, $state) {
@@ -81,7 +81,8 @@ describe('VisitController', function () {
                 visitConfig: visitTabConfig,
                 visitHistory:[],
                 $stateParams: {},
-                locationService: locationService
+                locationService: locationService,
+                appService: mockAppService
             });
     }]));
 
