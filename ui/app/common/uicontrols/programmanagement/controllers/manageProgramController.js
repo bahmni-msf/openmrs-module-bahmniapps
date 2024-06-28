@@ -281,10 +281,10 @@ angular.module('bahmni.common.uicontrols.programmanagment')
                     return '#';
                 }
 
-                const baseUrl = `#/programs/patient/${patient.uuid}/dashboard`;
-                const queryParams = `dateEnrolled=${encodeURIComponent(patientProgram.fromDate)}&programUuid=${encodeURIComponent(patientProgram.program.uuid)}&enrollment=${encodeURIComponent(patientProgram.uuid)}`;
+                const baseUrl = "#/programs/patient/" + patient.uuid + "/dashboard";
+                const queryParams = "dateEnrolled=" + encodeURIComponent(patientProgram.fromDate) + "&programUuid=" + encodeURIComponent(patientProgram.program.uuid) + "&enrollment=" + encodeURIComponent(patientProgram.uuid);
 
-                return `${baseUrl}?${queryParams}`;
+                return baseUrl + "?" + queryParams;
             };
 
             $scope.getMaxAllowedDate = function (states) {
