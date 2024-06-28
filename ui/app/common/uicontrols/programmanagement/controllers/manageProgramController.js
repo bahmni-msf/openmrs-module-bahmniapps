@@ -276,6 +276,17 @@ angular.module('bahmni.common.uicontrols.programmanagment')
                 return _.get(currentState, 'state.concept.display');
             };
 
+            $scope.getPatientDashboardUrl = function(patient, patientProgram) {
+                if (!patient || !patientProgram ) {
+                    return '#';
+                }
+
+                const baseUrl = `#/programs/patient/${patient.uuid}/dashboard`;
+                const queryParams = `dateEnrolled=${encodeURIComponent(patientProgram.fromDate)}&programUuid=${encodeURIComponent(patientProgram.program.uuid)}&enrollment=${encodeURIComponent(patientProgram.uuid)}`;
+
+                return `${baseUrl}?${queryParams}`;
+            };
+
             $scope.getMaxAllowedDate = function (states) {
                 var minStartDate = DateUtil.getDateWithoutTime(new Date());
                 if (states && angular.isArray(states)) {
