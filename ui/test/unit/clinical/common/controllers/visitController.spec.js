@@ -10,6 +10,7 @@ describe('VisitController', function () {
     var $timeout;
     var getEncounterPromise;
     var locationService;
+    var programConfig;
     var configurations = {
         encounterConfig: function () {
         }
@@ -29,7 +30,15 @@ describe('VisitController', function () {
             }
         }
     };
+
+    var mockAppDescriptor = jasmine.createSpyObj('appDescriptor', ['getConfigValue']);
     var mockAppService = jasmine.createSpyObj("appService", ["getAppDescriptor"]);
+
+    beforeEach(function() {
+        mockAppDescriptor.getConfigValue.and.returnValue(programConfig);
+        mockAppService.getAppDescriptor.and.returnValue(mockAppDescriptor);
+    });
+
     beforeEach(module('bahmni.clinical'));
     beforeEach(module('stateMock'));
     beforeEach(inject(['$injector', '$timeout', '$q', '$rootScope', '$state', function ($injector, timeout, $q, $rootScope, $state) {
@@ -70,20 +79,20 @@ describe('VisitController', function () {
         });
         scope.currentProvider = {uuid: ''};
         controller =   $controller('VisitController', {
-                $scope: scope,
-                $state: state,
-                encounterService: encounterService,
-                clinicalAppConfigService: clinicalAppConfigService,
-                visitSummary: {},
-                configurations: configurations,
-                $timeout: $timeout,
-                printer: {},
-                visitConfig: visitTabConfig,
-                visitHistory:[],
-                $stateParams: {},
-                locationService: locationService,
-                appService: mockAppService
-            });
+            $scope: scope,
+            $state: state,
+            encounterService: encounterService,
+            clinicalAppConfigService: clinicalAppConfigService,
+            visitSummary: {},
+            configurations: configurations,
+            $timeout: $timeout,
+            printer: {},
+            visitConfig: visitTabConfig,
+            visitHistory:[],
+            $stateParams: {},
+            locationService: locationService,
+            appService: mockAppService
+        });
     }]));
 
     var defaultTab = {
