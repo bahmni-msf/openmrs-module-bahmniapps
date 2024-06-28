@@ -2,8 +2,8 @@
 
 angular.module('bahmni.clinical')
     .controller('DrugOrderHistoryController', ['$scope', '$filter', '$stateParams', 'activeDrugOrders',
-        'treatmentConfig', 'treatmentService', 'spinner', 'drugOrderHistoryHelper', 'visitHistory', '$translate', '$rootScope',
-        function ($scope, $filter, $stateParams, activeDrugOrders, treatmentConfig, treatmentService, spinner,
+        'treatmentConfig', 'treatmentService', 'appService', 'spinner', 'drugOrderHistoryHelper', 'visitHistory', '$translate', '$rootScope',
+        function ($scope, $filter, $stateParams, activeDrugOrders, treatmentConfig, treatmentService, appService, spinner,
                    drugOrderHistoryHelper, visitHistory, $translate, $rootScope) {
             var DrugOrderViewModel = Bahmni.Clinical.DrugOrderViewModel;
             var DateUtil = Bahmni.Common.Util.DateUtil;
@@ -12,6 +12,7 @@ angular.module('bahmni.clinical')
             var prescribedDrugOrders = [];
             $scope.dispensePrivilege = Bahmni.Clinical.Constants.dispensePrivilege;
             $scope.scheduledDate = DateUtil.getDateWithoutTime(DateUtil.addDays(DateUtil.now(), 1));
+            $scope.hideAdditionalInstructions = appService.getAppDescriptor().getConfigValue("hideAdditionalInstructions");
 
             var createPrescriptionGroups = function (activeAndScheduledDrugOrders) {
                 $scope.consultation.drugOrderGroups = [];

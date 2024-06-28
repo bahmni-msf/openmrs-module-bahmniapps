@@ -13,6 +13,14 @@ describe("DrugOrderHistoryController", function () {
         }
     }
 
+    var mockAppDescriptor = jasmine.createSpyObj('appDescriptor', ['getConfigValue']);
+    var mockAppService = jasmine.createSpyObj("appService", ["getAppDescriptor"]);
+
+    beforeEach(function() {
+        mockAppDescriptor.getConfigValue.and.returnValue(treatmentConfig);
+        mockAppService.getAppDescriptor.and.returnValue(mockAppDescriptor);
+    });
+
     var translate;
     beforeEach(module(function ($provide) {
         translate = jasmine.createSpyObj('$translate', ['instant']);
@@ -57,7 +65,8 @@ describe("DrugOrderHistoryController", function () {
             visitContext: {},
             spinner: spinner,
             visitHistory: visitHistory,
-            treatmentConfig: treatmentConfig
+            treatmentConfig: treatmentConfig,
+            appService: mockAppService
         });
         rootScope.$apply();
     };

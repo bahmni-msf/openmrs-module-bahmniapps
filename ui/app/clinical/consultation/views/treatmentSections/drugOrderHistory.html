@@ -63,7 +63,7 @@
                                     <div>
                                         <span ng-if="drugOrder.asNeeded">{{drugOrder.getAsNeededText(drugOrder.asNeeded)}}, </span>
                                         <span nf-if="drugOrder.route"> {{drugOrder.route}}, </span>
-                                        {{drugOrder.instructions}} | 
+                                        <span ng-hide="hideAdditionalInstructions">{{drugOrder.instructions}} |</span>
                                     </div>
                                     <div ng-if="drugOrder.additionalInstructions">{{drugOrder.additionalInstructions}} | </div>
                                     <div>{{drugOrder.getQuantityWithUnit()}}</div>
