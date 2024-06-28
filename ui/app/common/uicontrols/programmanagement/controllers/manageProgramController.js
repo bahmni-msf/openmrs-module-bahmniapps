@@ -276,8 +276,8 @@ angular.module('bahmni.common.uicontrols.programmanagment')
                 return _.get(currentState, 'state.concept.display');
             };
 
-            $scope.getPatientDashboardUrl = function(patient, patientProgram) {
-                if (!patient || !patientProgram ) {
+            $scope.getPatientDashboardUrl = function (patient, patientProgram) {
+                if (!patient || !patientProgram) {
                     return '#';
                 }
 
