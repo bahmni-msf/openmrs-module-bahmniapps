@@ -17,7 +17,7 @@ describe("AddTreatmentController", function () {
     var medicationConfig = {
         "commonConfig": {},
         "tabConfig": {
-            "allMedicationTabConfig": {
+            "medicationTabConfig": {
                 "orderSet": {
                     "calculateDoseOnlyOnCurrentVisitValues": false,
                     "showRulesInMedication": true

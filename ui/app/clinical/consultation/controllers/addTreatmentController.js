@@ -807,9 +807,9 @@ angular.module('bahmni.clinical')
 
             var showRulesInMedication = function (medicationConfig) {
                 $scope.showRulesInMedication = false;
-                if (medicationConfig !== 'undefined' && medicationConfig.tabConfig !== 'undefined' && medicationConfig.tabConfig.allMedicationTabConfig
-                    !== 'undefined' && medicationConfig.tabConfig.allMedicationTabConfig.orderSet !== 'undefined') {
-                    if (medicationConfig.tabConfig.allMedicationTabConfig.orderSet.showRulesInMedication) {
+                if (medicationConfig && medicationConfig.tabConfig && medicationConfig.tabConfig.medicationTabConfig
+                    && medicationConfig.tabConfig.medicationTabConfig.orderSet) {
+                    if (medicationConfig.tabConfig.medicationTabConfig.orderSet.showRulesInMedication) {
                         $scope.showRulesInMedication = true;
                     }
                 }
@@ -833,9 +833,9 @@ angular.module('bahmni.clinical')
 
             var setContinuousMedicationRoutes = function (medicationConfig) {
                 $scope.continuousMedicationRoutes = [];
-                if (medicationConfig && medicationConfig.tabConfig && medicationConfig.tabConfig.allMedicationTabConfig
-                    && medicationConfig.tabConfig.allMedicationTabConfig.inputOptionsConfig) {
-                    $scope.continuousMedicationRoutes = medicationConfig.tabConfig.allMedicationTabConfig.inputOptionsConfig.continuousMedicationRoutes || [];
+                if (medicationConfig && medicationConfig.tabConfig && medicationConfig.tabConfig.medicationTabConfig
+                    && medicationConfig.tabConfig.medicationTabConfig.inputOptionsConfig) {
+                    $scope.continuousMedicationRoutes = medicationConfig.tabConfig.medicationTabConfig.inputOptionsConfig.continuousMedicationRoutes || [];
                 }
             };
 
