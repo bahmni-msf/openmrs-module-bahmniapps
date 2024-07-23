@@ -284,7 +284,9 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                     $window.open($scope.targetUrl, "_self");
                 }
                 $window.onbeforeunload = null;
-                $state.go($scope.toStateConfig.toState, $scope.toStateConfig.toParams);
+                if ($scope.toStateConfig) {
+                    $state.go($scope.toStateConfig.toState, $scope.toStateConfig.toParams);
+                }
                 ngDialog.close();
             };
 
