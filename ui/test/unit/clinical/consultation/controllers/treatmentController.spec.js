@@ -23,7 +23,7 @@ describe('TreatmentController', function () {
         var controller = $controller('TreatmentController', {
             $scope: $scope,
             treatmentConfig: {drugOrderHistoryConfig: {view: 'default'}},
-            $stateParams: {tabConfigName: 'allMedicationTabConfig'},
+            $stateParams: {tabConfigName: 'medicationTabConfig'},
             appService: appService,
             clinicalAppConfigService: clinicalAppConfigService,
             $filter: filter
@@ -31,7 +31,7 @@ describe('TreatmentController', function () {
         controller.initializeTreatments = jasmine.createSpy('initializeTreatments');
         $scope.consultation = {
             newlyAddedTabTreatments: {
-                allMedicationTabConfig: {
+                medicationTabConfig: {
                     treatments: [],
                     orderSetTreatments: [],
                     newOrderSet: "new order"
