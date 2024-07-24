@@ -12,6 +12,8 @@ angular.module('bahmni.clinical')
                     if ($scope.$parent.closeThisDialog) {
                         $scope.$parent.closeThisDialog("closing modal");
                     }
+                    console.log(visit);
+                    console.log(visit.visitType.display);
                     if (visit.visitType.display === "First Stage Validation" && enableIPDFeature) {
                         $state.go('patient.dashboard.ipdVisit', {visitUuid: visit.uuid, source: 'clinical'});
                     } else {
