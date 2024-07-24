@@ -14,7 +14,7 @@ angular.module('bahmni.clinical')
             $scope.scheduledDate = DateUtil.getDateWithoutTime(DateUtil.addDays(DateUtil.now(), 1));
             $scope.allMedicinesInPrescriptionAvailableForIPD = appService.getAppDescriptor().getConfigValue("allMedicinesInPrescriptionAvailableForIPD") !== null ? appService.getAppDescriptor().getConfigValue("allMedicinesInPrescriptionAvailableForIPD") : true;
             console.log("allMedicinesInPrescriptionAvailableForIPD");
-            console.log(allMedicinesInPrescriptionAvailableForIPD);
+            console.log($scope.allMedicinesInPrescriptionAvailableForIPD);
             $scope.printPrescriptionFeature = appService.getAppDescriptor().getConfigValue("printPrescriptionFeature");
             $scope.selectedDrugs = {};
 
