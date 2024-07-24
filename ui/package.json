@@ -119,7 +119,6 @@
     "clean": "grunt clean",
     "lint": "grunt eslint",
     "lint:fix": "grunt eslint --fix=true",
-    "coverage": "grunt coverage",
     "compass": "grunt compass",
     "bundle": "grunt bundle",
     "uglify-and-rename": "grunt uglify-and-rename",
