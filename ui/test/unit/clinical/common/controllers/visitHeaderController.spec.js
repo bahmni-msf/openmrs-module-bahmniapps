@@ -58,7 +58,7 @@ describe('visitHeaderController', function () {
         var boards = [{
             url: "bacteriology",
             extensionParams: {
-                "tabConfigName": "allMedicationTabConfig",
+                "tabConfigName": "medicationTabConfig",
                 "priority": "high"
             }
         }, {
@@ -159,7 +159,7 @@ describe('visitHeaderController', function () {
 
             expect(rootScope.hasVisitedConsultation).toBeTruthy();
             expect(scope.collapseControlPanel).toHaveBeenCalled();
-            expect(mockLocation.url).toHaveBeenCalledWith('/default/patient/somePatientUuid/dashboard/bacteriology?tabConfigName=allMedicationTabConfig&priority=high');
+            expect(mockLocation.url).toHaveBeenCalledWith('/default/patient/somePatientUuid/dashboard/bacteriology?tabConfigName=medicationTabConfig&priority=high');
         });
 
         it("should goto consultation from Visit page with given stateParams", function () {
@@ -169,7 +169,7 @@ describe('visitHeaderController', function () {
             scope.openConsultation();
             expect(rootScope.hasVisitedConsultation).toBeTruthy();
             expect(scope.collapseControlPanel).toHaveBeenCalled();
-            expect(mockLocation.url).toHaveBeenCalledWith('/program/patient/somePatientUuid/dashboard/bacteriology?programUuid=programUuid&enrollment=patientProgramUuid&tabConfigName=allMedicationTabConfig&priority=high');
+            expect(mockLocation.url).toHaveBeenCalledWith('/program/patient/somePatientUuid/dashboard/bacteriology?programUuid=programUuid&enrollment=patientProgramUuid&tabConfigName=medicationTabConfig&priority=high');
         });
     });
 });
