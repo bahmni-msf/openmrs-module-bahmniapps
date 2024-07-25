@@ -823,9 +823,9 @@ angular.module('bahmni.clinical')
             var showRulesInMedication = function (medicationConfig) {
                 $scope.showRulesInMedication = false;
                 console.log("MedicationConfig" + JSON.stringify(medicationConfig));
-                if (medicationConfig !== 'undefined' && medicationConfig.tabConfig !== 'undefined' && medicationConfig.tabConfig.medicationTabConfig
-                    !== 'undefined' && medicationConfig.tabConfig.medicationTabConfig.orderSet !== undefined) {
-                    if (medicationConfig.tabConfig.medicationTabConfig.orderSet.showRulesInMedication) {
+                if (medicationConfig !== 'undefined' && medicationConfig.tabConfig !== 'undefined' && medicationConfig.tabConfig.allMedicationTabConfig
+                    !== 'undefined' && medicationConfig.tabConfig.allMedicationTabConfig.orderSet !== undefined) {
+                    if (medicationConfig.tabConfig.allMedicationTabConfig.orderSet.showRulesInMedication) {
                         $scope.showRulesInMedication = true;
                     }
                 }
@@ -849,9 +849,9 @@ angular.module('bahmni.clinical')
 
             var setContinuousMedicationRoutes = function (medicationConfig) {
                 $scope.continuousMedicationRoutes = [];
-                if (medicationConfig && medicationConfig.tabConfig && medicationConfig.tabConfig.medicationTabConfig
-                    && medicationConfig.tabConfig.medicationTabConfig.inputOptionsConfig) {
-                    $scope.continuousMedicationRoutes = medicationConfig.tabConfig.medicationTabConfig.inputOptionsConfig.continuousMedicationRoutes || [];
+                if (medicationConfig && medicationConfig.tabConfig && medicationConfig.tabConfig.allMedicationTabConfig
+                    && medicationConfig.tabConfig.allMedicationTabConfig.inputOptionsConfig) {
+                    $scope.continuousMedicationRoutes = medicationConfig.tabConfig.allMedicationTabConfig.inputOptionsConfig.continuousMedicationRoutes || [];
                 }
             };
 
