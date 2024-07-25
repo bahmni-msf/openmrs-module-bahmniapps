@@ -822,7 +822,7 @@ angular.module('bahmni.clinical')
 
             var showRulesInMedication = function (medicationConfig) {
                 $scope.showRulesInMedication = false;
-                console.log("MedicationConfig" + JSON.stringify( medicationConfig));
+                console.log("MedicationConfig" + JSON.stringify(medicationConfig));
                 if (medicationConfig !== 'undefined' && medicationConfig.tabConfig !== 'undefined' && medicationConfig.tabConfig.medicationTabConfig
                     !== 'undefined' && medicationConfig.tabConfig.medicationTabConfig.orderSet !== undefined) {
                     if (medicationConfig.tabConfig.medicationTabConfig.orderSet.showRulesInMedication) {
