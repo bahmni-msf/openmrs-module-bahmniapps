@@ -378,7 +378,7 @@ angular.module('bahmni.clinical')
                     ($scope.addTreatmentWithDiagnosis.hasOwnProperty('order') && $scope.confirmedDiagnoses.length == 0)) {
                     return;
                 }
-                if ($scope.allMedicinesInPrescriptionAvailableForIPD && currentVisitType === 'IPD') {
+                if ($scope.allMedicinesInPrescriptionAvailableForIPD && (currentVisitType === 'First Stage Validation' || currentVisitType === 'Follow-Up Validation')) {
                     $scope.treatment.careSetting = Bahmni.Clinical.Constants.careSetting.inPatient;
                 }
                 if ($scope.treatment.isNewOrderSet) {

@@ -15,7 +15,7 @@ angular.module('bahmni.clinical')
                     console.log(visit);
                     console.log(visit.visitType);
                     console.log(visit.visitType.display);
-                    if (visit.visitType.display === "First Stage Validation" && enableIPDFeature) {
+                    if ((visit.visitType.display === "First Stage Validation" || visit.visitType.display === "Follow-Up Validation") && enableIPDFeature) {
                         $state.go('patient.dashboard.ipdVisit', {visitUuid: visit.uuid, source: 'clinical'});
                     } else {
                         $state.go('patient.dashboard.visit', {visitUuid: visit.uuid});
