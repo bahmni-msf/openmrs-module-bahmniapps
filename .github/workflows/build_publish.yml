@@ -38,11 +38,11 @@ jobs:
       - name: Package
         run: cd ui && yarn cache clean && /bin/bash ./scripts/package.sh --force
       - name: Build docker image
-        run: docker build -t bahmni-web:latest -f package/docker/Dockerfile .
+        run: docker build -t bahmni-web:ipd -f package/docker/Dockerfile .
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'bahmni-web:latest'
+          image-ref: 'bahmni-web:ipd'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -65,7 +65,7 @@ jobs:
           REPOSITORY: bahmni-msf-lite/bahmni-web
           IMAGE_TAG: ${{ env.ARTIFACT_VERSION }}
         run: |
-          docker tag bahmni-web:latest $REGISTRY/$REPOSITORY:latest
-          docker tag bahmni-web:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker tag bahmni-web:ipd $REGISTRY/$REPOSITORY:ipd
+          docker tag bahmni-web:ipd $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          docker push $REGISTRY/$REPOSITORY:latest
+          docker push $REGISTRY/$REPOSITORY:ipd
