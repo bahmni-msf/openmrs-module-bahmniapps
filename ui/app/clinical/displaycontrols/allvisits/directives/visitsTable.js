@@ -12,7 +12,8 @@ angular.module('bahmni.clinical')
                     if ($scope.$parent.closeThisDialog) {
                         $scope.$parent.closeThisDialog("closing modal");
                     }
-                    if (visit.visitType.display === "IPD" && enableIPDFeature) {
+                    console.log(visit.visitType.display);
+                    if ((visit.visitType.display === "IPD") && enableIPDFeature) {
                         $state.go('patient.dashboard.ipdVisit', {visitUuid: visit.uuid, source: 'clinical'});
                     } else {
                         $state.go('patient.dashboard.visit', {visitUuid: visit.uuid});
