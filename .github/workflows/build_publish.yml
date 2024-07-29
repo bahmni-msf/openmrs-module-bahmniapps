@@ -2,40 +2,30 @@ name: Build and Publish
 on:
   push:
     branches:
-      - Bahmni-IPD-master
-    paths-ignore:
-      - "**.md"
+      - MOBN-2437-malawi-ipd
+
   workflow_dispatch:
 
 jobs:
-  Trivy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Trivy Scan
-        run: |
-          wget -q https://raw.githubusercontent.com/Bahmni/bahmni-infra-utils/main/trivy_scan.sh && chmod +x trivy_scan.sh
-          ./trivy_scan.sh
-          rm trivy_scan.sh
   build-publish-docker:
     name: Build & Publish Docker Image
     runs-on: ubuntu-latest
-    needs: Trivy
     steps:
-      - uses: actions/checkout@v3
+      - name: Pull Github code
+        uses: actions/checkout@v4
       - name: Use Node.js 10.16.3
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
-      - name: Use Ruby 3.1
+      - name: Use Ruby 2.5
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.1
+          ruby-version: 2.5
       - run: npm install -g bower
       - run: npm install -g grunt-cli
-      - run: gem install compass
-      - run: npm install --global yarn
+      - run: gem install ffi -v 1.16.3
+      - run: gem install compass -v 1.0.3
+      - run: npm install --g yarn
       - name: micro-frontends | install dependencies
         working-directory: micro-frontends
         run: yarn install --frozen-lock-file
@@ -46,40 +36,36 @@ jobs:
         working-directory: micro-frontends
         run: yarn build
       - name: Package
-        run: cd ui && yarn cache clean && /bin/bash ./scripts/package.sh
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
+        run: cd ui && yarn cache clean && /bin/bash ./scripts/package.sh --force
+      - name: Build docker image
+        run: docker build -t bahmni-web:ipd -f package/docker/Dockerfile .
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Docker Build and push
-        uses: docker/build-push-action@v3
+          image-ref: 'bahmni-web:ipd'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'HIGH,CRITICAL'
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          file: package/docker/Dockerfile
-          push: true
-          tags: bahmni/bahmni-web:ipd-${{ github.run_number }},bahmni/bahmni-web:ipd
-  trigger-workflow:
-    name: Trigger workflow to deploy to Docker env
-    needs:
-      - build-publish-docker
-      - Trivy
-    runs-on: ubuntu-latest
-    env:
-      EVENT_TYPE: openmrs-module-bahmniapps-event
-    steps:
-      - name: Create repository_dispatch
+          aws-access-key-id: ${{ secrets.BAHMNI_LITE_AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.BAHMNI_LITE_AWS_SECRET_KEY }}
+          aws-region: ${{ secrets.BAHMNI_LITE_AWS_REGION }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Set Image tag varaible
+        run: echo "ARTIFACT_VERSION=$(cat package/.appversion)-$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+      - name: Tag and Push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: bahmni-msf-lite/bahmni-web
+          IMAGE_TAG: ${{ env.ARTIFACT_VERSION }}
         run: |
-          trigger_result=$(curl -s -o trigger_response.txt -w "%{http_code}" -X POST -H "Accept: application/vnd.github.v3+json" -H 'authorization: Bearer ${{ secrets.IPD_PAT }}' https://api.github.com/repos/${{ secrets.IPD_ORG_NAME }}/${{ secrets.IPD_REPOSITORY_NAME }}/dispatches -d '{"event_type":"'"${EVENT_TYPE}"'"}')
-          if [ $trigger_result == 204 ];then
-            echo "Trigger to $ORG_NAME/$REPOSITORY_NAME Success"
-          else
-            echo "Trigger to $ORG_NAME/$REPOSITORY_NAME Failed"
-            cat trigger_response.txt
-            exit 1
-          fi
+          docker tag bahmni-web:ipd $REGISTRY/$REPOSITORY:ipd
+          docker tag bahmni-web:ipd $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:ipd
