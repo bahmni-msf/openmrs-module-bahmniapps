@@ -15,6 +15,9 @@ Bahmni.Clinical.SpecimenMapper = function () {
         }
         if (specimen.sample && specimen.sample.additionalAttributes) {
             specimen.sample.additionalAttributes = (specimen.sample.additionalAttributes) instanceof Array ? specimen.sample.additionalAttributes : [specimen.sample.additionalAttributes];
+
+            var obs = new Bahmni.Common.Obs.ObservationMapper().map(specimen.sample.additionalAttributes, conceptsConfig, dontSortByObsDateTime);
+            specimen.sampleAdditionalAttributes = obs && obs.length > 0 ? obs[0] : obs;
         }
         return specimen;
     };
