@@ -18,7 +18,6 @@ Bahmni.Clinical.SpecimenMapper = function () {
 
             var obs = new Bahmni.Common.Obs.ObservationMapper().map(specimen.sample.additionalAttributes, conceptsConfig, dontSortByObsDateTime);
             specimen.sampleAdditionalAttributes = obs && obs.length > 0 ? obs[0] : obs;
-
         }
         return specimen;
     };
