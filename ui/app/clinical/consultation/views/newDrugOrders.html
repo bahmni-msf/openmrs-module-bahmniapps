@@ -58,7 +58,7 @@
                     <span ng-if="newTreatment.route">{{newTreatment.route}}</span>
                     <span ng-if="(newTreatment.asNeeded || newTreatment.route) && !hideAdditionalInstructions">, </span>
                     <span ng-hide="hideAdditionalInstructions">{{newTreatment.instructions}}</span>
-                    <span ng-if="(newTreatment.asNeeded || newTreatment.route || !hideAdditionalInstructions) && newTreatment.additionalInstructions"> |</span>
+                    <span ng-if="(newTreatment.asNeeded || newTreatment.route || !hideAdditionalInstructions) && newTreatment.additionalInstructions"> | </span>
                 </div>
                 <div ng-if="newTreatment.additionalInstructions">
                     {{newTreatment.additionalInstructions}} 

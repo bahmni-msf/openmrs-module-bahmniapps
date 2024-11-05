@@ -64,10 +64,10 @@
                                     <div>
                                         <span ng-if="drugOrder.asNeeded">{{drugOrder.getAsNeededText(drugOrder.asNeeded)}}</span>
                                         <span ng-if="drugOrder.asNeeded && drugOrder.route">, </span>
-                                        <span ng-if="drugOrder.route"> {{drugOrder.route}}</span>
+                                        <span ng-if="drugOrder.route">{{drugOrder.route}}</span>
                                         <span ng-if="(drugOrder.asNeeded || drugOrder.route) && !hideAdditionalInstructions">, </span>
                                         <span ng-hide="hideAdditionalInstructions">{{drugOrder.instructions}}</span>
-                                        <span ng-if="(drugOrder.asNeeded || drugOrder.route || !hideAdditionalInstructions) && drugOrder.additionalInstructions"> |</span>
+                                        <span ng-if="(drugOrder.asNeeded || drugOrder.route || !hideAdditionalInstructions) && drugOrder.additionalInstructions"> | </span>
                                     </div>
                                     <div ng-if="drugOrder.additionalInstructions">{{drugOrder.additionalInstructions}}</div>
                                     <div ng-if="(drugOrder.asNeeded || drugOrder.route || !hideAdditionalInstructions || drugOrder.additionalInstructions) && drugOrder.getQuantityWithUnit()"> | </div>
