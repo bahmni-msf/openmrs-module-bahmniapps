@@ -25,8 +25,9 @@
                                         <strong class="drug-name">{{drugOrder.getDisplayName()}}</strong>
                                         <div class="dosage-frequency">
                                             <span ng-show="drugOrder.getDoseAndUnits()">{{drugOrder.getDoseAndUnits()}} | </span>
-                                            <span ng-show="drugOrder.getFrequency() && drugOrder.getFrequency().length">{{drugOrder.getFrequency()}} | </span> 
-                                            {{drugOrder.getDurationAndDurationUnits()}}</div>
+                                            <span ng-show="drugOrder.getFrequency() && drugOrder.getFrequency().length">{{drugOrder.getFrequency()}}</span> 
+                                            <span ng-show="drugOrder.getDurationAndDurationUnits()"> | {{drugOrder.getDurationAndDurationUnits()}}</span>
+                                        </div>
                                     </div>
                                 </div>
 								<div class="button-group-wrapper">
@@ -61,11 +62,15 @@
                                 </div>
                                 <div class="dosage-details">
                                     <div>
-                                        <span ng-if="drugOrder.asNeeded">{{drugOrder.getAsNeededText(drugOrder.asNeeded)}}, </span>
-                                        <span nf-if="drugOrder.route"> {{drugOrder.route}}, </span>
-                                        <span ng-hide="hideAdditionalInstructions">{{drugOrder.instructions}} |</span>
+                                        <span ng-if="drugOrder.asNeeded">{{drugOrder.getAsNeededText(drugOrder.asNeeded)}}</span>
+                                        <span ng-if="drugOrder.asNeeded && drugOrder.route">, </span>
+                                        <span ng-if="drugOrder.route"> {{drugOrder.route}}</span>
+                                        <span ng-if="(drugOrder.asNeeded || drugOrder.route) && !hideAdditionalInstructions">, </span>
+                                        <span ng-hide="hideAdditionalInstructions">{{drugOrder.instructions}}</span>
+                                        <span ng-if="(drugOrder.asNeeded || drugOrder.route || !hideAdditionalInstructions) && drugOrder.additionalInstructions"> |</span>
                                     </div>
-                                    <div ng-if="drugOrder.additionalInstructions">{{drugOrder.additionalInstructions}} | </div>
+                                    <div ng-if="drugOrder.additionalInstructions">{{drugOrder.additionalInstructions}}</div>
+                                    <div ng-if="(drugOrder.asNeeded || drugOrder.route || !hideAdditionalInstructions || drugOrder.additionalInstructions) && drugOrder.getQuantityWithUnit()"> | </div>
                                     <div>{{drugOrder.getQuantityWithUnit()}}</div>
                                     <div class="footer-note">
                                         <span class="time-stamp">
