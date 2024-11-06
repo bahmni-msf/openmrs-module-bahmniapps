@@ -118,6 +118,8 @@ angular.module('bahmni.clinical')
 
             var init = function () {
                 $scope.hideDoctorName = appService.getAppDescriptor().getConfigValue("hideDoctorName");
+                $scope.hidePOAddress = appService.getAppDescriptor().getConfigValue("hidePOAddress");
+                $scope.hideVillageAddress = appService.getAppDescriptor().getConfigValue("hideVillageAddress");
                 $scope.visitTabConfig.setVisitUuidsAndPatientUuidToTheSections([$scope.visitUuid], $scope.patientUuid);
                 var tabToOpen = getTab();
                 $scope.visitTabConfig.switchTab(tabToOpen);
