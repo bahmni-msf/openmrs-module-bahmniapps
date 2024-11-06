@@ -7,7 +7,7 @@
         </div>
     </h2>
     <div>
-        <table class='h-scroll' ng-class="::{'pivot-table':showOnPrint, 'h-scroll-print': !showOnPrint}">
+        <table ng-class="::{'h-scroll':showOnPrint, 'pivot-table':showOnPrint, 'h-scroll-print': !showOnPrint}">
             <thead>
             <tr>
                 <th class="row-header-group">{{::groupBy}}</th>
