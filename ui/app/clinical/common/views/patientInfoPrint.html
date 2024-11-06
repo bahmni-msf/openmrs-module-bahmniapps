@@ -11,7 +11,7 @@
         <tr>
             <td ng-hide="hideVillageAddress">Village / Town: <span class="value">{{patient.address.cityVillage}}</span></td>
             <td ng-hide="hidePOAddress">P.O: <span class="value">{{patient.address.address2}}</span></td>
-            <td>Traditional Authority: <span class="value">{{patient.address.address4}}</span></td>
+            <td ng-show="showTraditionalAuthority">Traditional Authority: <span class="value">{{patient.address.address4}}</span></td>
             <td colspan="2">District: <span class="value">{{patient.address.address3}}</span></td>
         </tr>
         <tr ng-switch-when="true">
