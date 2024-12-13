@@ -133,11 +133,10 @@ angular.module('bahmni.common.displaycontrol.obsVsObsFlowSheet').directive('obsT
 
                     if (observations[index].concept.dataType === "Date") {
                         var conceptName = observations[index].concept.name;
-                        var date = new Date(observations[index].observationDateTime);
                         if (conceptName && config[conceptName] && config[conceptName].displayMonthAndYear == true) {
-                            name = Bahmni.Common.Util.DateUtil.getDateInMonthsAndYears(date);
+                            name = Bahmni.Common.Util.DateUtil.getDateInMonthsAndYears(name);
                         } else {
-                            name = Bahmni.Common.Util.DateUtil.formatDateWithoutTime(date);
+                            name = Bahmni.Common.Util.DateUtil.formatDateWithoutTime(name);
                         }
                     }
                     list.push(name);
