@@ -473,7 +473,7 @@ angular.module('bahmni.clinical').controller('ConsultationController',
             var isObservationFormValid = function () {
                 var valid = true;
                 _.each($scope.consultation.observationForms, function (observationForm) {
-                    if (valid && observationForm.component && observationForm.isAdded) {
+                    if (valid && observationForm.component) {
                         var value = observationForm.component.getValue();
 
                         // Check for explicit errors returned by the component
@@ -486,22 +486,25 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                             return;
                         }
 
-                        // Validate React form components
-                        if (!validateReactFormComponent(observationForm, value)) {
-                            valid = false;
-                            return;
-                        }
+                        // Advanced validation only for added forms
+                        if (observationForm.isAdded) {
+                            // Validate React form components
+                            if (!validateReactFormComponent(observationForm, value)) {
+                                valid = false;
+                                return;
+                            }
 
-                        // Validate DOM-based form elements
-                        if (!validateFormDOM(observationForm)) {
-                            valid = false;
-                            return;
-                        }
+                            // Validate DOM-based form elements
+                            if (!validateFormDOM(observationForm)) {
+                                valid = false;
+                                return;
+                            }
 
-                        // Fallback: Traditional observation validation
-                        if (!validateTraditionalObservations(value)) {
-                            valid = false;
-                            return;
+                            // Fallback: Traditional observation validation
+                            if (!validateTraditionalObservations(value)) {
+                                valid = false;
+                                return;
+                            }
                         }
                     }
                 });
