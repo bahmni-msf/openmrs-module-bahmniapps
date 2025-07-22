@@ -477,7 +477,10 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                         var value = observationForm.component.getValue();
 
                         // Check for explicit errors returned by the component
-                        if (value.errors && value.errors.length > 0) {
+                        if (value.errors && (
+                            (angular.isArray(value.errors) && value.errors.length > 0) ||
+                            (!angular.isArray(value.errors) && typeof value.errors === 'object')
+                        )) {
                             messagingService.showMessage('error', "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}");
                             valid = false;
                             return;
