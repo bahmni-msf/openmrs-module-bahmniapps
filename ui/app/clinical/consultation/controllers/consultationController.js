@@ -5,12 +5,12 @@ angular.module('bahmni.clinical').controller('ConsultationController',
         'spinner', 'encounterService', 'messagingService', 'sessionService', 'retrospectiveEntryService', 'patientContext', '$q',
         'patientVisitHistoryService', '$stateParams', '$window', 'visitHistory', 'clinicalDashboardConfig', 'appService',
         'ngDialog', '$filter', 'configurations', 'visitConfig', 'conditionsService', 'configurationService', 'auditLogService', 'confirmBox',
-        'virtualConsultService', 'adhocTeleconsultationService', '$timeout',
+        'virtualConsultService', 'adhocTeleconsultationService',
         function ($scope, $rootScope, $state, $location, $translate, clinicalAppConfigService, diagnosisService, urlHelper, contextChangeHandler,
                   spinner, encounterService, messagingService, sessionService, retrospectiveEntryService, patientContext, $q,
                   patientVisitHistoryService, $stateParams, $window, visitHistory, clinicalDashboardConfig, appService,
                   ngDialog, $filter, configurations, visitConfig, conditionsService, configurationService, auditLogService, confirmBox,
-                  virtualConsultService, adhocTeleconsultationService, $timeout) {
+                  virtualConsultService, adhocTeleconsultationService) {
             var ERROR = 1;
             var DateUtil = Bahmni.Common.Util.DateUtil;
             var getPreviousActiveCondition = Bahmni.Common.Domain.Conditions.getPreviousActiveCondition;
@@ -777,17 +777,15 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                     return $q.when({});
                 }
 
-                return $timeout(function () {
-                    // Final validation check for any remaining validation errors
-                    var hasValidationErrors = document.querySelectorAll('.illegalValue, .ng-invalid-required').length > 0;
-                    if (hasValidationErrors) {
-                        messagingService.showMessage('error', "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}");
-                        $scope.$parent.$parent.$broadcast("event:errorsOnForm");
-                        return $q.when({});
-                    }
+                // Final validation check for any remaining validation errors
+                var hasValidationErrors = document.querySelectorAll('.illegalValue, .ng-invalid-required').length > 0;
+                if (hasValidationErrors) {
+                    messagingService.showMessage('error', "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}");
+                    $scope.$parent.$parent.$broadcast("event:errorsOnForm");
+                    return $q.when({});
+                }
 
-                    return proceedWithActualSave(toStateConfig);
-                }, 100);
+                return proceedWithActualSave(toStateConfig);
             };
 
             // Extract the actual save logic into a separate function
