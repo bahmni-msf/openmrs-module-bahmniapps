@@ -304,7 +304,13 @@
 
         isRequired: function () {
             this.disabled = this.disabled ? this.disabled : false;
-            return this.conceptUIConfig.required === true && this.disabled === false;
+            if (this.conceptUIConfig.required === true) {
+                if (this.conceptUIConfig.controlEvent || this.hasControlEvents) {
+                    return true;
+                }
+                return this.disabled === false;
+            }
+            return false;
         },
 
         isDurationRequired: function () {

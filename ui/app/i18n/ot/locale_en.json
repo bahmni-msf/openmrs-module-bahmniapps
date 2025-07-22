@@ -114,5 +114,6 @@
     "ACTUAL_TIME_ADDED_TO_KEY":"Actual time added to ",
     "OT_SURGICAL_BLOCK_ACROSS_MULTIPLE_DAYS_CONFIRMATION_MESSAGE": "Are you sure you want to create a surgical block across days?",
     "MOVING_KEY": "Moving",
-    "FROM_KEY": "from"
+    "FROM_KEY": "from",
+    "SELECT_VALUE_FROM_AUTOCOMPLETE_DEFAULT_MESSAGE": "Please select a value from auto complete"
 }

@@ -391,7 +391,7 @@ Bahmni.ConceptSet.Observation.prototype = {
         if (this.error) {
             return false;
         }
-        if (this.hidden) {
+        if (this.hidden && !this._shouldValidateWhenHidden()) {
             return true;
         }
         if (checkRequiredFields) {
@@ -420,6 +420,11 @@ Bahmni.ConceptSet.Observation.prototype = {
         return true;
     },
 
+    _shouldValidateWhenHidden: function () {
+        return this.conceptUIConfig.required === true &&
+               (this.conceptUIConfig.controlEvent || this.hasControlEvents);
+    },
+
     isValueInAbsoluteRange: function () {
         if (this.erroneousValue) {
             return false;
@@ -440,7 +445,13 @@ Bahmni.ConceptSet.Observation.prototype = {
 
     isRequired: function () {
         this.disabled = this.disabled ? this.disabled : false;
-        return this.conceptUIConfig.required === true && this.disabled === false;
+        if (this.conceptUIConfig.required === true) {
+            if (this.conceptUIConfig.controlEvent || this.hasControlEvents) {
+                return true;
+            }
+            return this.disabled === false;
+        }
+        return false;
     },
 
     isFormElement: function () {
