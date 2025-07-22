@@ -162,7 +162,13 @@ Bahmni.ConceptSet.MultiSelectObservation = function (concept, memberOfCollection
 
     this.isRequired = function () {
         this.disabled = this.disabled ? this.disabled : false;
-        return this.getConceptUIConfig().required === true && this.disabled === false;
+        if (this.getConceptUIConfig().required === true) {
+            if (this.getConceptUIConfig().controlEvent || this.hasControlEvents) {
+                return true;
+            }
+            return this.disabled === false;
+        }
+        return false;
     };
 
     var createObsFrom = function (answer) {
