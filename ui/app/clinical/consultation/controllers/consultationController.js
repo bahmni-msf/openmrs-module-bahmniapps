@@ -340,7 +340,6 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                 if ($scope.lastConsultationTabUrl.url) {
                     $location.url($scope.lastConsultationTabUrl.url);
                 } else {
-                    // Default tab
                     getUrl($scope.availableBoards[0]);
                 }
             };
@@ -473,69 +472,58 @@ angular.module('bahmni.clinical').controller('ConsultationController',
             var isObservationFormValid = function () {
                 var valid = true;
                 _.each($scope.consultation.observationForms, function (observationForm) {
-                    if (valid && observationForm.component) {
+                    if (valid && observationForm.component && observationForm.isAdded) {
                         var value = observationForm.component.getValue();
 
-                        // Check for explicit errors returned by the component
                         if (value.errors && (
                             (angular.isArray(value.errors) && value.errors.length > 0) ||
                             (!angular.isArray(value.errors) && typeof value.errors === 'object')
                         )) {
                             messagingService.showMessage('error', "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}");
+                            $scope.$parent.$parent.$broadcast("event:errorsOnForm");
                             valid = false;
                             return;
                         }
 
-                        // Advanced validation only for added forms
-                        if (observationForm.isAdded) {
-                            // Validate React form components
-                            if (!validateReactFormComponent(observationForm, value)) {
-                                valid = false;
-                                return;
-                            }
+                        if (!validateReactFormComponent(observationForm, value)) {
+                            valid = false;
+                            return;
+                        }
 
-                            // Validate DOM-based form elements
-                            if (!validateFormDOM(observationForm)) {
-                                valid = false;
-                                return;
-                            }
+                        if (!validateFormDOM(observationForm)) {
+                            valid = false;
+                            return;
+                        }
 
-                            // Fallback: Traditional observation validation
-                            if (!validateTraditionalObservations(value)) {
-                                valid = false;
-                                return;
-                            }
+                        if (!validateTraditionalObservations(value)) {
+                            valid = false;
+                            return;
                         }
                     }
                 });
                 return valid;
             };
 
-            // React Component Validation - Single Responsibility
             var validateReactFormComponent = function (observationForm, value) {
                 if (!observationForm.component.state || !observationForm.component.state.data) {
                     return true;
                 }
 
                 try {
-                    // Force validateForm to true if it's false
                     if (observationForm.component.props && observationForm.component.props.validateForm === false) {
                         observationForm.component.props.validateForm = true;
                     }
 
-                    // Validate mandatory fields in metadata
                     if (!validateMandatoryFields(observationForm, value)) {
                         return false;
                     }
 
-                    // Check component validation methods
                     return checkComponentValidationMethods(observationForm);
                 } catch (error) {
-                    return true; // Continue if React validation fails
+                    return true;
                 }
             };
 
-            // Mandatory Fields Validation - Single Responsibility
             var validateMandatoryFields = function (observationForm, value) {
                 var metadata = observationForm.component.props && observationForm.component.props.metadata;
                 if (!metadata || !metadata.controls) {
@@ -558,9 +546,7 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                 return true;
             };
 
-            // Field Visibility Check - Single Responsibility
             var isFieldVisible = function (observationForm, control) {
-                // Check via form component method
                 try {
                     if (observationForm.component.get) {
                         var fieldInForm = observationForm.component.get(control.concept.name);
@@ -569,14 +555,11 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                         }
                     }
                 } catch (error) {
-                    // Continue to DOM check
                 }
 
-                // Check via DOM visibility
                 return isDOMFieldVisible(control);
             };
 
-            // DOM Visibility Check - Single Responsibility
             var isDOMFieldVisible = function (control) {
                 var fieldElements = document.querySelectorAll(
                     '[data-concept-name="' + control.concept.name + '"], [data-concept-uuid="' + control.concept.uuid + '"]'
@@ -596,11 +579,9 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                 });
             };
 
-            // Component Validation Methods - Single Responsibility
             var checkComponentValidationMethods = function (observationForm) {
                 var component = observationForm.component;
 
-                // Check validate method
                 if (component.validate && typeof component.validate === 'function') {
                     var componentValidation = component.validate();
                     if (componentValidation === false || (componentValidation && componentValidation.errors && componentValidation.errors.length > 0)) {
@@ -609,7 +590,6 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                     }
                 }
 
-                // Check isValid method
                 if (component.isValid && typeof component.isValid === 'function') {
                     if (component.isValid() === false) {
                         messagingService.showMessage('error', "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}");
@@ -617,7 +597,6 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                     }
                 }
 
-                // Force re-validation via setState
                 if (component.setState && typeof component.setState === 'function') {
                     component.setState({validateForm: true}, function () {
                         var revalidationResult = component.getValue();
@@ -630,14 +609,12 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                 return true;
             };
 
-            // DOM Form Validation - Single Responsibility
             var validateFormDOM = function (observationForm) {
                 var formContainer = document.getElementById(observationForm.formUuid);
                 if (!formContainer) {
                     return true;
                 }
 
-                // Check for React validation errors
                 var reactValidationErrors = formContainer.querySelectorAll(
                     '.error, .invalid, .required-error, .validation-error, ' +
                     '[class*="error"], [class*="invalid"], [class*="Error"], ' +
@@ -649,11 +626,9 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                     return false;
                 }
 
-                // Check for empty required fields
                 return validateRequiredFields(formContainer);
             };
 
-            // Required Fields Validation - Single Responsibility
             var validateRequiredFields = function (formContainer) {
                 var requiredFields = formContainer.querySelectorAll(
                     'input[required], select[required], textarea[required], ' +
@@ -677,7 +652,6 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                 return true;
             };
 
-            // Traditional Observations Validation - Single Responsibility
             var validateTraditionalObservations = function (value) {
                 if (!value.observations) {
                     return true;
@@ -695,7 +669,6 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                 return true;
             };
 
-            // Utility Functions
             var isMandatoryControl = function (control) {
                 return control.properties && control.properties.mandatory === true;
             };
@@ -716,37 +689,31 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                 return field.querySelectorAll('.active, [aria-pressed="true"], :checked').length === 0;
             };
 
-            // Enhanced helper function to recursively validate observations
             var validateObservationRecursively = function (obs, checkRequiredFields, conceptSetRequired) {
                 if (!obs) return true;
 
                 try {
-                    // Use observation's isValid method if available
                     if (typeof obs.isValid === 'function') {
                         return obs.isValid(checkRequiredFields, conceptSetRequired);
                     }
 
-                    // For grouped observations, validate all group members
                     if (obs.groupMembers && obs.groupMembers.length > 0) {
                         return _.every(obs.groupMembers, function (member) {
                             return validateObservationRecursively(member, checkRequiredFields, conceptSetRequired);
                         });
                     }
 
-                    // Basic validation for observations without isValid method
                     if (checkRequiredFields && obs.conceptUIConfig && obs.conceptUIConfig.required) {
-                        // Skip validation only if truly hidden (not just due to skip logic)
                         if (obs.hidden && !(obs.conceptUIConfig.controlEvent || obs.hasControlEvents)) {
                             return true;
                         }
 
-                        // Check if the observation has a value
                         return obs.value !== undefined && obs.value !== null && obs.value !== '' || obs.value === false;
                     }
 
                     return true;
                 } catch (error) {
-                    return false; // Treat validation errors as invalid
+                    return false;
                 }
             };
 
@@ -757,9 +724,11 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                 if (!shouldAllow) {
                     var errorMessage = contxChange["errorMessage"] ? contxChange["errorMessage"] : "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}";
                     messagingService.showMessage('error', errorMessage);
+                    return false;
                 } else if (discontinuedDrugOrderValidationMessage) {
                     var errorMessage = discontinuedDrugOrderValidationMessage;
                     messagingService.showMessage('error', errorMessage);
+                    return false;
                 }
                 return shouldAllow && !discontinuedDrugOrderValidationMessage && isObservationFormValid();
             };
@@ -782,19 +751,9 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                     $scope.$parent.$parent.$broadcast("event:errorsOnForm");
                     return $q.when({});
                 }
-
-                // Final validation check for any remaining validation errors
-                var hasValidationErrors = document.querySelectorAll('.illegalValue, .ng-invalid-required').length > 0;
-                if (hasValidationErrors) {
-                    messagingService.showMessage('error', "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}");
-                    $scope.$parent.$parent.$broadcast("event:errorsOnForm");
-                    return $q.when({});
-                }
-
                 return proceedWithActualSave(toStateConfig);
             };
 
-            // Extract the actual save logic into a separate function
             var proceedWithActualSave = function (toStateConfig) {
                 try {
                     preSaveEvents();
