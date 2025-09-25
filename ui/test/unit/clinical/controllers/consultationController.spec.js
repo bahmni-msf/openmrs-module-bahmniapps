@@ -663,7 +663,7 @@ describe("ConsultationController", function () {
         });
 
         it("should not save encounter data if there errors in form", function (done) {
-            scope.consultation = {discontinuedDrugs: [{dateStopped: new Date()}], preSaveHandler: new Bahmni.Clinical.Notifier(), postSaveHandler: new Bahmni.Clinical.Notifier(), observations: [], conditions: [{condition: {}}], observationForms: [{component: {getValue: function () {
+            scope.consultation = {discontinuedDrugs: [{dateStopped: new Date()}], preSaveHandler: new Bahmni.Clinical.Notifier(), postSaveHandler: new Bahmni.Clinical.Notifier(), observations: [], conditions: [{condition: {}}], observationForms: [{isAdded: true, component: {getValue: function () {
                 return {errors: {}};
             }}}]};
             scope.patient = {
