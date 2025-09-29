@@ -46,7 +46,13 @@ Bahmni.ConceptSet.BooleanObservation = function (observation, conceptUIConfig) {
 
     this.isRequired = function () {
         this.disabled = this.disabled ? this.disabled : false;
-        return this.getConceptUIConfig().required === true && this.disabled === false;
+        if (this.getConceptUIConfig().required === true) {
+            if (this.getConceptUIConfig().controlEvent || this.hasControlEvents) {
+                return true;
+            }
+            return this.disabled === false;
+        }
+        return false;
     };
 
     this.isComputedAndEditable = function () {

@@ -340,7 +340,6 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                 if ($scope.lastConsultationTabUrl.url) {
                     $location.url($scope.lastConsultationTabUrl.url);
                 } else {
-                    // Default tab
                     getUrl($scope.availableBoards[0]);
                 }
             };
@@ -473,15 +472,249 @@ angular.module('bahmni.clinical').controller('ConsultationController',
             var isObservationFormValid = function () {
                 var valid = true;
                 _.each($scope.consultation.observationForms, function (observationForm) {
-                    if (valid && observationForm.component) {
+                    if (valid && observationForm.component && observationForm.isAdded) {
                         var value = observationForm.component.getValue();
-                        if (value.errors) {
+
+                        if (value.errors && (
+                            (angular.isArray(value.errors) && value.errors.length > 0) ||
+                            (!angular.isArray(value.errors) && typeof value.errors === 'object')
+                        )) {
                             messagingService.showMessage('error', "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}");
+                            $scope.$parent.$parent.$broadcast("event:errorsOnForm");
                             valid = false;
+                            return;
+                        }
+
+                        if (!validateReactFormComponent(observationForm, value)) {
+                            valid = false;
+                            return;
+                        }
+
+                        if (!validateFormDOM(observationForm)) {
+                            valid = false;
+                            return;
+                        }
+
+                        if (!validateTraditionalObservations(value)) {
+                            valid = false;
+                            return;
                         }
                     }
                 });
                 return valid;
+            };
+
+            var validateReactFormComponent = function (observationForm, value) {
+                if (!observationForm.component.state || !observationForm.component.state.data) {
+                    return true;
+                }
+
+                try {
+                    if (observationForm.component.props && observationForm.component.props.validateForm === false) {
+                        observationForm.component.props.validateForm = true;
+                    }
+
+                    if (!validateMandatoryFields(observationForm, value)) {
+                        return false;
+                    }
+
+                    return checkComponentValidationMethods(observationForm);
+                } catch (error) {
+                    return true;
+                }
+            };
+
+            var validateMandatoryFields = function (observationForm, value) {
+                var metadata = observationForm.component.props && observationForm.component.props.metadata;
+                if (!metadata || !metadata.controls) {
+                    return true;
+                }
+
+                var mandatoryViolations = [];
+                _.each(metadata.controls, function (control) {
+                    if (isMandatoryControl(control) && isFieldVisible(observationForm, control)) {
+                        if (!hasObservationValue(value, control)) {
+                            mandatoryViolations.push(control);
+                        }
+                    }
+                });
+
+                if (mandatoryViolations.length > 0) {
+                    messagingService.showMessage('error', "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}");
+                    return false;
+                }
+                return true;
+            };
+
+            var isFieldVisible = function (observationForm, control) {
+                try {
+                    if (observationForm.component.get) {
+                        var fieldInForm = observationForm.component.get(control.concept.name);
+                        if (fieldInForm && fieldInForm.isHidden) {
+                            return !fieldInForm.isHidden();
+                        }
+                    }
+                } catch (error) {
+                }
+
+                return isDOMFieldVisible(control);
+            };
+
+            var isDOMFieldVisible = function (control) {
+                var fieldElements = document.querySelectorAll(
+                    '[data-concept-name="' + control.concept.name + '"], [data-concept-uuid="' + control.concept.uuid + '"]'
+                );
+
+                if (fieldElements.length === 0) {
+                    var labelTexts = Array.from(document.querySelectorAll('label, .field-label, .concept-name'));
+                    return _.some(labelTexts, function (label) {
+                        return label.textContent &&
+                               label.textContent.includes(control.concept.name.split(',')[0]) &&
+                               label.offsetParent !== null;
+                    });
+                }
+
+                return _.some(fieldElements, function (element) {
+                    return element.offsetParent !== null;
+                });
+            };
+
+            var checkComponentValidationMethods = function (observationForm) {
+                var component = observationForm.component;
+
+                if (component.validate && typeof component.validate === 'function') {
+                    var componentValidation = component.validate();
+                    if (componentValidation === false || (componentValidation && componentValidation.errors && componentValidation.errors.length > 0)) {
+                        messagingService.showMessage('error', "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}");
+                        return false;
+                    }
+                }
+
+                if (component.isValid && typeof component.isValid === 'function') {
+                    if (component.isValid() === false) {
+                        messagingService.showMessage('error', "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}");
+                        return false;
+                    }
+                }
+
+                if (component.setState && typeof component.setState === 'function') {
+                    component.setState({validateForm: true}, function () {
+                        var revalidationResult = component.getValue();
+                        if (revalidationResult.errors && revalidationResult.errors.length > 0) {
+                            return false;
+                        }
+                    });
+                }
+
+                return true;
+            };
+
+            var validateFormDOM = function (observationForm) {
+                var formContainer = document.getElementById(observationForm.formUuid);
+                if (!formContainer) {
+                    return true;
+                }
+
+                var reactValidationErrors = formContainer.querySelectorAll(
+                    '.error, .invalid, .required-error, .validation-error, ' +
+                    '[class*="error"], [class*="invalid"], [class*="Error"], ' +
+                    '.field-error, .input-error, .form-error'
+                );
+
+                if (reactValidationErrors.length > 0) {
+                    messagingService.showMessage('error', "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}");
+                    return false;
+                }
+
+                return validateRequiredFields(formContainer);
+            };
+
+            var validateRequiredFields = function (formContainer) {
+                var requiredFields = formContainer.querySelectorAll(
+                    'input[required], select[required], textarea[required], ' +
+                    '.required input, .required select, .required textarea, ' +
+                    '.mandatory input, .mandatory select, .mandatory textarea, ' +
+                    '[data-required="true"] input, [data-required="true"] select, [data-required="true"] textarea'
+                );
+
+                var emptyRequiredFields = 0;
+                _.each(requiredFields, function (field) {
+                    if (field.offsetParent !== null && isFieldEmpty(field)) {
+                        emptyRequiredFields++;
+                    }
+                });
+
+                if (emptyRequiredFields > 0) {
+                    messagingService.showMessage('error', "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}");
+                    return false;
+                }
+
+                return true;
+            };
+
+            var validateTraditionalObservations = function (value) {
+                if (!value.observations) {
+                    return true;
+                }
+
+                var hasInvalidVisibleFields = _.some(value.observations, function (obs) {
+                    return !validateObservationRecursively(obs, true, true);
+                });
+
+                if (hasInvalidVisibleFields) {
+                    messagingService.showMessage('error', "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}");
+                    return false;
+                }
+
+                return true;
+            };
+
+            var isMandatoryControl = function (control) {
+                return control.properties && control.properties.mandatory === true;
+            };
+
+            var hasObservationValue = function (value, control) {
+                return value.observations && _.some(value.observations, function (obs) {
+                    return obs.concept && obs.concept.uuid === control.concept.uuid;
+                });
+            };
+
+            var isFieldEmpty = function (field) {
+                if (field.tagName === 'INPUT' || field.tagName === 'TEXTAREA') {
+                    return !field.value || field.value.trim() === '';
+                }
+                if (field.tagName === 'SELECT') {
+                    return !field.value || field.selectedIndex === 0;
+                }
+                return field.querySelectorAll('.active, [aria-pressed="true"], :checked').length === 0;
+            };
+
+            var validateObservationRecursively = function (obs, checkRequiredFields, conceptSetRequired) {
+                if (!obs) return true;
+
+                try {
+                    if (typeof obs.isValid === 'function') {
+                        return obs.isValid(checkRequiredFields, conceptSetRequired);
+                    }
+
+                    if (obs.groupMembers && obs.groupMembers.length > 0) {
+                        return _.every(obs.groupMembers, function (member) {
+                            return validateObservationRecursively(member, checkRequiredFields, conceptSetRequired);
+                        });
+                    }
+
+                    if (checkRequiredFields && obs.conceptUIConfig && obs.conceptUIConfig.required) {
+                        if (obs.hidden && !(obs.conceptUIConfig.controlEvent || obs.hasControlEvents)) {
+                            return true;
+                        }
+
+                        return obs.value !== undefined && obs.value !== null && obs.value !== '' || obs.value === false;
+                    }
+
+                    return true;
+                } catch (error) {
+                    return false;
+                }
             };
 
             var isFormValid = function () {
@@ -491,9 +724,11 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                 if (!shouldAllow) {
                     var errorMessage = contxChange["errorMessage"] ? contxChange["errorMessage"] : "{{'CLINICAL_FORM_ERRORS_MESSAGE_KEY' | translate }}";
                     messagingService.showMessage('error', errorMessage);
+                    return false;
                 } else if (discontinuedDrugOrderValidationMessage) {
                     var errorMessage = discontinuedDrugOrderValidationMessage;
                     messagingService.showMessage('error', errorMessage);
+                    return false;
                 }
                 return shouldAllow && !discontinuedDrugOrderValidationMessage && isObservationFormValid();
             };
@@ -516,6 +751,10 @@ angular.module('bahmni.clinical').controller('ConsultationController',
                     $scope.$parent.$parent.$broadcast("event:errorsOnForm");
                     return $q.when({});
                 }
+                return proceedWithActualSave(toStateConfig);
+            };
+
+            var proceedWithActualSave = function (toStateConfig) {
                 try {
                     preSaveEvents();
                     return spinner.forPromise($q.all([preSavePromise(),

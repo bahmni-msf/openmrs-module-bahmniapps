@@ -33,6 +33,13 @@ angular.module('bahmni.common.displaycontrol.observation')
                     } else {
                         $scope.bahmniObservations = new Bahmni.Common.DisplayControl.Observation.GroupingFunctions().groupByEncounterDate(observations);
                     }
+
+                    // Frontend filtering for numberOfEncounters when using patient program enrollment path
+                    if ($scope.enrollment && $scope.config.numberOfEncounters && $scope.bahmniObservations.length > $scope.config.numberOfEncounters) {
+                        // Limit to numberOfEncounters since the backend fetchForPatientProgram doesn't support this parameter
+                        $scope.bahmniObservations = $scope.bahmniObservations.slice(0, $scope.config.numberOfEncounters);
+                    }
+
                     if ($scope.config.filterByFormName) {
                         fetchFormSpecificObs($scope.config.filterByFormName);
                     }
