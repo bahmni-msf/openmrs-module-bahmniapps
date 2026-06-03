@@ -9,9 +9,10 @@ describe("DrugOrderHistoryController", function () {
     var DateUtil = Bahmni.Common.Util.DateUtil;
     var treatmentConfig = {
         drugOrderHistoryConfig: {
-            numberOfVisits: 4
+            numberOfVisits: 4,
+            showStoppedByProvider: false
         }
-    }
+    };
 
     var mockAppDescriptor = jasmine.createSpyObj('appDescriptor', ['getConfigValue']);
     var mockAppService = jasmine.createSpyObj("appService", ["getAppDescriptor"]);
@@ -32,10 +33,11 @@ describe("DrugOrderHistoryController", function () {
     beforeEach(inject(function (_$controller_, $rootScope, _$q_) {
         $q = _$q_;
         $controller = _$controller_;
-        _treatmentService = jasmine.createSpyObj('treatmentService', ['getPrescribedDrugOrders']);
+        _treatmentService = jasmine.createSpyObj('treatmentService', ['getPrescribedDrugOrders', 'getStoppedPrescriptionProviders']);
         _treatmentService.getPrescribedDrugOrders.and.callFake(function () {
             return specUtil.respondWithPromise($q, prescribedDrugOrders);
         });
+        _treatmentService.getStoppedPrescriptionProviders.and.returnValue($q.resolve([]));
 
         rootScope = $rootScope;
         spyOn($rootScope, '$broadcast');
@@ -74,6 +76,10 @@ describe("DrugOrderHistoryController", function () {
     beforeEach(initController);
 
     describe("when initialized", function () {
+        afterEach(function () {
+            treatmentConfig.drugOrderHistoryConfig.showStoppedByProvider = false;
+        });
+
         it("should setup scope variables", function () {
             translate.instant.and.returnValue("Recent");
 
@@ -94,6 +100,24 @@ describe("DrugOrderHistoryController", function () {
         });
         it("should get prescribed and active Drugorders with correct no of visits ", function () {
             expect(_treatmentService.getPrescribedDrugOrders).toHaveBeenCalledWith("patientUuid", true, 4, undefined, undefined);
+        });
+
+        it("should not fetch stopped-by providers when showStoppedByProvider is disabled", function () {
+            initController();
+            expect(_treatmentService.getStoppedPrescriptionProviders).not.toHaveBeenCalled();
+            expect(scope.showStoppedByProvider).toBe(false);
+        });
+
+        it("should fetch stopped-by providers and apply them to drug orders when enabled", function () {
+            treatmentConfig.drugOrderHistoryConfig.showStoppedByProvider = true;
+            _treatmentService.getStoppedPrescriptionProviders.and.returnValue($q.resolve([
+                {orderUuid: "drugOrder2Uuid", orderNumber: "ORD-3456", stoppedBy: "Super Man"}
+            ]));
+            initController();
+            var enrichedOrder = _.find(scope.consultation.drugOrderGroups[1].drugOrders, {uuid: "drugOrder2Uuid"});
+            expect(_treatmentService.getStoppedPrescriptionProviders).toHaveBeenCalledWith("patientUuid");
+            expect(enrichedOrder.stoppedByProvider).toEqual({name: "Super Man"});
+            expect(scope.showStoppedByProvider).toBe(true);
         });
     });
 

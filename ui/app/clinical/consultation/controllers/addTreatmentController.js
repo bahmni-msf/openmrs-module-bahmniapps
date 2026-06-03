@@ -3,13 +3,27 @@
 angular.module('bahmni.clinical')
     .controller('AddTreatmentController', ['$scope', '$rootScope', 'contextChangeHandler', 'treatmentConfig', 'drugService',
         '$timeout', 'clinicalAppConfigService', 'ngDialog', '$window', 'messagingService', 'appService', 'activeDrugOrders',
-        'orderSetService', '$q', 'locationService', 'spinner', '$translate',
+        'orderSetService', '$q', 'locationService', 'spinner', '$translate', '$bahmniCookieStore',
         function ($scope, $rootScope, contextChangeHandler, treatmentConfig, drugService, $timeout,
                   clinicalAppConfigService, ngDialog, $window, messagingService, appService, activeDrugOrders,
-                  orderSetService, $q, locationService, spinner, $translate) {
+                  orderSetService, $q, locationService, spinner, $translate, $bahmniCookieStore) {
             var DateUtil = Bahmni.Common.Util.DateUtil;
             var DrugOrderViewModel = Bahmni.Clinical.DrugOrderViewModel;
             var scrollTop = _.partial($window.scrollTo, 0, 0);
+
+            var drugOrderHistoryConfig = treatmentConfig.drugOrderHistoryConfig || {};
+            var showStoppedByProvider = !!drugOrderHistoryConfig.showStoppedByProvider;
+
+            var getStoppedByProvider = function () {
+                var providerData = $bahmniCookieStore.get(Bahmni.Common.Constants.grantProviderAccessDataCookieName);
+                if (providerData && providerData.uuid) {
+                    return {uuid: providerData.uuid, name: providerData.display || providerData.name};
+                }
+                if ($rootScope.currentProvider && $rootScope.currentProvider.uuid) {
+                    return {uuid: $rootScope.currentProvider.uuid, name: $rootScope.currentProvider.name};
+                }
+                return null;
+            };
 
             $scope.showOrderSetDetails = true;
             $scope.addTreatment = true;
@@ -104,6 +118,19 @@ angular.module('bahmni.clinical')
             })();
 
             var encounterDate = DateUtil.parse($scope.consultation.encounterDateTime);
+            var configureMedicationStartDateLimits = function () {
+                var inputOptionsConfig = treatmentConfig.inputOptionsConfig || {};
+                var retrospectiveDays = parseInt(inputOptionsConfig.maxRetrospectiveStartDateInDays, 10);
+                if (!isNaN(retrospectiveDays) && retrospectiveDays >= 0) {
+                    var referenceDate = DateUtil.getDate(DateUtil.now());
+                    if (!_.isEmpty($rootScope.retrospectiveEntry)) {
+                        referenceDate = DateUtil.getDate(encounterDate);
+                    }
+                    $scope.minMedicationStartDate = DateUtil.getDateWithoutTime(DateUtil.subtractDays(referenceDate, retrospectiveDays));
+                }
+            };
+            configureMedicationStartDateLimits();
+
             var newTreatment = function () {
                 var newTreatment = new Bahmni.Clinical.DrugOrderViewModel(treatmentConfig, null, encounterDate);
                 newTreatment.isEditAllowed = false;
@@ -258,6 +285,9 @@ angular.module('bahmni.clinical')
                 drugOrder.isMarkedForDiscontinue = true;
                 drugOrder.isEditAllowed = false;
                 drugOrder.dateStopped = DateUtil.now();
+                if (showStoppedByProvider) {
+                    drugOrder.stoppedByProvider = getStoppedByProvider();
+                }
                 $scope.consultation.discontinuedDrugs.push(drugOrder);
                 $scope.minDateStopped = DateUtil.getDateWithoutTime(drugOrder.effectiveStartDate < DateUtil.now() ? drugOrder.effectiveStartDate : DateUtil.now());
             });
@@ -272,6 +302,7 @@ angular.module('bahmni.clinical')
                 drugOrder.orderReasonConcept = null;
                 drugOrder.dateStopped = null;
                 drugOrder.orderReasonText = null;
+                drugOrder.stoppedByProvider = null;
                 drugOrder.isMarkedForDiscontinue = false;
                 drugOrder.isEditAllowed = true;
             });

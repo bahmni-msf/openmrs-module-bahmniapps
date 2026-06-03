@@ -4,9 +4,64 @@ angular.module('bahmni.common.displaycontrol.forms')
     .directive('formsTable', ['conceptSetService', 'spinner', '$q', 'visitFormService', 'appService', '$state', '$rootScope',
         function (conceptSetService, spinner, $q, visitFormService, appService, $state, $rootScope) {
             var defaultController = function ($scope) {
+                var MAX_SEARCH_QUERY_LENGTH = 80;
+                var section = $scope.section || {};
                 $scope.shouldPromptBrowserReload = true;
                 $scope.showFormsDate = appService.getAppDescriptor().getConfigValue("showFormsDate");
                 $scope.selectShortNameForForms = appService.getAppDescriptor().getConfigValue("selectShortNameForForms");
+                $scope.enableFormSearch = !!section.enableFormSearch;
+                $scope.formSearchSortOrder = String(section.formSearchSortOrder || "asc").toLowerCase() === "desc" ? "desc" : "asc";
+                $scope.formSearch = {text: sanitizeSearchText(section.formSearchText)};
+                var formSearchIndex = [];
+
+                function sanitizeSearchText (value) {
+                    return String(value || "").slice(0, MAX_SEARCH_QUERY_LENGTH);
+                }
+
+                var buildSearchIndex = function () {
+                    formSearchIndex = _.map($scope.formData || [], function (data) {
+                        return {
+                            data: data,
+                            displayName: String($scope.getDisplayName(data) || "").toLowerCase(),
+                            sortDate: new Date(data.obsDatetime || data.encounterDateTime || 0).getTime()
+                        };
+                    });
+                };
+
+                var getScoredSearchResults = function (query) {
+                    if (!query) {
+                        return [];
+                    }
+                    return _.chain(formSearchIndex)
+                        .filter(function (entry) {
+                            return entry.displayName.indexOf(query) >= 0;
+                        })
+                        .sortBy(function (entry) {
+                            return $scope.formSearchSortOrder === "desc" ? -entry.sortDate : entry.sortDate;
+                        })
+                        .value();
+                };
+
+                $scope.filteredFormData = function () {
+                    if (!$scope.enableFormSearch) {
+                        return $scope.formData || [];
+                    }
+                    var query = sanitizeSearchText($scope.formSearch.text).toLowerCase();
+                    if (!query) {
+                        return $scope.formData || [];
+                    }
+                    return _.map(getScoredSearchResults(query), function (entry) {
+                        return entry.data;
+                    });
+                };
+
+                $scope.updateFormSearch = function () {
+                    if (!$scope.enableFormSearch) {
+                        return;
+                    }
+                    $scope.formSearch.text = sanitizeSearchText($scope.formSearch.text);
+                };
+
                 var getAllObservationTemplates = function () {
                     return conceptSetService.getConcept({
                         name: "All Observation Templates",
@@ -14,7 +69,8 @@ angular.module('bahmni.common.displaycontrol.forms')
                     });
                 };
                 var obsFormData = function () {
-                    return visitFormService.formData($scope.patient.uuid, $scope.section.dashboardConfig.maximumNoOfVisits, $scope.section.formGroup, $state.params.enrollment);
+                    var maxVisits = (section.dashboardConfig || {}).maximumNoOfVisits;
+                    return visitFormService.formData($scope.patient.uuid, maxVisits, section.formGroup, $state.params.enrollment);
                 };
 
                 var filterFormData = function (formData) {
@@ -101,6 +157,22 @@ angular.module('bahmni.common.displaycontrol.forms')
                 };
 
                 $scope.initialization = init();
+                $scope.$watch("formData", function () {
+                    buildSearchIndex();
+                    $scope.updateFormSearch();
+                });
+                $scope.$watch("section.formSearchText", function (newValue, oldValue) {
+                    if (!$scope.enableFormSearch || newValue === oldValue) {
+                        return;
+                    }
+                    var sanitized = sanitizeSearchText(newValue);
+                    if ($scope.section && sanitized !== newValue) {
+                        $scope.section.formSearchText = sanitized;
+                        return;
+                    }
+                    $scope.formSearch.text = sanitized;
+                    $scope.updateFormSearch();
+                });
 
                 $scope.getEditObsData = function (observation) {
                     return {

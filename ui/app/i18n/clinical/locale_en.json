@@ -159,6 +159,7 @@
   "MEDICATION_REFILL": "Refill",
   "MEDICATION_STARTED_ON": "Started on",
   "MEDICATION_STOPPED_ON": "Stopped on",
+  "MEDICATION_STOPPED_BY": "Stopped by",
   "MEDICATION_DUE_TO": "due to",
   "MEDICATION_LABEL_START_DATE": "Start Date",
   "REMOVE_CONFIRMATION_KEY": "Are you sure you want to remove?",
