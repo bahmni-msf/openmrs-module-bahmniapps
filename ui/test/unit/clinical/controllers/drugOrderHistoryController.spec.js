@@ -208,6 +208,23 @@ describe("DrugOrderHistoryController", function () {
             var minDate = scope.getMinDateForDiscontinue(pastDrugOrder);
             expect(minDate).toEqual(moment().format("YYYY-MM-DD"));
         });
+
+        describe("when limitStopDateToEffectiveEnd is enabled", function () {
+            beforeEach(function () {
+                treatmentConfig.drugOrderHistoryConfig.limitStopDateToEffectiveEnd = true;
+                initController();
+            });
+
+            afterEach(function () {
+                treatmentConfig.drugOrderHistoryConfig.limitStopDateToEffectiveEnd = false;
+            });
+
+            it("should be the current date even for a past (retrospective) drug order", function () {
+                var pastDrugOrder = Bahmni.Clinical.DrugOrderViewModel.createFromContract(activeDrugOrder);
+                var minDate = scope.getMinDateForDiscontinue(pastDrugOrder);
+                expect(minDate).toEqual(moment().format("YYYY-MM-DD"));
+            });
+        });
     });
 
     describe("sortOrderSetDrugsFollowedByDrugOrders", function () {

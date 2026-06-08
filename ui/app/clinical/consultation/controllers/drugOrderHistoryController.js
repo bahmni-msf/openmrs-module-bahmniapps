@@ -261,22 +261,28 @@ angular.module('bahmni.clinical')
             var getMinStopDate = function (drugOrder) {
                 var calendarToday = DateUtil.today();
                 var start = DateUtil.getDate(drugOrder.effectiveStartDate);
-                return DateUtil.isBeforeDate(calendarToday, start) ? start : calendarToday;
+                return DateUtil.isBeforeDate(start, calendarToday) ? start : calendarToday;
+            };
+
+            var getStopDateLowerBound = function (drugOrder) {
+                // When the stop date is constrained, a stop is a "now" action and must not be
+                // back-dated before the real current date, even during retrospective entry
+                // (where the order's start date is in the past).
+                return limitStopDateToEffectiveEnd ? DateUtil.today() : getMinStopDate(drugOrder);
             };
 
             $scope.getMinDateForDiscontinue = function (drugOrder) {
-                return DateUtil.getDateWithoutTime(getMinStopDate(drugOrder));
+                return DateUtil.getDateWithoutTime(getStopDateLowerBound(drugOrder));
             };
 
             $scope.getMaxDateForDiscontinue = function (drugOrder) {
                 if (!limitStopDateToEffectiveEnd) {
                     return $scope.scheduledDate;
                 }
-                var calendarToday = DateUtil.today();
-                var minDate = getMinStopDate(drugOrder);
+                var minDate = getStopDateLowerBound(drugOrder);
                 var maxDate = drugOrder.effectiveStopDate
                     ? DateUtil.getDate(drugOrder.effectiveStopDate)
-                    : calendarToday;
+                    : DateUtil.today();
                 if (DateUtil.isBeforeDate(maxDate, minDate)) {
                     maxDate = minDate;
                 }
