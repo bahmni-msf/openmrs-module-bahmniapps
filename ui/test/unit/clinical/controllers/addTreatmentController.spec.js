@@ -111,7 +111,7 @@ describe("AddTreatmentController", function () {
 
     var $q, scope, stateParams, rootScope, contextChangeHandler, newTreatment,
         editTreatment, clinicalAppConfigService, ngDialog, drugService, drugs,
-        encounterDateTime, appService, appConfig, defaultDrugsPromise, orderSetService, locationService;
+        encounterDateTime, appService, appConfig, defaultDrugsPromise, orderSetService, locationService, bahmniCookieStore;
 
 
     stateParams = {
@@ -143,7 +143,10 @@ describe("AddTreatmentController", function () {
             {name: "Month(s)", factor: 30}
         ],
         inputOptionsConfig: {},
-        orderSet: {}
+        orderSet: {},
+        drugOrderHistoryConfig: {
+            showStoppedByProvider: false
+        }
     };
 
     var initController = function () {
@@ -169,6 +172,8 @@ describe("AddTreatmentController", function () {
                 dose: 20, doseUnit: 'mg'
             }));
             locationService = jasmine.createSpyObj('locationService', ['getLoggedInLocation'])
+            bahmniCookieStore = jasmine.createSpyObj('$bahmniCookieStore', ['get', 'put', 'remove']);
+            bahmniCookieStore.get.and.returnValue({uuid: "provider-uuid", display: "Super Man"});
 
             drugService = jasmine.createSpyObj('drugService', ['getSetMembersOfConcept']);
             drugs = [
@@ -235,7 +240,8 @@ describe("AddTreatmentController", function () {
                 locationService :locationService,
                 drugService: drugService,
                 treatmentConfig: treatmentConfig,
-                orderSetService: orderSetService
+                orderSetService: orderSetService,
+                $bahmniCookieStore: bahmniCookieStore
             });
             scope.treatments = [];
             scope.orderSetTreatments = [];
@@ -1656,6 +1662,10 @@ describe("AddTreatmentController", function () {
     });
 
     describe("when discontinued", function () {
+        afterEach(function () {
+            treatmentConfig.drugOrderHistoryConfig.showStoppedByProvider = false;
+        });
+
         it("should mark the drug order for discontinue", function () {
 
             var drugOrder = Bahmni.Clinical.DrugOrderViewModel.createFromContract(activeDrugOrder);
@@ -1664,6 +1674,17 @@ describe("AddTreatmentController", function () {
 
             expect(drugOrder.isMarkedForDiscontinue).toBe(true);
             expect(drugOrder.dateStopped).not.toBeNull();
+            expect(drugOrder.stoppedByProvider).toBeUndefined();
+        });
+
+        it("should set stoppedByProvider when showStoppedByProvider is enabled", function () {
+            treatmentConfig.drugOrderHistoryConfig.showStoppedByProvider = true;
+            initController();
+            var drugOrder = Bahmni.Clinical.DrugOrderViewModel.createFromContract(activeDrugOrder);
+
+            rootScope.$broadcast("event:discontinueDrugOrder", drugOrder);
+
+            expect(drugOrder.stoppedByProvider).toEqual({uuid: "provider-uuid", name: "Super Man"});
         });
 
         it("should add the drugOrder to discontinueDrugs", function () {

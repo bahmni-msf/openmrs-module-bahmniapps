@@ -2,17 +2,20 @@
 
 angular.module('bahmni.clinical')
     .controller('DrugOrderHistoryController', ['$scope', '$filter', '$stateParams', 'activeDrugOrders',
-        'treatmentConfig', 'treatmentService', 'appService', 'spinner', 'drugOrderHistoryHelper', 'visitHistory', '$translate', '$rootScope',
+        'treatmentConfig', 'treatmentService', 'appService', 'spinner', 'drugOrderHistoryHelper', 'visitHistory', '$translate', '$rootScope', '$q',
         function ($scope, $filter, $stateParams, activeDrugOrders, treatmentConfig, treatmentService, appService, spinner,
-                   drugOrderHistoryHelper, visitHistory, $translate, $rootScope) {
+                   drugOrderHistoryHelper, visitHistory, $translate, $rootScope, $q) {
             var DrugOrderViewModel = Bahmni.Clinical.DrugOrderViewModel;
             var DateUtil = Bahmni.Common.Util.DateUtil;
             var currentVisit = visitHistory.activeVisit;
             var activeDrugOrdersList = [];
             var prescribedDrugOrders = [];
             $scope.dispensePrivilege = Bahmni.Clinical.Constants.dispensePrivilege;
-            $scope.scheduledDate = DateUtil.getDateWithoutTime(DateUtil.addDays(DateUtil.now(), 1));
             $scope.hideAdditionalInstructions = appService.getAppDescriptor().getConfigValue("hideAdditionalInstructions");
+            var drugOrderHistoryConfig = treatmentConfig.drugOrderHistoryConfig || {};
+            $scope.showStoppedByProvider = !!drugOrderHistoryConfig.showStoppedByProvider;
+            var limitStopDateToEffectiveEnd = !!drugOrderHistoryConfig.limitStopDateToEffectiveEnd;
+            $scope.scheduledDate = DateUtil.getDateWithoutTime(DateUtil.addDays(DateUtil.now(), 1));
 
             var createPrescriptionGroups = function (activeAndScheduledDrugOrders) {
                 $scope.consultation.drugOrderGroups = [];
@@ -84,13 +87,49 @@ angular.module('bahmni.clinical')
 
             $scope.stoppedOrderReasons = treatmentConfig.stoppedOrderReasonConcepts;
 
+            var buildStoppedByLookup = function (rows) {
+                var byUuid = _.keyBy(rows, "orderUuid");
+                var byOrderNumber = _.keyBy(rows, "orderNumber");
+                return function (drugOrder) {
+                    if (!drugOrder || (drugOrder.stoppedByProvider && drugOrder.stoppedByProvider.name)) {
+                        return;
+                    }
+                    var row = byUuid[drugOrder.uuid] || byUuid[drugOrder.previousOrderUuid]
+                        || byOrderNumber[drugOrder.orderNumber];
+                    if (row && row.stoppedBy) {
+                        drugOrder.stoppedByProvider = {name: row.stoppedBy};
+                    }
+                };
+            };
+
+            var applyStoppedByProviders = function (rows) {
+                if (_.isEmpty(rows)) {
+                    return;
+                }
+                var applyToOrder = buildStoppedByLookup(rows);
+                $scope.consultation.drugOrderGroups.forEach(function (group) {
+                    group.drugOrders.forEach(applyToOrder);
+                });
+            };
+
             var init = function () {
                 var numberOfVisits = treatmentConfig.drugOrderHistoryConfig.numberOfVisits ? treatmentConfig.drugOrderHistoryConfig.numberOfVisits : 3;
-                spinner.forPromise(treatmentService.getPrescribedDrugOrders(
-                    $stateParams.patientUuid, true, numberOfVisits, $stateParams.dateEnrolled, $stateParams.dateCompleted).then(function (data) {
+                var prescribedDrugOrdersPromise = treatmentService.getPrescribedDrugOrders(
+                    $stateParams.patientUuid, true, numberOfVisits, $stateParams.dateEnrolled, $stateParams.dateCompleted);
+                var loadPromise = $scope.showStoppedByProvider
+                    ? $q.all([
+                        prescribedDrugOrdersPromise,
+                        treatmentService.getStoppedPrescriptionProviders($stateParams.patientUuid)
+                    ]).then(function (results) {
+                        prescribedDrugOrders = results[0];
+                        createPrescriptionGroups($scope.consultation.activeAndScheduledDrugOrders);
+                        applyStoppedByProviders(results[1]);
+                    })
+                    : prescribedDrugOrdersPromise.then(function (data) {
                         prescribedDrugOrders = data;
                         createPrescriptionGroups($scope.consultation.activeAndScheduledDrugOrders);
-                    }));
+                    });
+                spinner.forPromise(loadPromise);
             };
             $scope.getOrderReasonConcept = function (drugOrder) {
                 if (drugOrder.orderReasonConcept) {
@@ -219,12 +258,35 @@ angular.module('bahmni.clinical')
                 return canBeUpdated;
             };
 
+            var getMinStopDate = function (drugOrder) {
+                var calendarToday = DateUtil.today();
+                var start = DateUtil.getDate(drugOrder.effectiveStartDate);
+                return DateUtil.isBeforeDate(start, calendarToday) ? start : calendarToday;
+            };
+
+            var getStopDateLowerBound = function (drugOrder) {
+                // When the stop date is constrained, a stop is a "now" action and must not be
+                // back-dated before the real current date, even during retrospective entry
+                // (where the order's start date is in the past).
+                return limitStopDateToEffectiveEnd ? DateUtil.today() : getMinStopDate(drugOrder);
+            };
+
             $scope.getMinDateForDiscontinue = function (drugOrder) {
-                var minDate = DateUtil.today();
-                if (DateUtil.isBeforeDate(drugOrder.effectiveStartDate, minDate)) {
-                    minDate = drugOrder.effectiveStartDate;
+                return DateUtil.getDateWithoutTime(getStopDateLowerBound(drugOrder));
+            };
+
+            $scope.getMaxDateForDiscontinue = function (drugOrder) {
+                if (!limitStopDateToEffectiveEnd) {
+                    return $scope.scheduledDate;
                 }
-                return DateUtil.getDateWithoutTime(minDate);
+                var minDate = getStopDateLowerBound(drugOrder);
+                var maxDate = drugOrder.effectiveStopDate
+                    ? DateUtil.getDate(drugOrder.effectiveStopDate)
+                    : DateUtil.today();
+                if (DateUtil.isBeforeDate(maxDate, minDate)) {
+                    maxDate = minDate;
+                }
+                return DateUtil.getDateWithoutTime(maxDate);
             };
 
             var getAttribute = function (drugOrder, attributeName) {

@@ -14,9 +14,12 @@
                 <div class="placeholder-text" ng-if="formData.length == 0">
                     <p>{{'NO_DATA_MESSAGE' | translate}}</p>
                 </div>
+                <div class="placeholder-text" ng-if="!isOnDashboard && enableFormSearch && formData.length > 0 && filteredFormData().length == 0">
+                    <p>No matching forms</p>
+                </div>
                 <div>
                     <ul>
-                        <li ng-repeat="data in formData" class="clearfix">
+                        <li ng-repeat="data in filteredFormData() track by data.uuid" class="clearfix">
                             <span>{{getDisplayName(data)}}</span>
                        <span class="fr formDataTime" ng-class="{'formDataDate': showFormsDate }">
                             <span ng-hide="::showFormsDate">{{data.obsDatetime || data.encounterDateTime | bahmniDateTime}}</span>

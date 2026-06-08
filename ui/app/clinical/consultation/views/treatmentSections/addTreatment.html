@@ -165,7 +165,9 @@
                     </div>
                     <div class="field-value">
                         <input id="start-date" date-converter class="start-date " type="date"
-                               ng-model="treatment.effectiveStartDate" required>
+                               ng-model="treatment.effectiveStartDate"
+                               ng-attr-min="{{minMedicationStartDate || undefined}}"
+                               required>
                     </div>
                 </article>
 
@@ -303,7 +305,10 @@
                     <label>{{'MEDICATION_LABEL_START_DATE'|translate}}</label>
                 </div>
                 <div class="field-value">
-                    <input type="date" ng-model="newOrderSet.date" ng-disabled="isSearchDisabled"/>
+                    <input type="date"
+                           ng-model="newOrderSet.date"
+                           ng-attr-min="{{minMedicationStartDate || undefined}}"
+                           ng-disabled="isSearchDisabled"/>
                 </div>
             </article>
             <div class="orderSet-order-container clearfix">

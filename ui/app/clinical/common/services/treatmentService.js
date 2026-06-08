@@ -60,6 +60,19 @@ angular.module('bahmni.clinical')
             return deferred.promise;
         };
 
+        var STOPPED_PRESCRIPTION_PROVIDERS_SQL = "bahmni.sqlGet.stoppedPrescriptionProviders";
+
+        var getStoppedPrescriptionProviders = function (patientUuid) {
+            return $http.get(Bahmni.Common.Constants.sqlUrl, {
+                params: {q: STOPPED_PRESCRIPTION_PROVIDERS_SQL, v: "full", patientUuid: patientUuid},
+                withCredentials: true
+            }).then(function (response) {
+                return response.data || [];
+            }, function () {
+                return [];
+            });
+        };
+
         var getPrescribedDrugOrders = function (patientUuid, includeActiveVisit, numberOfVisits, fromDate, toDate) {
             var programConfig = getProgramConfig();
             var startDate = programConfig.showDetailsWithinDateRange ? fromDate : null;
@@ -171,6 +184,7 @@ angular.module('bahmni.clinical')
             getActiveDrugOrders: getActiveDrugOrders,
             getConfig: getConfig,
             getPrescribedDrugOrders: getPrescribedDrugOrders,
+            getStoppedPrescriptionProviders: getStoppedPrescriptionProviders,
             getPrescribedAndActiveDrugOrders: getPrescribedAndActiveDrugOrders,
             getNonCodedDrugConcept: getNonCodedDrugConcept,
             getAllDrugOrdersFor: getAllDrugOrdersFor,
