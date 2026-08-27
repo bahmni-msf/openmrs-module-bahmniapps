@@ -7,7 +7,6 @@ angular.module('bahmni.common.displaycontrol.forms')
             var section = $scope.section || {};
             $scope.shouldPromptBrowserReload = true;
             $scope.showFormsDate = appService.getAppDescriptor().getConfigValue("showFormsDate");
-            
             $scope.enableFormSearch = !!section.enableFormSearch;
             $scope.formSearchSortOrder = String(section.formSearchSortOrder || "asc").toLowerCase() === "desc" ? "desc" : "asc";
             $scope.formSearch = {text: sanitizeSearchText(section.formSearchText)};
