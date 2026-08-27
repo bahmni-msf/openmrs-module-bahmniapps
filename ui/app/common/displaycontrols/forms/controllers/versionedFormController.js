@@ -125,7 +125,10 @@ angular.module('bahmni.common.displaycontrol.forms')
                         if (attachedFormList.length == 0) {
                             attachedFormList = formListFromObsTab;
                         }
-                        var sortedFormDataByDate = getUniqueForms(sortFormDataByLatestDate(filterForms(attachedFormList)));
+                        var sortedFormDataByDate = sortFormDataByLatestDate(filterForms(attachedFormList));
+                        if ($scope.isOnDashboard) {
+                            sortedFormDataByDate = getUniqueForms(sortedFormDataByDate);
+                        }
 
                         $scope.formData = sortedFormDataByDate;
                     }
