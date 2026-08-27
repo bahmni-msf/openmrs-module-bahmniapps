@@ -44,7 +44,7 @@ angular.module('bahmni.common.displaycontrol.obsVsObsFlowSheet').directive('obsT
 
                 var actualConceptName = orderByConceptName;
                 if (!obsInFlowSheet.rows[0].columns[actualConceptName] && obsInFlowSheet.rows[0].columns['Month']) {
-                     actualConceptName = 'Month';
+                    actualConceptName = 'Month';
                 }
 
                 obsInFlowSheet.rows.sort(function (row1, row2) {
