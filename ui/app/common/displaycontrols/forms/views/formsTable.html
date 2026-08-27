@@ -19,7 +19,7 @@
                 </div>
                 <div>
                     <ul>
-                        <li ng-repeat="data in filteredFormData() track by data.uuid" class="clearfix">
+                        <li ng-repeat="data in filteredFormData() track by $index" class="clearfix">
                             <span>{{getDisplayName(data)}}</span>
                        <span class="fr formDataTime" ng-class="{'formDataDate': showFormsDate }">
                             <span ng-hide="::showFormsDate">{{data.obsDatetime || data.encounterDateTime | bahmniDateTime}}</span>

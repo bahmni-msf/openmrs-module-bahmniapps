@@ -34,11 +34,58 @@ angular.module('bahmni.common.displaycontrol.obsVsObsFlowSheet').directive('obsT
                 return records;
             };
 
+            var sortByOrderByConcept = function (obsInFlowSheet) {
+                if (!$scope.config.orderByConcept || !obsInFlowSheet.rows || obsInFlowSheet.rows.length === 0) {
+                    return obsInFlowSheet;
+                }
+
+                var orderByConceptName = $scope.config.orderByConcept;
+                var sortOrder = $scope.config.sortOrder || 'asc';
+
+                var actualConceptName = orderByConceptName;
+                if (!obsInFlowSheet.rows[0].columns[actualConceptName] && obsInFlowSheet.rows[0].columns['Month']) {
+                     actualConceptName = 'Month';
+                }
+
+                obsInFlowSheet.rows.sort(function (row1, row2) {
+                    var col1 = row1.columns[actualConceptName];
+                    var col2 = row2.columns[actualConceptName];
+
+                    var value1 = col1 && col1.length > 0 ? col1[0] : null;
+                    var value2 = col2 && col2.length > 0 ? col2[0] : null;
+
+                    if (!value1 && !value2) return 0;
+                    if (!value1) return sortOrder === 'desc' ? -1 : 1;
+                    if (!value2) return sortOrder === 'desc' ? 1 : -1;
+
+                    var displayValue1 = value1.valueAsString || value1.displayValue || value1.value || value1;
+                    var displayValue2 = value2.valueAsString || value2.displayValue || value2.value || value2;
+
+                    var date1 = new Date(displayValue1);
+                    var date2 = new Date(displayValue2);
+                    var isDate = !isNaN(date1.getTime()) && !isNaN(date2.getTime());
+
+                    if (isDate) {
+                        var result = date1.getTime() - date2.getTime();
+                        return sortOrder === 'desc' ? -result : result;
+                    }
+
+                    if (displayValue1 < displayValue2) {
+                        return sortOrder === 'desc' ? 1 : -1;
+                    } else if (displayValue1 > displayValue2) {
+                        return sortOrder === 'desc' ? -1 : 1;
+                    }
+                    return 0;
+                });
+
+                return obsInFlowSheet;
+            };
+
             var getObsInFlowSheet = function () {
                 return observationsService.getObsInFlowSheet(patient.uuid, $scope.config.templateName,
                     $scope.config.groupByConcept, $scope.config.orderByConcept, $scope.config.conceptNames, $scope.config.numberOfVisits,
                     $scope.config.initialCount, $scope.config.latestCount, $scope.config.type, $scope.section.startDate,
-                    $scope.section.endDate, $scope.enrollment, $scope.config.formNames).success(function (data) {
+                    $scope.section.endDate, $scope.enrollment, $scope.config.formNames, $scope.config.sortOrder).success(function (data) {
                         var obsInFlowSheet = data;
                         var groupByElement = _.find(obsInFlowSheet.headers, function (header) {
                             return header.name === $scope.config.groupByConcept;
@@ -48,6 +95,7 @@ angular.module('bahmni.common.displaycontrol.obsVsObsFlowSheet').directive('obsT
                         if ($scope.config.hideEmptyRecords) {
                             obsInFlowSheet = removeEmptyRecords(obsInFlowSheet);
                         }
+                        obsInFlowSheet = sortByOrderByConcept(obsInFlowSheet);
                         $scope.obsTable = obsInFlowSheet;
                         if (_.isEmpty($scope.obsTable.rows)) {
                             $scope.$emit("no-data-present-event");
