@@ -24,15 +24,17 @@
     };
 
     configPrototype.displayForConcept = function () {
-        return !(this.displayForAge() || this.displayForObservationDateTime());
+        return !(this.displayForAge() || (this.xAxisConcept && this.xAxisConcept.toLowerCase() === OBSERVATION_DATETIME));
     };
 
     configPrototype.displayForAge = function () {
-        return this.xAxisConcept.toLowerCase() === Bahmni.Clinical.Constants.concepts.age.toLowerCase();
+        return !!(this.xAxisConcept && this.xAxisConcept.toLowerCase() === Bahmni.Clinical.Constants.concepts.age.toLowerCase());
     };
 
     configPrototype.displayForObservationDateTime = function () {
-        return this.xAxisConcept.toLowerCase() === OBSERVATION_DATETIME;
+        var isDefaultObsDateTime = !!(this.xAxisConcept && this.xAxisConcept.toLowerCase() === OBSERVATION_DATETIME);
+        var isTimeseriesType = this.type === 'timeseries';
+        return isDefaultObsDateTime || isTimeseriesType;
     };
 
     configPrototype.getAllConcepts = function () {
