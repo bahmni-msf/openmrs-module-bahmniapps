@@ -57,6 +57,44 @@
         return null;
     };
 
+    var parseToLocalDate = function (rawDateValue) {
+        if (!rawDateValue) return null;
+        if (rawDateValue instanceof Date) return rawDateValue;
+
+        if (typeof rawDateValue === 'string') {
+            var isoMatch = rawDateValue.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})(?:[T\s](\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
+            if (isoMatch) {
+                var year = parseInt(isoMatch[1], 10);
+                var month = parseInt(isoMatch[2], 10) - 1;
+                var day = parseInt(isoMatch[3], 10);
+                var hours = isoMatch[4] ? parseInt(isoMatch[4], 10) : 0;
+                var minutes = isoMatch[5] ? parseInt(isoMatch[5], 10) : 0;
+                var seconds = isoMatch[6] ? parseInt(isoMatch[6], 10) : 0;
+                return new Date(year, month, day, hours, minutes, seconds);
+            }
+
+            var ddmmyyyyMatch = rawDateValue.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})(?:[T\s](\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
+            if (ddmmyyyyMatch) {
+                var day = parseInt(ddmmyyyyMatch[1], 10);
+                var month = parseInt(ddmmyyyyMatch[2], 10) - 1;
+                var year = parseInt(ddmmyyyyMatch[3], 10);
+                var hours = ddmmyyyyMatch[4] ? parseInt(ddmmyyyyMatch[4], 10) : 0;
+                var minutes = ddmmyyyyMatch[5] ? parseInt(ddmmyyyyMatch[5], 10) : 0;
+                var seconds = ddmmyyyyMatch[6] ? parseInt(ddmmyyyyMatch[6], 10) : 0;
+                return new Date(year, month, day, hours, minutes, seconds);
+            }
+        }
+
+        if (Bahmni.Common && Bahmni.Common.Util && Bahmni.Common.Util.DateUtil) {
+            var bDate = Bahmni.Common.Util.DateUtil.parseDatetime(rawDateValue);
+            if (bDate && bDate.isValid && bDate.isValid()) {
+                return bDate.toDate();
+            }
+        }
+        var d = new Date(rawDateValue);
+        return !isNaN(d.getTime()) ? d : null;
+    };
+
     var findMatchingXObs = function (yObs, xObsList) {
         if (!xObsList || xObsList.length === 0) return null;
 
@@ -117,38 +155,38 @@
 
         _.forEach(yAxisObservations, function (yAxisObs) {
             var xValue;
-            var matchingObservation = findMatchingXObs(yAxisObs, xAxisObservations);
 
-            if (matchingObservation) {
-                var rawDateValue = extractRawDateValue(matchingObservation);
+            // 1. Explicit default system observationDateTime ("observationDateTime")
+            if (config.xAxisConcept && config.xAxisConcept.toLowerCase() === 'observationdatetime') {
+                config.type = "timeseries";
+                xValue = parseToLocalDate(yAxisObs.observationDateTime);
+            } 
+            // 2. Standard age ("age")
+            else if (config.displayForAge && config.displayForAge()) {
+                xValue = Bahmni.Common.Util.AgeUtil.differenceInMonths(person.birthdate, yAxisObs.observationDateTime);
+            } 
+            // 3. Custom X-axis concept (e.g., "CS, Time recorded" or numeric indexed concepts)
+            else {
+                var matchingObservation = findMatchingXObs(yAxisObs, xAxisObservations);
+                if (matchingObservation) {
+                    var rawDateValue = extractRawDateValue(matchingObservation);
 
-                if (rawDateValue) {
-                    var parsedDate = null;
-                    if (Bahmni.Common && Bahmni.Common.Util && Bahmni.Common.Util.DateUtil) {
-                        var bDate = Bahmni.Common.Util.DateUtil.parseDatetime(rawDateValue);
-                        if (bDate && bDate.isValid && bDate.isValid()) {
-                            parsedDate = bDate.toDate();
+                    var isExplicitDate = !!matchingObservation.valueDatetime;
+                    var isStringDate = rawDateValue && typeof rawDateValue === 'string' && isNaN(Number(rawDateValue));
+
+                    if (isExplicitDate || isStringDate) {
+                        var parsedDate = parseToLocalDate(rawDateValue);
+                        if (parsedDate) {
+                            config.type = "timeseries";
+                            xValue = parsedDate;
                         }
                     }
-                    if (!parsedDate) {
-                        var d = new Date(rawDateValue);
-                        if (!isNaN(d.getTime())) {
-                            parsedDate = d;
-                        }
-                    }
 
-                    if (parsedDate) {
-                        config.type = "timeseries";
-                        config.displayForObservationDateTime = function () { return true; };
-                        xValue = parsedDate;
+                    if (xValue === undefined) {
+                        config.type = "indexed";
+                        xValue = matchingObservation.value;
                     }
                 }
-            }
-
-            if (!xValue && yAxisObs.observationDateTime) {
-                config.type = "timeseries";
-                config.displayForObservationDateTime = function () { return true; };
-                xValue = Bahmni.Common.Util.DateUtil.parseDatetime(yAxisObs.observationDateTime).toDate();
             }
 
             if (xValue !== undefined) {
