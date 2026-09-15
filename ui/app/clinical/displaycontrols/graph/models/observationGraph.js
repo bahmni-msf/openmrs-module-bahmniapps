@@ -61,7 +61,7 @@
         if (!rawDateValue) return null;
         if (rawDateValue instanceof Date) return rawDateValue;
 
-        if (typeof rawDateValue === 'string') {
+        if (angular.isString(rawDateValue)) {
             var isoMatch = rawDateValue.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})(?:[T\s](\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
             if (isoMatch) {
                 var year = parseInt(isoMatch[1], 10);
@@ -157,14 +157,14 @@
             var xValue;
 
             // 1. Explicit default system observationDateTime ("observationDateTime")
-            if (config.xAxisConcept && config.xAxisConcept.toLowerCase() === 'observationdatetime') {
+            if (config.displayForObservationDateTime && config.displayForObservationDateTime() && config.xAxisConcept && config.xAxisConcept.toLowerCase() === 'observationdatetime') {
                 config.type = "timeseries";
                 xValue = parseToLocalDate(yAxisObs.observationDateTime);
-            } 
+            }
             // 2. Standard age ("age")
             else if (config.displayForAge && config.displayForAge()) {
                 xValue = Bahmni.Common.Util.AgeUtil.differenceInMonths(person.birthdate, yAxisObs.observationDateTime);
-            } 
+            }
             // 3. Custom X-axis concept (e.g., "CS, Time recorded" or numeric indexed concepts)
             else {
                 var matchingObservation = findMatchingXObs(yAxisObs, xAxisObservations);
@@ -172,7 +172,7 @@
                     var rawDateValue = extractRawDateValue(matchingObservation);
 
                     var isExplicitDate = !!matchingObservation.valueDatetime;
-                    var isStringDate = rawDateValue && typeof rawDateValue === 'string' && isNaN(Number(rawDateValue));
+                    var isStringDate = rawDateValue && angular.isString(rawDateValue) && isNaN(Number(rawDateValue));
 
                     if (isExplicitDate || isStringDate) {
                         var parsedDate = parseToLocalDate(rawDateValue);
