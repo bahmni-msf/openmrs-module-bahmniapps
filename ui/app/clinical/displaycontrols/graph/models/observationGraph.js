@@ -11,9 +11,14 @@
         var conceptNamesFromConfig = config.yAxisConcepts.slice(0);
         conceptNamesFromConfig.push(config.xAxisConcept);
         _.each(observations, function (obs) {
-            obs.concept.name = _.find(conceptNamesFromConfig, function (configConceptName) {
-                return configConceptName.toLowerCase() === obs.concept.name.toLowerCase();
-            });
+            if (obs && obs.concept && obs.concept.name) {
+                var matchedName = _.find(conceptNamesFromConfig, function (configConceptName) {
+                    return configConceptName && configConceptName.toLowerCase().trim() === obs.concept.name.toLowerCase().trim();
+                });
+                if (matchedName) {
+                    obs.concept.name = matchedName;
+                }
+            }
         });
     };
 
@@ -30,15 +35,74 @@
         });
     };
 
+    var getEncounterUuid = function (obs) {
+        if (!obs) return null;
+        return obs.encounterUuid || (obs.encounter && obs.encounter.uuid) || obs.encounterId || null;
+    };
+
+    var getGroupUuid = function (obs) {
+        if (!obs) return null;
+        return obs.obsGroupUuid || (obs.parentObs && obs.parentObs.uuid) || obs.groupId || null;
+    };
+
+    var extractRawDateValue = function (obs) {
+        if (!obs) return null;
+        if (obs.valueDatetime) return obs.valueDatetime;
+        if (obs.value) {
+            if (typeof obs.value === 'object') {
+                return obs.value.value || obs.value.display || obs.value.name || null;
+            }
+            return obs.value;
+        }
+        return null;
+    };
+
+    var findMatchingXObs = function (yObs, xObsList) {
+        if (!xObsList || xObsList.length === 0) return null;
+
+        var yGroup = getGroupUuid(yObs);
+        if (yGroup) {
+            var groupMatch = _.find(xObsList, function (x) {
+                return getGroupUuid(x) === yGroup;
+            });
+            if (groupMatch) return groupMatch;
+        }
+
+        var yEnc = getEncounterUuid(yObs);
+        if (yEnc) {
+            var encMatches = _.filter(xObsList, function (x) {
+                return getEncounterUuid(x) === yEnc;
+            });
+            if (encMatches.length === 1) return encMatches[0];
+            if (encMatches.length > 1) {
+                var yTime = yObs.observationDateTime ? new Date(yObs.observationDateTime).getTime() : 0;
+                return _.minBy(encMatches, function (x) {
+                    var xTime = x.observationDateTime ? new Date(x.observationDateTime).getTime() : 0;
+                    return Math.abs(yTime - xTime);
+                });
+            }
+        }
+
+        if (yObs.observationDateTime) {
+            var yTime = new Date(yObs.observationDateTime).getTime();
+            return _.minBy(xObsList, function (x) {
+                var xTime = x.observationDateTime ? new Date(x.observationDateTime).getTime() : 0;
+                return Math.abs(yTime - xTime);
+            });
+        }
+
+        return xObsList[0];
+    };
+
     Bahmni.Clinical.ObservationGraph.create = function (allObservations, person, config, referenceLines) {
         fixCaseMismatchIssues(config, allObservations);
 
         var yAxisObservations = _.filter(allObservations, function (obs) {
-            return obs.concept.name !== config.xAxisConcept;
+            return obs.concept && obs.concept.name !== config.xAxisConcept;
         });
 
         var xAxisObservations = _.filter(allObservations, function (obs) {
-            return obs.concept.name === config.xAxisConcept;
+            return obs.concept && obs.concept.name === config.xAxisConcept;
         });
 
         var lines = _(yAxisObservations).uniqBy(function (item) {
@@ -53,17 +117,38 @@
 
         _.forEach(yAxisObservations, function (yAxisObs) {
             var xValue;
-            if (config.displayForObservationDateTime()) {
+            var matchingObservation = findMatchingXObs(yAxisObs, xAxisObservations);
+
+            if (matchingObservation) {
+                var rawDateValue = extractRawDateValue(matchingObservation);
+
+                if (rawDateValue) {
+                    var parsedDate = null;
+                    if (Bahmni.Common && Bahmni.Common.Util && Bahmni.Common.Util.DateUtil) {
+                        var bDate = Bahmni.Common.Util.DateUtil.parseDatetime(rawDateValue);
+                        if (bDate && bDate.isValid && bDate.isValid()) {
+                            parsedDate = bDate.toDate();
+                        }
+                    }
+                    if (!parsedDate) {
+                        var d = new Date(rawDateValue);
+                        if (!isNaN(d.getTime())) {
+                            parsedDate = d;
+                        }
+                    }
+
+                    if (parsedDate) {
+                        config.type = "timeseries";
+                        config.displayForObservationDateTime = function () { return true; };
+                        xValue = parsedDate;
+                    }
+                }
+            }
+
+            if (!xValue && yAxisObs.observationDateTime) {
                 config.type = "timeseries";
+                config.displayForObservationDateTime = function () { return true; };
                 xValue = Bahmni.Common.Util.DateUtil.parseDatetime(yAxisObs.observationDateTime).toDate();
-            } else if (config.displayForAge()) {
-                xValue = Bahmni.Common.Util.AgeUtil.differenceInMonths(person.birthdate, yAxisObs.observationDateTime);
-            } else {
-                config.type = "indexed";
-                var matchingObservation = _.find(xAxisObservations, function (xObs) {
-                    return yAxisObs.observationDateTime === xObs.observationDateTime;
-                });
-                xValue = matchingObservation ? matchingObservation.value : undefined;
             }
 
             if (xValue !== undefined) {
