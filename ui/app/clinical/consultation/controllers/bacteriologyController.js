@@ -22,6 +22,20 @@ angular.module('bahmni.clinical')
 
             var init = function () {
                 $scope.isSampleIdRequired = appService.getAppDescriptor().getConfigValue("isSampleIdRequired");
+                var extensionParams = {};
+                var appDescriptor = appService.getAppDescriptor();
+                var boardExtensions = [];
+                if (appDescriptor && typeof appDescriptor.getExtensions === 'function') {
+                    boardExtensions = appDescriptor.getExtensions("org.bahmni.clinical.consultation.board") || [];
+                }
+                var currentUrl = window.location.href.toLowerCase();
+                var currentTab = _.find(boardExtensions, function (ext) {
+                    return ext.url && currentUrl.indexOf(ext.url.toLowerCase()) !== -1;
+                });
+                if (currentTab && currentTab.extensionParams) {
+                    extensionParams = currentTab.extensionParams;
+                }
+                $scope.showSampleReceptionDate = !!extensionParams.showSampleReceptionDate;
                 if (appService.getAppDescriptor().getConfigValue("showSaveConfirmDialog")) {
                     $scope.$broadcast("event:pageUnload");
                 }
