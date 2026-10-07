@@ -35,6 +35,18 @@
                             </article>
                         </section>
 
+                        <section class="form-field-inline" ng-if="showSampleReceptionDate">
+                            <article class="form-field">
+                                <div class="field-attribute">
+                                    <label for="sample-reception-date">Date of sample reception</label>
+                                </div>
+                                <div class="field-value">
+                                    <input id="sample-reception-date" type="date" ng-model="newSpecimen.sampleReceptionDate" ng-disabled="isRetrospectiveMode()" tabindex="1" style="margin-bottom: 8px;">
+                                    <input id="sample-reception-time" type="time" ng-model="newSpecimen.sampleReceptionTime" ng-disabled="isRetrospectiveMode()" tabindex="1">
+                                </div>
+                            </article>
+                        </section>
+
                         <section class="form-field-inline">
                             <article class="form-field right-form-field">
                                 <div class="field-attribute">
